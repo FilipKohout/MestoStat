@@ -1,3 +1,5 @@
+import src.db.connection as db_conn
+
 def read(data: list[dict]):
     """Processes RUIAN data and returns a list of municipalities with their codes and names."""
     municipalities = []
@@ -26,3 +28,18 @@ def read(data: list[dict]):
             "regionName": entry.get("Název Okresu"),
         }
         municipalities.append(municipality)
+
+        db_conn.connection.execute("""
+            INSERT OR IGNORE INTO districts (district_name, district_code_ruian)
+            VALUES (:districtName, :districtCodeRUIAN)
+        """, district)
+
+        db_conn.connection.execute("""
+           INSERT OR IGNORE INTO regions (region_name, region_code_ruian)
+           VALUES (:regionName, :regionCodeRUIAN)
+        """, region)
+
+        db_conn.connection.execute("""
+           INSERT OR IGNORE INTO municipalities (municipality_name, municipality_status, district_name, region_name)
+           VALUES (:municipalityName, :municipalityStatus, :districtName, :regionName)
+        """, municipality)

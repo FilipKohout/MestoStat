@@ -1,0 +1,31 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:16
+    container_name: mestostat_db
+    restart: always
+    environment:
+      POSTGRES_USER: filip
+      POSTGRES_PASSWORD: filip123
+      POSTGRES_DB: mestostat
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./db/data:/var/lib/postgresql/data
+      - ./db/init:/docker-entrypoint-initdb.d
+
+  python:
+    build: ./Data
+    container_name: mestostat_data
+    depends_on:
+      - db
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=mestostat
+      - DB_USER=filip
+      - DB_PASS=filip123
+    volumes:
+      - ./data:/app
+    command: ["python", "src/main.py"]

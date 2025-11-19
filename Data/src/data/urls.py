@@ -1,5 +1,5 @@
 from typing import Final, Dict, Tuple, Callable, Any
-import src.data.ruain as ruian
+import data.src.data.ruain as ruian
 
 URLS: Final[Dict[
     str,

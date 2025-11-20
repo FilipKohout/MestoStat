@@ -14,8 +14,10 @@ services:
     volumes:
       - ./db/data:/var/lib/postgresql/data
       - ./db/init:/docker-entrypoint-initdb.d
+    networks:
+      - backend
 
-  python:
+  data:
     build: ./data
     container_name: mestostat_data
     depends_on:
@@ -28,3 +30,40 @@ services:
       - DB_PASS=filip123
     volumes:
       - ./data:/app
+    networks:
+      - backend
+  
+  api:
+    build: ./api
+    container_name: mestostat_api
+    depends_on:
+      - db
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=mestostat
+      - DB_USER=filip
+      - DB_PASS=filip123
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./api:/app
+    networks:
+      - backend
+      - frontend
+  
+  web:
+    build: ./web
+    container_name: mestostat_web
+    depends_on:
+      - api
+    ports:
+      - "3000:3000"
+    networks:
+      - frontend
+
+networks:
+  backend:
+    driver: bridge
+  frontend:
+    driver: bridge

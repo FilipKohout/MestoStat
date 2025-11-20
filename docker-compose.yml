@@ -46,8 +46,6 @@ services:
       - DB_PASS=filip123
     ports:
       - "5000:5000"
-    volumes:
-      - ./api:/app
     networks:
       - backend
       - frontend

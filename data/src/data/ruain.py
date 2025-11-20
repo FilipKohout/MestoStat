@@ -42,10 +42,11 @@ def read(data: list[dict]):
             RETURNING district_id;
         """, district)
 
-        district_id = cursor.fetchone()[0]
-        district_ids[district["districtCodeRUIAN"]] = district_id
+        if cursor.fetchone() is not None:
+            district_id = cursor.fetchone()[0]
+            district_ids[district["districtCodeRUIAN"]] = district_id
 
-        logging.info("Inserted/Found district: %s with ID %d", district["districtName"], district_id)
+            logging.info("Inserted/Found district: %s with ID %d", district["districtName"], district_id)
 
     region_ids = {}
     for region in regions:
@@ -56,10 +57,11 @@ def read(data: list[dict]):
             RETURNING region_id;
         """, region)
 
-        region_id = cursor.fetchone()[0]
-        region_ids[region["regionCodeRUIAN"]] = region_id
+        if cursor.fetchone() is not None:
+            region_id = cursor.fetchone()[0]
+            region_ids[region["regionCodeRUIAN"]] = region_id
 
-        logging.info("Inserted/Found region: %s with ID %d", region["regionName"], region_id)
+            logging.info("Inserted/Found region: %s with ID %d", region["regionName"], region_id)
 
     for municipality in municipalities:
         district_id = district_ids.get(municipality["districtCodeRUIAN"])

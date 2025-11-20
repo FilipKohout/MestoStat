@@ -1,7 +1,6 @@
 import csv
 
 def decode(file_path: str) -> list[dict]:
-    """Reads a CSV file and returns its content as a list of dictionaries."""
     encodings = ["utf-8", "cp1250"]
 
     for enc in encodings:
@@ -13,4 +12,4 @@ def decode(file_path: str) -> list[dict]:
         except UnicodeDecodeError:
             continue
 
-    raise UnicodeDecodeError("Failed to decode file with tried encodings.")
+    raise UnicodeDecodeError("Failed to decode file with tried encodings")

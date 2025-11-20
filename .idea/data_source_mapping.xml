@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourcePerFileMappings">
+    <file url="file://$APPLICATION_CONFIG_DIR$/consoles/db/88828488-11f9-4541-88e7-37387091b5d0/console.sql" value="88828488-11f9-4541-88e7-37387091b5d0" />
+    <file url="file://$APPLICATION_CONFIG_DIR$/consoles/db/88828488-11f9-4541-88e7-37387091b5d0/console_1.sql" value="88828488-11f9-4541-88e7-37387091b5d0" />
+    <file url="file://$PROJECT_DIR$/data/src/data/ruain.py" value="88828488-11f9-4541-88e7-37387091b5d0" />
+    <file url="file://$PROJECT_DIR$/db/init/ruian.sql" value="88828488-11f9-4541-88e7-37387091b5d0" />
+  </component>
+</project>

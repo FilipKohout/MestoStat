@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   db:
-    image: postgres:16
+    build: ./db
     container_name: mestostat_db
     restart: always
     environment:
@@ -16,7 +16,7 @@ services:
       - ./db/init:/docker-entrypoint-initdb.d
 
   python:
-    build: ./Data
+    build: ./data
     container_name: mestostat_data
     depends_on:
       - db
@@ -28,4 +28,3 @@ services:
       - DB_PASS=filip123
     volumes:
       - ./data:/app
-    command: ["python", "src/main.py"]

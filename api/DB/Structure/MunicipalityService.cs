@@ -1,5 +1,6 @@
 ﻿using API.db;
 using API.Models.Structure;
+using API.Models.Structure.Requests;
 using Npgsql;
 using static API.Utils.DBUtils;
 
@@ -14,10 +15,11 @@ public class MunicipalityService
         _dbConnection = dbConnection;
     }
 
-    public async Task<IEnumerable<MunicipalityDTO>> GetAllAsync()
+    public async Task<IEnumerable<MunicipalityDTO>> GetEnumerableAsync(GetMunicipalitiesRequest request)
     {
         await using var conn = await _dbConnection.GetOpenConnectionAsync();
         await using var cmd = conn.CreateCommand();
+
         cmd.CommandText = @"
             SELECT 
                 m.municipality_name,
@@ -26,28 +28,34 @@ public class MunicipalityService
                 r.region_name
             FROM municipalities m
             JOIN districts d ON m.district_id = d.district_id
-            JOIN regions r ON m.region_id = r.region_id;
+            JOIN regions r ON m.region_id = r.region_id
+            WHERE 1=1
         ";
 
-        var municipalities = new List<MunicipalityDTO>();
+        if (!string.IsNullOrEmpty(request.District))
+        {
+            cmd.CommandText += " AND d.district_name = @district";
+            cmd.Parameters.AddWithValue("district", request.District);
+        }
 
-        try
+        if (!string.IsNullOrEmpty(request.Region))
         {
-            await using var reader = await cmd.ExecuteReaderAsync();
-            while (await reader.ReadAsync())
-            {
-                municipalities.Add(new MunicipalityDTO(
-                    GetStringSafe(reader, "municipality_name"),
-                    GetStringSafe(reader, "municipality_status"),
-                    GetStringSafe(reader, "district_name"),
-                    GetStringSafe(reader, "region_name")
-                ));
-            }
+            cmd.CommandText += " AND r.region_name = @region";
+            cmd.Parameters.AddWithValue("region", request.Region);
         }
-        catch (NpgsqlException ex)
-        {
-            throw new Exception("Database query failed", ex);
-        }
+
+        cmd.ApplyPagination(request);
+
+        var municipalities = new List<MunicipalityDTO>();
+        await using var reader = await cmd.ExecuteReaderAsync();
+
+        while (await reader.ReadAsync())
+            municipalities.Add(new MunicipalityDTO(
+                GetStringSafe(reader, "municipality_name"),
+                GetStringSafe(reader, "municipality_status"),
+                GetStringSafe(reader, "district_name"),
+                GetStringSafe(reader, "region_name")
+            ));
 
         return municipalities;
     }

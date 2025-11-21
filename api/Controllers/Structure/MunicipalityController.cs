@@ -1,8 +1,8 @@
-﻿using API.Models.Structure.Requests;
+﻿using API.db.Structure;
+using API.Models.Structure.Requests;
 using Microsoft.AspNetCore.Mvc;
-using API.Services;
 
-namespace API.Structure;
+namespace API.Controllers.Structure;
 
 [ApiController]
 [Route("structure/municipality")]

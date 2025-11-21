@@ -1,10 +1,12 @@
 using API.db;
-using API.Services;
+using API.db.Structure;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddScoped<DBConnection>();
 builder.Services.AddScoped<MunicipalityService>();
+builder.Services.AddScoped<DistrictService>();
+builder.Services.AddScoped<RegionService>();
 
 builder.Services.AddAuthorization();
 builder.Services.AddEndpointsApiExplorer();

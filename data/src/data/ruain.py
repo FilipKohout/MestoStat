@@ -9,7 +9,9 @@ def read(data: list[dict]):
     for entry in data:
         district = {
             "districtName": entry.get("Název Okresu"),
-            "districtCodeRUIAN": entry.get("Kód Okresu")
+            "districtCodeRUIAN": entry.get("Kód Okresu"),
+            "regionName": entry.get("Název Okresu"),
+            "regionCodeRUIAN": entry.get("Kód Kraje (VÚSC)")
         }
         if district not in districts:
             districts.append(district)
@@ -33,21 +35,6 @@ def read(data: list[dict]):
         municipalities.append(municipality)
     cursor = db_conn.connection.cursor()
 
-    district_ids = {}
-    for district in districts:
-        cursor.execute("""
-            INSERT INTO districts (district_name, district_code_ruian)
-            VALUES (%(districtName)s, %(districtCodeRUIAN)s)
-            ON CONFLICT (district_code_ruian) DO NOTHING
-            RETURNING district_id;
-        """, district)
-
-        if cursor.fetchone() is not None:
-            district_id = cursor.fetchone()[0]
-            district_ids[district["districtCodeRUIAN"]] = district_id
-
-            logging.info("Inserted/Found district: %s with ID %d", district["districtName"], district_id)
-
     region_ids = {}
     for region in regions:
         cursor.execute("""
@@ -57,11 +44,30 @@ def read(data: list[dict]):
             RETURNING region_id;
         """, region)
 
-        if cursor.fetchone() is not None:
-            region_id = cursor.fetchone()[0]
+        row = cursor.fetchone()
+        if row is not None:
+            region_id = row[0]
             region_ids[region["regionCodeRUIAN"]] = region_id
 
             logging.info("Inserted/Found region: %s with ID %d", region["regionName"], region_id)
+
+    district_ids = {}
+    for district in districts:
+        region_id = region_ids.get(district["regionCodeRUIAN"])
+
+        cursor.execute("""
+            INSERT INTO districts (district_name, district_code_ruian, region_id)
+            VALUES (%s, %s, %s)
+            ON CONFLICT (district_code_ruian) DO NOTHING
+            RETURNING district_id;
+        """, (district["districtName"], district["districtCodeRUIAN"], region_id))
+
+        row = cursor.fetchone()
+        if row is not None:
+            district_id = row[0]
+            district_ids[district["districtCodeRUIAN"]] = district_id
+
+            logging.info("Inserted/Found district: %s with ID %d", district["districtName"], district_id)
 
     for municipality in municipalities:
         district_id = district_ids.get(municipality["districtCodeRUIAN"])

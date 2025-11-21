@@ -6,39 +6,31 @@ using static API.Utils.DBUtils;
 
 namespace API.db.Structure;
 
-public class MunicipalityService
+public class DistrictService
 {
     private readonly DBConnection _dbConnection;
 
-    public MunicipalityService(DBConnection dbConnection)
+    public DistrictService(DBConnection dbConnection)
     {
         _dbConnection = dbConnection;
     }
 
-    public async Task<IEnumerable<MunicipalityDTO>> GetEnumerableAsync(GetMunicipalitiesRequest request)
+    public async Task<IEnumerable<DistrictDTO>> GetEnumerableAsync(GetDistrictsRequest request)
     {
         await using var conn = await _dbConnection.GetOpenConnectionAsync();
         await using var cmd = conn.CreateCommand();
 
         cmd.CommandText = @"
             SELECT 
-                m.municipality_id,
-                m.municipality_name,
-                m.municipality_status,
+                d.district_id,
                 d.district_name,
+                d.district_code_ruian,
                 r.region_name
-            FROM municipalities m
-            JOIN districts d ON m.district_id = d.district_id
-            JOIN regions r ON m.region_id = r.region_id
+            FROM districts d
+            JOIN regions r ON d.region_id = r.region_id
             WHERE 1=1
         ";
-
-        if (!string.IsNullOrEmpty(request.District))
-        {
-            cmd.CommandText += " AND d.district_name = @district";
-            cmd.Parameters.AddWithValue("district", request.District);
-        }
-
+        
         if (!string.IsNullOrEmpty(request.Region))
         {
             cmd.CommandText += " AND r.region_name = @region";
@@ -47,18 +39,17 @@ public class MunicipalityService
 
         cmd.ApplyPagination(request);
 
-        var municipalities = new List<MunicipalityDTO>();
+        var districts = new List<DistrictDTO>();
         await using var reader = await cmd.ExecuteReaderAsync();
 
         while (await reader.ReadAsync())
-            municipalities.Add(new MunicipalityDTO(
-                GetInt32Safe(reader, "municipality_id"),
-                GetStringSafe(reader, "municipality_name"),
-                GetStringSafe(reader, "municipality_status"),
+            districts.Add(new DistrictDTO(
+                GetInt32Safe(reader, "district_id"),
                 GetStringSafe(reader, "district_name"),
+                GetStringSafe(reader, "district_code_ruian"),
                 GetStringSafe(reader, "region_name")
             ));
 
-        return municipalities;
+        return districts;
     }
 }

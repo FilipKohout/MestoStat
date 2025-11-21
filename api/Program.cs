@@ -1,36 +1,43 @@
 using API.db;
+using API.Services;
 
-namespace API;
+var builder = WebApplication.CreateBuilder(args);
 
-public class Program
+builder.Services.AddScoped<DBConnection>();
+builder.Services.AddScoped<MunicipalityService>();
+
+builder.Services.AddAuthorization();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+builder.Services.AddControllers();
+
+var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
 {
-    public static async Task Main(string[] args)
+    var db = scope.ServiceProvider.GetRequiredService<DBConnection>();
+    try
     {
-        var builder = WebApplication.CreateBuilder(args);
-
-        builder.Services.AddAuthorization();
-        builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen();
-
-        var app = builder.Build();
-
-        if (app.Environment.IsDevelopment())
-        {
-            app.UseSwagger();
-            app.UseSwaggerUI();
-        }
-
-        app.UseHttpsRedirection();
-        app.UseAuthorization();
-
-        await DBConnection.ConnectWithRetriesAsync();
-        
-        app.MapGet("/weatherforecast", (HttpContext httpContext) => {
-            return "hello";
-        })
-        .WithName("GetWeatherForecast")
-        .WithOpenApi();
-
-        app.Run();
+        await db.GetOpenConnectionAsync();
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Cannot connect to DB: {ex.Message}");
+        return;
     }
 }
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+app.UseHttpsRedirection();
+app.UseAuthorization();
+
+app.UseExceptionHandler("/error");
+
+app.MapControllers();
+
+app.Run();

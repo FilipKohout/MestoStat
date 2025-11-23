@@ -25,7 +25,9 @@ public class MunicipalityService
                 m.municipality_id,
                 m.municipality_name,
                 m.municipality_status,
+                d.district_id,
                 d.district_name,
+                r.region_id,
                 r.region_name
             FROM municipalities m
             JOIN districts d ON m.district_id = d.district_id
@@ -55,7 +57,9 @@ public class MunicipalityService
                 GetInt32Safe(reader, "municipality_id"),
                 GetStringSafe(reader, "municipality_name"),
                 GetStringSafe(reader, "municipality_status"),
+                GetInt32Safe(reader, "district_id"),
                 GetStringSafe(reader, "district_name"),
+                GetInt32Safe(reader, "region_id"),
                 GetStringSafe(reader, "region_name")
             ));
 

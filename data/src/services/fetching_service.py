@@ -34,14 +34,17 @@ def fetch_all_data():
             file_path.write_text(response.text, encoding="utf-8")
             logging.info(f"Saved raw file for {name}")
 
-        #        try:
-        data = FORMATS[ext](file_path)
-        #        except Exception as e:
-#            logging.error(f"Failed to decode {file_path}: {e}")
-    #            continue
+        data = None
 
-        #       try:
-        read(data)
-        #       except Exception as e:
-        #          logging.error(f"Failed to process {name}: {e}")
-        #         continue
+        try:
+            data = FORMATS[ext](file_path)
+        except Exception as e:
+            logging.error(f"Failed to decode {file_path}: {e}")
+
+        if data is not None:
+            try:
+                read(data)
+            except Exception as e:
+                logging.error(f"Failed to process {name}: {e}")
+        else:
+            logging.error(f"Couldn't get any data from file {file_path}")

@@ -25,6 +25,7 @@ public class DistrictService
                 d.district_id,
                 d.district_name,
                 d.district_code_ruian,
+                r.region_id,
                 r.region_name
             FROM districts d
             JOIN regions r ON d.region_id = r.region_id
@@ -47,6 +48,7 @@ public class DistrictService
                 GetInt32Safe(reader, "district_id"),
                 GetStringSafe(reader, "district_name"),
                 GetStringSafe(reader, "district_code_ruian"),
+                GetInt32Safe(reader, "region_id"),
                 GetStringSafe(reader, "region_name")
             ));
 

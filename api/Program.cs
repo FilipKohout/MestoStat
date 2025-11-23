@@ -1,4 +1,5 @@
 using API.db;
+using API.db.Stats;
 using API.db.Structure;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,6 +8,8 @@ builder.Services.AddScoped<DBConnection>();
 builder.Services.AddScoped<MunicipalityService>();
 builder.Services.AddScoped<DistrictService>();
 builder.Services.AddScoped<RegionService>();
+builder.Services.AddScoped<StatsQueryService>();
+builder.Services.AddScoped<StatsDefinitionsService>();
 
 builder.Services.AddAuthorization();
 builder.Services.AddEndpointsApiExplorer();

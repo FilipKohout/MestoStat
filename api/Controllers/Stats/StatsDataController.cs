@@ -16,8 +16,8 @@ public class StatsDataController : ControllerBase
         _service = service; 
     }
 
-    [HttpGet("{tableId:int}")]
-    public async Task<IActionResult> RunStatsQuery(int tableId, RunStatsQueryRequest request)
+    [HttpPost("{tableId:int}")]
+    public async Task<IActionResult> RunStatsQuery(int tableId, [FromBody] RunStatsQueryRequest request)
     {
         var data = await _service.RunQueryAsync(tableId, request);
         

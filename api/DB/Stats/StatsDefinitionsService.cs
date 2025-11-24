@@ -22,7 +22,8 @@ public class StatsDefinitionsService
         cmd.CommandText = @"
             SELECT 
                 periodicity_id,
-                periodicity_name
+                periodicity_name,
+                interval_months
             FROM periodicities
         ";
 
@@ -32,7 +33,8 @@ public class StatsDefinitionsService
         while (await reader.ReadAsync())
             periodicities.Add(new PeriodicityDTO(
                 GetInt32Safe(reader, "periodicity_id"),
-                GetStringSafe(reader, "periodicity_name")
+                GetStringSafe(reader, "periodicity_name"),
+                GetInt32Safe(reader, "interval_months")
             ));
 
         return periodicities;
@@ -46,7 +48,8 @@ public class StatsDefinitionsService
         cmd.CommandText = @"
             SELECT 
                 structure_level_id,
-                structure_level_name
+                structure_level_name,
+                identifier_column
             FROM structure_levels
         ";
         
@@ -56,7 +59,8 @@ public class StatsDefinitionsService
         while (await reader.ReadAsync())
             structureLevels.Add(new StructureLevelDTO(
                 GetInt32Safe(reader, "structure_level_id"),
-                GetStringSafe(reader, "structure_level_name")
+                GetStringSafe(reader, "structure_level_name"),
+                GetStringSafe(reader, "identifier_column")
             ));
         
         return structureLevels;

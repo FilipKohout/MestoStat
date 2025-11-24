@@ -8,6 +8,7 @@ public class RunStatsQueryRequest
     public DateTime StartDate { get; set; }
     [Required]
     public DateTime EndDate { get; set; }
-    public string? Periodicity { get; set; }
-    public string? StructureLevel { get; set; }
+    [Required]
+    public int IdentifierId { get; set; }
+    public int? Periodicity { get; set; }
 }

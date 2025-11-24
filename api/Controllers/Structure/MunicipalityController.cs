@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace API.Controllers.Structure;
 
 [ApiController]
-[Route("structure/municipality")]
+[Route("structure/municipalities")]
 public class MunicipalityController : ControllerBase
 {
     private readonly MunicipalityService _service;
@@ -23,5 +23,11 @@ public class MunicipalityController : ControllerBase
         return Ok(
             new GetMunicipalitiesResponse(data)
         );
+    }
+    
+    [HttpGet("{municipalityId:int}")]
+    public async Task<IActionResult> GetDistrict(int municipalityId)
+    {
+        return Ok();
     }
 }

@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace API.Controllers.Structure;
 
 [ApiController]
-[Route("structure/region")]
+[Route("structure/regions")]
 public class RegionController : ControllerBase
 {
     private readonly RegionService _service;
@@ -23,5 +23,11 @@ public class RegionController : ControllerBase
         return Ok(
             new GetRegionsResponse(data)
         );
+    }
+    
+    [HttpGet("{regionId:int}")]
+    public async Task<IActionResult> GetDistrict(int regionId)
+    {
+        return Ok();
     }
 }

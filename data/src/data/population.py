@@ -43,7 +43,7 @@ def read(data: list[dict], semester: int):
             logging.warning("Invalid sex '%s' in municipality %s", sex, municipality_name)
             continue
 
-        date_recorded = f"{year}-12-31" if semester == 1 else f"{year}-07-01"
+        date_recorded = f"{year+1}-1-1" if semester == 1 else f"{year}-06-31"
         cursor.execute("""
             INSERT INTO population_by_sex_data 
                 (date_recorded, municipality_id, males, females)
@@ -55,6 +55,7 @@ def read(data: list[dict], semester: int):
             RETURNING data_id;
         """, (date_recorded, municipality_id, 0 if males is None else males, 0 if females is None else females))
 
+        # TODO females being 0
         inserted = cursor.fetchone()
         logging.info("Inserted/updated population record for %s (%s)", municipality_name, date_recorded)
     db_conn.connection.commit()

@@ -10,5 +10,5 @@ public class RunStatsQueryRequest
     public DateTime EndDate { get; set; }
     [Required]
     public int IdentifierId { get; set; }
-    public int? Periodicity { get; set; }
+    public int? PeriodicityId { get; set; }
 }

@@ -14,8 +14,8 @@ public class DistrictService
     {
         _dbConnection = dbConnection;
     }
-
-    public async Task<IEnumerable<DistrictDTO>> GetEnumerableAsync(GetDistrictsRequest request)
+    
+    public async Task<IEnumerable<DistrictDTO>> GetEnumerableAsync(GetDistrictsRequest request, int? districtId = null)
     {
         await using var conn = await _dbConnection.GetOpenConnectionAsync();
         await using var cmd = conn.CreateCommand();
@@ -38,6 +38,12 @@ public class DistrictService
             cmd.Parameters.AddWithValue("region", request.Region);
         }
 
+        if (districtId != null)
+        {
+            cmd.CommandText += " AND d.district_id = @districtId";
+            cmd.Parameters.AddWithValue("districtId", districtId);
+        }
+
         cmd.ApplyPagination(request);
 
         var districts = new List<DistrictDTO>();
@@ -53,5 +59,15 @@ public class DistrictService
             ));
 
         return districts;
+    }
+
+    public async Task<DistrictDTO?> GetObjectAsync(int districtId)
+    {
+        var enumerables = await GetEnumerableAsync(new(), districtId);
+
+        if (enumerables.Count() == 0)
+            return null;
+        
+        return enumerables.First();
     }
 }

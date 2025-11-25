@@ -28,6 +28,13 @@ public class MunicipalityController : ControllerBase
     [HttpGet("{municipalityId:int}")]
     public async Task<IActionResult> GetDistrict(int municipalityId)
     {
-        return Ok();
+        var data = await _service.GetObjectAsync(municipalityId);
+        
+        if (data == null)
+            return NotFound(new { message = "Municipality ID not found" });
+        
+        return Ok(
+            new GetMunicipalityResponse(data)
+        );
     }
 }

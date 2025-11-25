@@ -15,7 +15,7 @@ public class RegionService
         _dbConnection = dbConnection;
     }
 
-    public async Task<IEnumerable<RegionDTO>> GetEnumerableAsync(GetRegionsRequest request)
+    public async Task<IEnumerable<RegionDTO>> GetEnumerableAsync(GetRegionsRequest request, int? regionId = null)
     {
         await using var conn = await _dbConnection.GetOpenConnectionAsync();
         await using var cmd = conn.CreateCommand();
@@ -26,7 +26,14 @@ public class RegionService
                 region_name,
                 region_code_ruian
             FROM regions
+            WHERE 1=1
         ";
+        
+        if (regionId != null)
+        {
+            cmd.CommandText += " AND region_id = @regionId";
+            cmd.Parameters.AddWithValue("regionId", regionId);
+        }
 
         cmd.ApplyPagination(request);
 
@@ -41,5 +48,15 @@ public class RegionService
             ));
 
         return regions;
+    }
+    
+    public async Task<RegionDTO?> GetObjectAsync(int regionId)
+    {
+        var enumerables = await GetEnumerableAsync(new(), regionId);
+
+        if (enumerables.Count() == 0)
+            return null;
+        
+        return enumerables.First();
     }
 }

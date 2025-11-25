@@ -18,7 +18,6 @@ public class StatsQueryService
     {
         await using var conn = await _dbConnection.GetOpenConnectionAsync();
 
-        // 1. Získání metadat o tabulce (název, interval, groupovací klíč)
         var metaCmd = conn.CreateCommand();
         metaCmd.CommandText = @"
             SELECT
@@ -44,12 +43,12 @@ public class StatsQueryService
         await using (var metadata = await metaCmd.ExecuteReaderAsync())
         {
             if (!await metadata.ReadAsync()) return null;
+            
             tableName = metadata.GetString(0);
             identifierColumn = metadata.GetString(1);
             intervalMonths = metadata.GetInt32(2);
-        } // Reader se zde uzavře
+        }
 
-        // 2. Získání konfigurace sloupců (co a jak agregovat)
         var colsCmd = conn.CreateCommand();
         colsCmd.CommandText = @"
             SELECT column_name, alias, aggregation_method
@@ -59,37 +58,23 @@ public class StatsQueryService
         colsCmd.Parameters.AddWithValue("tableId", tableId);
 
         var selectParts = new List<string>();
-
-        // Whitelist povolených funkcí pro bezpečnost
-        var allowedAggregations = new HashSet<string> { "SUM", "AVG", "MIN", "MAX", "COUNT" };
-
+        
         await using (var colsReader = await colsCmd.ExecuteReaderAsync())
         {
             while (await colsReader.ReadAsync())
             {
                 var colName = colsReader.GetString(0);
-                // Pokud je alias null, použijeme název sloupce
                 var alias = colsReader.IsDBNull(1) ? colName : colsReader.GetString(1);
                 var method = colsReader.GetString(2).ToUpper();
 
-                if (!allowedAggregations.Contains(method))
-                    // Fallback nebo vyhození chyby, pokud je v DB neznámá funkce
-                    method = "SUM"; 
-
-                // Zde budujeme část SQL: SUM(electricity) AS total_electricity
-                // Pro extra bezpečnost dáváme názvy sloupců do uvozovek ""
                 selectParts.Add($"{method}(\"{colName}\") AS \"{alias}\"");
             }
         }
 
-        // Pokud nemáme definované žádné sloupce k agregaci, nemá smysl dotaz pouštět
         if (selectParts.Count == 0)
             throw new Exception("No columns defined for aggregation in the specified table.");
 
         var aggregationSql = string.Join(",\n                ", selectParts);
-
-        // 3. Sestavení finálního SQL
-        // Používám StringBuilder pro lepší čitelnost, ale interpolace $"" je taky OK
         var sql = $@"
             SELECT
                 ""{identifierColumn}"" AS group_id,
@@ -105,13 +90,11 @@ public class StatsQueryService
             ORDER BY group_id, period_start;
         ";
 
-        // 4. Spuštění dotazu
         var cmd = conn.CreateCommand();
         cmd.CommandText = sql;
         cmd.Parameters.AddWithValue("start", request.StartDate);
         cmd.Parameters.AddWithValue("end", request.EndDate);
         cmd.Parameters.AddWithValue("intervalMonths", intervalMonths);
-        // Pozor: identifierId musí datově sedět s tím, co je v DB (int vs string/guid)
         cmd.Parameters.AddWithValue("identifierId", request.IdentifierId);
 
         var result = new List<Dictionary<string, object>>();
@@ -121,10 +104,9 @@ public class StatsQueryService
         {
             var row = new Dictionary<string, object>();
             for (int i = 0; i < r.FieldCount; i++)
-            {
-                // IsDBNull check je důležitý, SUM nad null vrací null
-                row[r.GetName(i)] = r.IsDBNull(i) ? null : r.GetValue(i);
-            }
+                if (r.GetName(i) != "group_id")
+                    row[r.GetName(i)] = r.IsDBNull(i) ? null : r.GetValue(i);
+            
             result.Add(row);
         }
 

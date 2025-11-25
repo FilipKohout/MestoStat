@@ -28,6 +28,13 @@ public class RegionController : ControllerBase
     [HttpGet("{regionId:int}")]
     public async Task<IActionResult> GetDistrict(int regionId)
     {
-        return Ok();
+        var data = await _service.GetObjectAsync(regionId);
+        
+        if (data == null)
+            return NotFound(new { message = "Region ID not found" });
+        
+        return Ok(
+            new GetRegionResponse(data)
+        );
     }
 }

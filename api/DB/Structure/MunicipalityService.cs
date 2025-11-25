@@ -15,7 +15,7 @@ public class MunicipalityService
         _dbConnection = dbConnection;
     }
 
-    public async Task<IEnumerable<MunicipalityDTO>> GetEnumerableAsync(GetMunicipalitiesRequest request)
+    public async Task<IEnumerable<MunicipalityDTO>> GetEnumerableAsync(GetMunicipalitiesRequest request, int? municipalityId = null)
     {
         await using var conn = await _dbConnection.GetOpenConnectionAsync();
         await using var cmd = conn.CreateCommand();
@@ -46,6 +46,12 @@ public class MunicipalityService
             cmd.CommandText += " AND r.region_name = @region";
             cmd.Parameters.AddWithValue("region", request.Region);
         }
+        
+        if (municipalityId != null)
+        {
+            cmd.CommandText += " AND m.municipality_id = @municipalityId";
+            cmd.Parameters.AddWithValue("municipalityId", municipalityId);
+        }
 
         cmd.ApplyPagination(request);
 
@@ -64,5 +70,15 @@ public class MunicipalityService
             ));
 
         return municipalities;
+    }
+    
+    public async Task<MunicipalityDTO?> GetObjectAsync(int municipalityId)
+    {
+        var enumerables = await GetEnumerableAsync(new(), municipalityId);
+
+        if (enumerables.Count() == 0)
+            return null;
+        
+        return enumerables.First();
     }
 }

@@ -2,6 +2,7 @@ import time
 import logging
 import requests
 
+from pathlib import Path
 from data.urls import URLS
 from transform.formats import FORMATS
 from utils.consts import RAW_DIR
@@ -10,6 +11,8 @@ from services.stats_service import get_last_updated
 
 def fetch_all_data():
     logging.info("Fetching all data")
+
+    Path(RAW_DIR).mkdir(parents=True, exist_ok=True)
 
     for name, (url, ext, read, table_name, update_period) in URLS.items():
         file_path = RAW_DIR / f"{name}.{ext}"

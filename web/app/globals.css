@@ -1,26 +1,166 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/forms";
+
+@tailwind utilities;
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+    --animate-hide: hide 150ms cubic-bezier(0.16, 1, 0.3, 1);
+    --animate-slide-down-and-fade: slideDownAndFade 150ms
+    cubic-bezier(0.16, 1, 0.3, 1);
+    --animate-slide-left-and-fade: slideLeftAndFade 150ms
+    cubic-bezier(0.16, 1, 0.3, 1);
+    --animate-slide-up-and-fade: slideUpAndFade 150ms
+    cubic-bezier(0.16, 1, 0.3, 1);
+    --animate-slide-right-and-fade: slideRightAndFade 150ms
+    cubic-bezier(0.16, 1, 0.3, 1);
+    --animate-accordion-open: accordionOpen 150ms cubic-bezier(0.87, 0, 0.13, 1);
+    --animate-accordion-close: accordionClose 150ms cubic-bezier(0.87, 0, 0.13, 1);
+    --animate-dialog-overlay-show: dialogOverlayShow 150ms
+    cubic-bezier(0.16, 1, 0.3, 1);
+    --animate-dialog-content-show: dialogContentShow 150ms
+    cubic-bezier(0.16, 1, 0.3, 1);
+    --animate-drawer-slide-left-and-fade: drawerSlideLeftAndFade 150ms
+    cubic-bezier(0.16, 1, 0.3, 1);
+    --animate-drawer-slide-right-and-fade: drawerSlideRightAndFade 150ms ease-in;
+
+    @keyframes hide {
+        from {
+            opacity: 1;
+        }
+        to {
+            opacity: 0;
+        }
+    }
+    @keyframes slideDownAndFade {
+        from {
+            opacity: 0;
+            transform: translateY(-6px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    @keyframes slideLeftAndFade {
+        from {
+            opacity: 0;
+            transform: translateX(6px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+    @keyframes slideUpAndFade {
+        from {
+            opacity: 0;
+            transform: translateY(6px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    @keyframes slideRightAndFade {
+        from {
+            opacity: 0;
+            transform: translateX(-6px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+    @keyframes accordionOpen {
+        from {
+            height: 0px;
+        }
+        to {
+            height: var(--radix-accordion-content-height);
+        }
+    }
+    @keyframes accordionClose {
+        from {
+            height: var(--radix-accordion-content-height);
+        }
+        to {
+            height: 0px;
+        }
+    }
+    @keyframes dialogOverlayShow {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+    @keyframes dialogContentShow {
+        from {
+            opacity: 0;
+            transform: translate(-50%, -45%) scale(0.95);
+        }
+        to {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+    }
+    @keyframes drawerSlideLeftAndFade {
+        from {
+            opacity: 0;
+            transform: translateX(100%);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+    @keyframes drawerSlideRightAndFade {
+        from {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        to {
+            opacity: 0;
+            transform: translateX(100%);
+        }
+    }
+}
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+    --background: #020617; /* Slate-950 (Velmi tmavá) */
+    --foreground: #f8fafc;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+    background-color: var(--background);
+    color: var(--foreground);
+}
+
+/* --- FIX TREMOR/RECHARTS GRAFŮ --- */
+
+/* 1. Mřížka: Jemná, tmavá, nerušivá */
+.recharts-cartesian-grid-horizontal line,
+.recharts-cartesian-grid-vertical line {
+    stroke: #1e293b !important; /* Slate-800 */
+    stroke-opacity: 0.5;
+}
+
+/* 2. Texty os: Čitelné, šedé, normální font (ne mono) */
+.recharts-text.recharts-cartesian-axis-tick-value {
+    fill: #64748b !important; /* Slate-500 */
+    font-size: 12px;
+}
+
+/* 3. Skrytí ošklivé hlavní čáry osy */
+.recharts-cartesian-axis-line {
+    stroke: transparent !important;
+}
+
+/* 4. Kurzor při hoveru */
+.recharts-tooltip-cursor {
+    stroke: #475569 !important;
+    stroke-dasharray: 4 4;
 }

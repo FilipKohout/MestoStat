@@ -7,7 +7,7 @@ export function DashboardCard({ children, className, ...props }: React.HTMLAttri
                 "relative w-full overflow-hidden",
                 "bg-slate-900",
                 "border border-slate-800",
-                "rounded-xl p-5",
+                "rounded-xl p-4",
                 "shadow-sm",
                 className
             )}

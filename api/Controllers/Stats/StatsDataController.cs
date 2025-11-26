@@ -28,4 +28,15 @@ public class StatsDataController : ControllerBase
             new RunStatsQueryResponse(data)
         ); 
     }
+
+    [HttpGet("municipality/{municipalityId:int}")]
+    public async Task<IActionResult> GetMunicipality(int municipalityId)
+    {
+        var data = await _service.GetMunicipalityDataAsync(municipalityId);
+        
+        if (data == null)
+            return NotFound(new { message = "Municipality ID not found" });
+        
+        return Ok(data);
+    }
 }

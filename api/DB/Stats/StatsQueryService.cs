@@ -2,6 +2,7 @@
 using API.Models.Stats.Requests;
 using Npgsql;
 using System.Text;
+using API.Models.Stats.Responses;
 
 namespace API.db.Structure;
 
@@ -43,7 +44,7 @@ public class StatsQueryService
         await using (var metadata = await metaCmd.ExecuteReaderAsync())
         {
             if (!await metadata.ReadAsync()) return null;
-            
+
             tableName = metadata.GetString(0);
             identifierColumn = metadata.GetString(1);
             intervalMonths = metadata.GetInt32(2);
@@ -58,7 +59,7 @@ public class StatsQueryService
         colsCmd.Parameters.AddWithValue("tableId", tableId);
 
         var selectParts = new List<string>();
-        
+
         await using (var colsReader = await colsCmd.ExecuteReaderAsync())
         {
             while (await colsReader.ReadAsync())
@@ -106,10 +107,40 @@ public class StatsQueryService
             for (int i = 0; i < r.FieldCount; i++)
                 if (r.GetName(i) != "group_id")
                     row[r.GetName(i)] = r.IsDBNull(i) ? null : r.GetValue(i);
-            
+
             result.Add(row);
         }
 
         return result;
+    }
+
+    public async Task<GetMunicipalityDataResponse> GetMunicipalityDataAsync(int municipalityId)
+    {
+        await using var conn = await _dbConnection.GetOpenConnectionAsync();
+        var cmd = conn.CreateCommand();
+        cmd.CommandText = @"
+            SELECT 
+                date_recorded,
+                males + females AS total_population,
+            FROM population_by_sex
+            WHERE municipality_id = @municipalityId
+        ";
+        
+        cmd.Parameters.AddWithValue("municipalityId", municipalityId);
+        
+        await using var reader = await cmd.ExecuteReaderAsync();
+        var population = new List<Dictionary<string, object>>();
+        
+        while (await reader.ReadAsync())
+        {
+            var row = new Dictionary<string, object>();
+            row["date_recorded"] = reader.GetDateTime(0);
+            row["total_population"] = reader.GetInt32(1);
+            population.Add(row);
+        }
+
+        return new GetMunicipalityDataResponse(
+            population
+        );
     }
 }

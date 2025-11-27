@@ -4,6 +4,22 @@ using API.db.Structure;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var frontendUrl = Environment.GetEnvironmentVariable("FRONTEND_URL");
+
+if (string.IsNullOrEmpty(frontendUrl))
+    builder.Services.AddCors(options =>
+    {
+        options.AddPolicy("AllowFrontend",
+            policy =>
+            {
+                policy.WithOrigins(frontendUrl)
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+            });
+    });
+else
+    throw new Exception("Frontend URL ENV is not provided");
+
 builder.Services.AddScoped<DBConnection>();
 builder.Services.AddScoped<MunicipalityService>();
 builder.Services.AddScoped<DistrictService>();
@@ -40,6 +56,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseAuthorization();
+app.UseCors("AllowFrontend");
 
 app.UseExceptionHandler("/error");
 

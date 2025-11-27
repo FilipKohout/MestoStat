@@ -45,6 +45,7 @@ services:
       - DB_USER=filip
       - DB_PASS=filip123
       - ASPNETCORE_ENVIRONMENT=Development
+      - FRONTEND_URL=http://localhost:3000
     ports:
       - "8080:8080"
     networks:
@@ -56,6 +57,9 @@ services:
     container_name: mestostat_web
     depends_on:
       - api
+    environment:
+      - INTERNAL_API_URL=http://localhost:8080
+      - NEXT_PUBLIC_API_URL=http://localhost:8080
     ports:
       - "3000:3000"
     networks:

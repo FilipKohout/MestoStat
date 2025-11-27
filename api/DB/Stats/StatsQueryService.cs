@@ -106,7 +106,7 @@ public class StatsQueryService
             var row = new Dictionary<string, object>();
             for (int i = 0; i < r.FieldCount; i++)
                 if (r.GetName(i) != "group_id")
-                    row[ToPascalCase(r.GetName(i))] = r.IsDBNull(i) ? null : r.GetValue(i);
+                    row[SnakeToCamel(r.GetName(i))] = r.IsDBNull(i) ? null : r.GetValue(i);
 
             result.Add(row);
         }
@@ -134,8 +134,8 @@ public class StatsQueryService
         while (await reader.ReadAsync())
         {
             var row = new Dictionary<string, object>();
-            row["date_recorded"] = reader.GetDateTime(0);
-            row["total_population"] = reader.GetInt32(1);
+            row["dateRecorded"] = reader.GetDateTime(0);
+            row["totalPopulation"] = reader.GetInt32(1);
             population.Add(row);
         }
 
@@ -144,11 +144,23 @@ public class StatsQueryService
         );
     }
     
-    private static string ToPascalCase(string text)
+    private static string SnakeToCamel(string input)
     {
-        if (string.IsNullOrEmpty(text)) return text;
-        
-        return string.Join("", text.Split('_')
-            .Select(w => w.Length > 0 ? char.ToUpper(w[0]) + w.Substring(1) : ""));
+        if (string.IsNullOrEmpty(input)) return input;
+
+        var parts = input.Split('_');
+        if (parts.Length == 1) return input.ToLower();
+
+        var sb = new StringBuilder(parts[0].ToLower());
+        for (int i = 1; i < parts.Length; i++)
+        {
+            if (parts[i].Length > 0)
+            {
+                sb.Append(char.ToUpper(parts[i][0]));
+                sb.Append(parts[i].Substring(1).ToLower());
+            }
+        }
+
+        return sb.ToString();
     }
 }

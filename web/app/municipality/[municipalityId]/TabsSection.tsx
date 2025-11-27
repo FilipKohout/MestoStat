@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from "react";
-import Overview from "@/app/municipality/[slug]/Overview";
+import Overview from "./Overview";
 
 const tabs = [
     {"label": "Přehled", "component": <Overview />},
@@ -11,12 +11,11 @@ const tabs = [
     {"label": "Projekty", "component": <div>Projekty content</div>},
 ];
 
-export default function ClientTabsSection({ slug }: { slug: string }) {
+export default function ClientTabsSection() {
     const [activeTab, setActiveTab] = useState("Přehled");
 
     return (
         <>
-            {/* Sticky Menu */}
             <div className="sticky top-14 z-40 bg-slate-950/95 backdrop-blur border-b border-slate-800 mb-8 -mx-4 sm:-mx-6 px-4 sm:px-6">
                 <div className="flex items-center gap-8 overflow-x-auto no-scrollbar">
                     {tabs.map(({ label }) => (

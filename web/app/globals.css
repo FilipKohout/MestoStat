@@ -138,29 +138,3 @@ body {
     background-color: var(--background);
     color: var(--foreground);
 }
-
-/* --- FIX TREMOR/RECHARTS GRAFŮ --- */
-
-/* 1. Mřížka: Jemná, tmavá, nerušivá */
-.recharts-cartesian-grid-horizontal line,
-.recharts-cartesian-grid-vertical line {
-    stroke: #1e293b !important; /* Slate-800 */
-    stroke-opacity: 0.5;
-}
-
-/* 2. Texty os: Čitelné, šedé, normální font (ne mono) */
-.recharts-text.recharts-cartesian-axis-tick-value {
-    fill: #64748b !important; /* Slate-500 */
-    font-size: 12px;
-}
-
-/* 3. Skrytí ošklivé hlavní čáry osy */
-.recharts-cartesian-axis-line {
-    stroke: transparent !important;
-}
-
-/* 4. Kurzor při hoveru */
-.recharts-tooltip-cursor {
-    stroke: #475569 !important;
-    stroke-dasharray: 4 4;
-}

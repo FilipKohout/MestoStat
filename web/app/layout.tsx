@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import "./styles/charts.css";
 import Navbar from "@/app/components/utils/NavBar";
-import { QueryClient } from "@tanstack/query-core";
 import QueryProvider from "@/app/providers/QueryProvider";
 
 const inter = Inter({ subsets: ["latin"] });

@@ -1,9 +1,9 @@
-import { cn } from "@/app/lib/utils";
+import { cnTailwind } from "@/app/lib/utils";
 
 export function DashboardCard({ children, className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
     return (
         <div
-            className={cn(
+            className={cnTailwind(
                 "relative w-full overflow-hidden",
                 "bg-slate-900",
                 "border border-slate-800",

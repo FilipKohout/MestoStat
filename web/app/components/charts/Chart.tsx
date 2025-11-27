@@ -1,37 +1,30 @@
 'use client';
 
-import { useState, useMemo } from "react";
-import { AreaChart } from "@tremor/react";
+import { useState, useMemo, useEffect } from "react";
+import { AreaChart, CustomTooltipProps } from "@tremor/react";
 import { DashboardCard } from "@/app/components/utils/DashboardCard";
 import { CustomTooltip } from "@/app/components/charts/ChartTooltip";
+import useChartData from "@/app/hooks/charts/useChartData";
+import { ChartDataParams } from "@/app/services/charts/chartData";
+import { dateFormatter, valueFormatter } from "@/app/lib/utils";
+import { CHART_COLOR_PALETTE as COLOR_PALETTE, HEX_COLORS, CHART_INDEX_KEY as INDEX_KEY } from "@/app/lib/consts";
+import { LoadingSpinner } from "@/app/components/utils/LoadingSpinner";
+import Button from "@/app/components/utils/Button";
 
-const COLOR_PALETTE = ["blue", "emerald", "violet", "amber", "rose", "indigo", "fuchsia", "cyan"];
-
-const HEX_COLORS: { [key: string]: string } = {
-    blue: "#3b82f6",
-    cyan: "#06b6d4",
-    emerald: "#10b981",
-    violet: "#8b5cf6",
-    amber: "#f59e0b",
-    rose: "#f43f5e",
-    indigo: "#6366f1",
-    fuchsia: "#d946ef"
-};
-
-type UniversalChartProps = {
+type ChartProps = ChartDataParams & {
     title: string;
-    data: any[];
-    indexKey?: string;
+    showTotal: boolean,
 }
 
-const dataFormatter = (number: number) =>
-    Intl.NumberFormat("cs-CZ", { notation: "compact" }).format(number).toString();
+export function Chart(props: ChartProps) {
+    const { title } = props;
+    const { data, isLoading, isError } = useChartData(props);
 
-export function Chart({ title, data, indexKey = "start_period" }: UniversalChartProps) {
     const allCategories = useMemo(() => {
         if (!data || data.length === 0) return [];
-        return Object.keys(data[0]).filter(key => key !== indexKey);
-    }, [data, indexKey]);
+
+        return Object.keys(data[0]).filter(key => key !== INDEX_KEY);
+    }, [data]);
 
     const [activeCategories, setActiveCategories] = useState<string[]>(allCategories);
 
@@ -39,30 +32,16 @@ export function Chart({ title, data, indexKey = "start_period" }: UniversalChart
         if (!data) return [];
 
         return data.map((item) => {
-            const rawDate = item[indexKey];
-            let niceDate = rawDate;
-
-            try {
-                const dateObj = new Date(rawDate);
-                if (!isNaN(dateObj.getTime())) {
-                    niceDate = new Intl.DateTimeFormat("cs-CZ", {
-                        day: "numeric",
-                        month: "numeric",
-                        year: "numeric"
-                    }).format(dateObj);
-                }
-            } catch (e) {}
-            return { ...item, [indexKey]: niceDate };
+            return { ...item, [INDEX_KEY]: dateFormatter(item[INDEX_KEY]) };
         });
-    }, [data, indexKey]);
+    }, [data]);
 
-    const toggleCategory = (category: string) => {
+    const toggleCategory = (category: string) =>
         setActiveCategories(prev =>
             prev.includes(category)
                 ? prev.filter(c => c !== category)
                 : [...prev, category]
         );
-    };
 
     const getCategoryColorName = (category: string) => {
         const index = allCategories.indexOf(category);
@@ -74,10 +53,43 @@ export function Chart({ title, data, indexKey = "start_period" }: UniversalChart
         return HEX_COLORS[colorName] || "#cbd5e1";
     };
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    useEffect(() => setActiveCategories(allCategories), [data]);
+
     return (
         <DashboardCard>
             <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
-                <h2 className="text-base font-semibold text-white shrink-0">{title}</h2>
+                <div className="flex items-center gap-3">
+                    {/* 1. Nadpis */}
+                    <h2 className="text-base font-semibold text-white shrink-0">
+                        {title}
+                    </h2>
+
+                    {/* Oddělovač (volitelný, pro lepší vizuální separaci) */}
+
+                    {/* 2. Hodnota (Badge) text-xs font-semibold text-slate-300 uppercase tracking-wide opacity-90 */}
+
+                    <span className="inline-flex items-center font-semibold px-2 py-0.5 rounded text-xl bg-blue-950/30 text-slate-300 border border-blue-800/30 shadow-sm">
+                        2 000 000
+                    </span>
+
+
+                    {/* 3. Zdroj (Ikona) */}
+                    {/* Používáme tvůj Button component, ale jen s ikonou */}
+                    <Button
+                        variant="ghost"
+                        size="xs"
+                        className="text-slate-500 hover:text-slate-300 px-1.5" // Menší padding pro ikonu
+                        title="Zdroj dat: ČSÚ" // Tooltip prohlížeče
+                        onClick={() => window.open("...", "_blank")}
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5">
+                            <ellipse cx="12" cy="5" rx="9" ry="3" />
+                            <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3" />
+                            <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5" />
+                        </svg>
+                    </Button>
+                </div>
 
                 <div className="flex flex-wrap gap-3 justify-end">
                     {allCategories.map((category) => {
@@ -85,16 +97,11 @@ export function Chart({ title, data, indexKey = "start_period" }: UniversalChart
                         const hexColor = getCategoryColorHex(category);
 
                         return (
-                            <button
+                            <Button
                                 key={category}
                                 onClick={() => toggleCategory(category)}
-                                className={`
-                                    flex items-center gap-2 text-xs font-medium transition-all px-2 py-1 rounded-md border
-                                    ${isActive
-                                    ? "text-slate-200 border-slate-700 bg-slate-800/50"
-                                    : "text-slate-500 border-transparent opacity-60 hover:opacity-100"
-                                }
-                                `}
+                                variant={isActive ? "active" : "ghost"}
+                                size="xs"
                             >
                                 <span
                                     className="h-2 w-2 rounded-full transition-all duration-300"
@@ -104,34 +111,35 @@ export function Chart({ title, data, indexKey = "start_period" }: UniversalChart
                                     }}
                                 />
                                 {category}
-                            </button>
+                            </Button>
                         );
                     })}
                 </div>
             </div>
 
-            {data ?
-                <AreaChart
-                    className="h-80 w-full"
+            <div className="flex flex-col items-center justify-center h-80 relative">
+                {isLoading && <LoadingSpinner className="absolute h-12 w-12 text-blue-500" />}
+                {!isLoading && <AreaChart
+                    className="h-80 w-full border-none"
                     data={formattedData}
-                    index={indexKey}
+                    index={INDEX_KEY}
                     categories={activeCategories}
                     colors={activeCategories.map(cat => getCategoryColorName(cat))}
-                    valueFormatter={dataFormatter}
-                    yAxisWidth={50}
+                    valueFormatter={valueFormatter}
+                    yAxisWidth={55}
                     showLegend={false}
                     showGridLines={true}
                     showYAxis={true}
                     showXAxis={true}
                     curveType="monotone"
                     showAnimation={true}
+                    stack={false}
                     animationDuration={500}
-                    customTooltip={CustomTooltip}
-                    noDataText="Žádná data k zobrazení"
-                />
-                :
-                <p>No Data</p>
-            }
+                    customTooltip={CustomTooltip! as (props: CustomTooltipProps) => never}
+                    noDataText="Žádná data"
+                />}
+                {isError && !isLoading && (<div className="text-white text-sm rounded-xl p-4 px-12 bg-rose-600">Chyba při načítání dat</div>)}
+            </div>
         </DashboardCard>
     );
 }

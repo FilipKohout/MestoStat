@@ -21,6 +21,6 @@ ON CONFLICT (table_name) DO NOTHING;
 
 INSERT INTO statistic_columns (table_id, column_name, alias, aggregation_method)
 VALUES
-    ((SELECT table_id FROM statistics WHERE table_name = 'population_by_sex_data'), 'males', 'males', 'SUM'),
-    ((SELECT table_id FROM statistics WHERE table_name = 'population_by_sex_data'), 'females', 'females', 'SUM')
+    ((SELECT table_id FROM statistics WHERE table_name = 'population_by_sex_data'), 'males', 'males', 'AVG'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'population_by_sex_data'), 'females', 'females', 'AVG')
 ON CONFLICT (table_id, column_name) DO NOTHING

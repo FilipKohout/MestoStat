@@ -52,18 +52,18 @@ services:
       - backend
       - frontend
   
-  web:
-    build: ./web
-    container_name: mestostat_web
-    depends_on:
-      - api
-    environment:
-      - INTERNAL_API_URL=http://localhost:8080
-      - NEXT_PUBLIC_API_URL=http://localhost:8080
-    ports:
-      - "3000:3000"
-    networks:
-      - frontend
+#  web:
+#    build: ./web
+#    container_name: mestostat_web
+#    depends_on:
+#      - api
+#    environment:
+#      - INTERNAL_API_URL=http://localhost:8080
+#      - NEXT_PUBLIC_API_URL=http://localhost:8080
+#    ports:
+#      - "3000:3000"
+#    networks:
+#      - frontend
 
 networks:
   backend:

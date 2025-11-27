@@ -1,39 +1,21 @@
-// Tremor Raw cx [v0.0.0]
-
 import clsx, { type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 
-export function cn(...args: ClassValue[]) {
-    return twMerge(clsx(...args))
+export function getAPIUrl(route: string): string {
+    if (typeof window === 'undefined')
+        return `${process.env.INTERNAL_API_URL}/${route}`;
+
+    return `${process.env.NEXT_PUBLIC_API_URL}/${route}`;
 }
 
-// Tremor focusInput [v0.0.2]
+export function valueFormatter(number: number) {
+    return Intl.NumberFormat("cs-CZ", { notation: "compact" }).format(number).toString();
+}
 
-export const focusInput = [
-    // base
-    "focus:ring-2",
-    // ring color
-    "focus:ring-blue-200 dark:focus:ring-blue-700/30",
-    // border color
-    "focus:border-blue-500 dark:focus:border-blue-700",
-]
+export function dateFormatter(date: string) {
+    return new Intl.DateTimeFormat("cs-CZ", { dateStyle: "medium" }).format(new Date(date));
+}
 
-// Tremor Raw focusRing [v0.0.1]
-
-export const focusRing = [
-    // base
-    "outline outline-offset-2 outline-0 focus-visible:outline-2",
-    // outline color
-    "outline-blue-500 dark:outline-blue-500",
-]
-
-// Tremor Raw hasErrorInput [v0.0.1]
-
-export const hasErrorInput = [
-    // base
-    "ring-2",
-    // border color
-    "border-red-500 dark:border-red-700",
-    // ring color
-    "ring-red-200 dark:ring-red-700/30",
-]
+export function cnTailwind(...args: ClassValue[]) {
+    return twMerge(clsx(...args))
+}

@@ -3,34 +3,19 @@
 import { Chart } from "@/app/components/charts/Chart";
 import { DashboardCard } from "@/app/components/utils/DashboardCard";
 
-const chartdata = [
-    { start_period: new Date().toString(), Obyvatele: 2890, Rozpocet: 2300 },
-    { start_period: new Date().toString(), Obyvatele: 2950, Rozpocet: 2500 },
-    { start_period: new Date().toString(), Obyvatele: 3000, Rozpocet: 2450 },
-    { start_period: new Date().toString(), Obyvatele: 3100, Rozpocet: 2800 },
-    { start_period: new Date().toString(), Obyvatele: 3150, Rozpocet: 3100 },
-    { start_period: new Date().toString(), Obyvatele: 3200, Rozpocet: 3400 },
-];
-
-
 export default function Overview() {
     return (
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Chart
-                title="Počet Obyvatel"
-                data={chartdata}
-            />
-
-            <Chart
-                title="Ekonomický přehled"
-                data={chartdata}
-            />
-
-            <Chart
-                title="Ekonomický přehled"
-                data={chartdata}
-            />
+                <Chart
+                    showTotal
+                    title="Počet Obyvatel"
+                    tableId={1}
+                    startDate={new Date('2000-01-01')}
+                    endDate={new Date('2025-01-01')}
+                    identifierId={1}
+                    periodicityId={1}
+                />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

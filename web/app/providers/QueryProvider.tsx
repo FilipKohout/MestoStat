@@ -6,7 +6,7 @@ export default function QueryProvider({ children }: { children: React.ReactNode 
     const client = new QueryClient({
         defaultOptions: {
             queries: {
-                staleTime: 60 * 1000,
+                staleTime: 0//60 * 1000,
             },
         },
     });

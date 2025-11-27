@@ -106,7 +106,7 @@ public class StatsQueryService
             var row = new Dictionary<string, object>();
             for (int i = 0; i < r.FieldCount; i++)
                 if (r.GetName(i) != "group_id")
-                    row[r.GetName(i)] = r.IsDBNull(i) ? null : r.GetValue(i);
+                    row[ToPascalCase(r.GetName(i))] = r.IsDBNull(i) ? null : r.GetValue(i);
 
             result.Add(row);
         }
@@ -121,8 +121,8 @@ public class StatsQueryService
         cmd.CommandText = @"
             SELECT 
                 date_recorded,
-                males + females AS total_population,
-            FROM population_by_sex
+                males + females AS total_population
+            FROM population_by_sex_data
             WHERE municipality_id = @municipalityId
         ";
         
@@ -142,5 +142,13 @@ public class StatsQueryService
         return new GetMunicipalityDataResponse(
             population
         );
+    }
+    
+    private static string ToPascalCase(string text)
+    {
+        if (string.IsNullOrEmpty(text)) return text;
+        
+        return string.Join("", text.Split('_')
+            .Select(w => w.Length > 0 ? char.ToUpper(w[0]) + w.Substring(1) : ""));
     }
 }

@@ -13,7 +13,7 @@ import Button from "@/app/components/utils/Button";
 
 type ChartProps = ChartDataParams & {
     title: string;
-    showTotal: boolean,
+    addTotalCategory: boolean;
 }
 
 export function Chart(props: ChartProps) {
@@ -58,24 +58,12 @@ export function Chart(props: ChartProps) {
 
     return (
         <DashboardCard>
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
-                <div className="flex items-center gap-3">
-                    {/* 1. Nadpis */}
+            <div className="flex flex-row justify-between mb-3 gap-4">
+                <div className="flex items-center gap-0.5">
                     <h2 className="text-base font-semibold text-white shrink-0">
                         {title}
                     </h2>
 
-                    {/* Oddělovač (volitelný, pro lepší vizuální separaci) */}
-
-                    {/* 2. Hodnota (Badge) text-xs font-semibold text-slate-300 uppercase tracking-wide opacity-90 */}
-
-                    <span className="inline-flex items-center font-semibold px-2 py-0.5 rounded text-xl bg-blue-950/30 text-slate-300 border border-blue-800/30 shadow-sm">
-                        2 000 000
-                    </span>
-
-
-                    {/* 3. Zdroj (Ikona) */}
-                    {/* Používáme tvůj Button component, ale jen s ikonou */}
                     <Button
                         variant="ghost"
                         size="xs"
@@ -117,7 +105,28 @@ export function Chart(props: ChartProps) {
                 </div>
             </div>
 
-            <div className="flex flex-col items-center justify-center h-80 relative">
+            <div className="flex flex-col items-center justify-center h-80 relative gap-3">
+                <div className="w-full flex flex-row items-center justify-start gap-2">
+                    <div className="flex flex-col items-center rounded-lg border border-slate-700 text-xl font-semibold bg-slate-900/80 backdrop-blur-xl px-3 py-1 shadow-xl">
+                        <p className="mb-1 text-xs font-medium text-slate-400">Aktuální</p>
+
+                        <div className="flex flex-row items-center gap-2">
+                            <p className="">
+                                {data && data.length > 0 ? Intl.NumberFormat("cs-CZ", { notation: "standard" }).format(data[data.length - 1][activeCategories[0]]).toString() : '–'}
+                            </p>
+                            <span className={`text-xs font-medium bg-black/30 px-1.5 py-0.5 rounded border border-white/5`}>
+                                +5%
+                            </span>
+                        </div>
+                    </div>
+                    <div className="flex flex-col items-center rounded-lg border border-slate-700 text-xl font-semibold bg-slate-900/80 backdrop-blur-xl px-3 py-1 shadow-xl">
+                        <p className="mb-1 text-xs font-medium text-slate-400">Průměrný</p>
+                        <p className="">
+                            {data && data.length > 0 ? Intl.NumberFormat("cs-CZ", { notation: "standard" }).format(data[data.length - 1][activeCategories[0]]).toString() : '–'}
+                        </p>
+                    </div>
+                </div>
+
                 {isLoading && <LoadingSpinner className="absolute h-12 w-12 text-blue-500" />}
                 {!isLoading && <AreaChart
                     className="h-80 w-full border-none"

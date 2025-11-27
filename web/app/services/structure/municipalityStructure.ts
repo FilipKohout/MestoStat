@@ -27,6 +27,8 @@ export async function fetchMunicipalitiesQuery(queryClient: QueryClient) {
 }
 
 export async function getMunicipality(municipalityId: number) {
+    console.log(getAPIUrl(`structure/municipalities/${municipalityId}`));
+
     const res = await fetch(getAPIUrl(`structure/municipalities/${municipalityId}`), {
         cache: "force-cache",
         next: { revalidate: 60 * 60 * 24 },

@@ -1,12 +1,16 @@
+using System;
 using API.db;
 using API.db.Stats;
 using API.db.Structure;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var frontendUrl = Environment.GetEnvironmentVariable("FRONTEND_URL");
 
-if (string.IsNullOrEmpty(frontendUrl))
+if (!string.IsNullOrEmpty(frontendUrl))
     builder.Services.AddCors(options =>
     {
         options.AddPolicy("AllowFrontend",

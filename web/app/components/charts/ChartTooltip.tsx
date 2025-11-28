@@ -1,4 +1,4 @@
-import { valueFormatter } from "@/app/lib/utils";
+import { compactValueFormatter } from "@/app/lib/utils";
 import { HEX_COLORS } from "@/app/lib/consts";
 
 interface TooltipProps { payload: Array<{ name: string, value: number, color: string }>, active: boolean, label: string }
@@ -29,7 +29,7 @@ export const CustomTooltip = ({ payload, active, label }: TooltipProps) => {
                         </div>
 
                         <span className="text-sm font-bold text-white tabular-nums">
-                            {valueFormatter(category.value)}
+                            {compactValueFormatter(category.value)}
                         </span>
                     </div>
                 ))}

@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import NumberChartCard from "@/app/components/charts/NumberChartCard";
 import { HydrationBoundary } from "@tanstack/react-query";
 import { dehydrate, QueryClient } from "@tanstack/query-core";
+import { prefetchAllTablesMetadata } from "@/app/services/charts/tableMetadata";
 
 export default async function MunicipalityPage({ params }: { params: Promise<{ municipalityId: number }> }) {
     const { municipalityId } = await params;
@@ -20,6 +21,8 @@ export default async function MunicipalityPage({ params }: { params: Promise<{ m
 
     if (!quickData)
         notFound();
+
+    await prefetchAllTablesMetadata(client);
 
     const getStatsChangePer = (current: number, previous: number) => {
         const change = ((current - previous) / previous) * 100;
@@ -40,8 +43,6 @@ export default async function MunicipalityPage({ params }: { params: Promise<{ m
         { label: "Výdaje", val: "2.1 M", change: "-1.2%", color: "text-rose-300", chartColor: "rose", data: [{ date: "1", val: 80 }, { date: "5", val: 30 }] },
         { label: "Projekty", val: "12", change: "Aktivní", color: "text-emerald-300", chartColor: "emerald", data: [{ date: "1", val: 10 }, { date: "5", val: 90 }] },
     ]
-
-    console.log(municipality, municipality.name);
 
     return (
         <div className="min-h-screen pb-10">

@@ -1,7 +1,7 @@
 import { getAPIUrl } from "@/app/lib/utils";
-import UniversalChartData from "@/app/types/data/universalChartData";
+import UniversalTableData from "@/app/types/data/universalTableData";
 
-export interface ChartDataParams {
+export interface TableDataParams {
     tableId: number;
     startDate: Date,
     endDate: Date,
@@ -9,10 +9,10 @@ export interface ChartDataParams {
     periodicityId: number;
 }
 
-export async function getChartData(params: ChartDataParams) {
+export async function getTableData(params: TableDataParams) {
     const res = await fetch(getAPIUrl(`stats/data/${params.tableId}`), {
-        //cache: "force-cache",
-        //next: { revalidate: 60 * 60 * 24 },
+        cache: "force-cache",
+        next: { revalidate: 60 * 60 * 24 },
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -28,5 +28,5 @@ export async function getChartData(params: ChartDataParams) {
     if (!data || !data.data)
         throw new Error("No data found");
 
-    return Array.from(data.data) as UniversalChartData[];
+    return Array.from(data.data) as UniversalTableData[];
 }

@@ -2,7 +2,7 @@
 
 public class TableDTO
 {
-    public int Id { get; private set; }
+    public int TableId { get; private set; }
     public string Name { get; private set; }
     public DateTime LastUpdated { get; private set; }
     public string SourceDomain { get; private set; }
@@ -11,9 +11,9 @@ public class TableDTO
     public int StructureLevelId { get; private set; }
     public string StructureLevelName { get; private set; }
 
-    public TableDTO(int id, string name, DateTime lastUpdated, string sourceDomain, int periodicityId, string periodicityName, int structureLevelId, string structureLevelName)
+    public TableDTO(int tableId, string name, DateTime lastUpdated, string sourceDomain, int periodicityId, string periodicityName, int structureLevelId, string structureLevelName)
     {
-        Id = id;
+        TableId = tableId;
         Name = name;
         LastUpdated = lastUpdated;
         SourceDomain = sourceDomain;

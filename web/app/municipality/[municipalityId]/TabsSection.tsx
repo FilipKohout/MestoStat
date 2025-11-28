@@ -17,7 +17,7 @@ export default function ClientTabsSection() {
     return (
         <>
             <div className="sticky top-14 z-40 bg-slate-950/95 backdrop-blur border-b border-slate-800 mb-8 -mx-4 sm:-mx-6 px-4 sm:px-6">
-                <div className="flex items-center gap-8 overflow-x-auto no-scrollbar">
+                <div className="flex items-center gap-8 overflow-x-auto scrollbar-hide">
                     {tabs.map(({ label }) => (
                         <button
                             key={label}

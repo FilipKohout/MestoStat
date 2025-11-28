@@ -8,7 +8,13 @@ export default function Overview() {
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Chart
-                    showTotal
+                    addTotalCategory
+                    summaries={{
+                        max: true,
+                        average: true,
+                        total: false,
+                        current: true
+                    }}
                     title="Počet Obyvatel"
                     tableId={1}
                     startDate={new Date('2000-01-01')}

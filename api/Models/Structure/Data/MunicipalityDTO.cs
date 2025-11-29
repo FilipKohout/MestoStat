@@ -9,8 +9,9 @@ public class MunicipalityDTO
     public int DistrictId { get; private set; }
     public string RegionName { get; private set; }
     public int RegionId { get; private set; }
+    public string? ImageURL { get; private set; }
 
-    public MunicipalityDTO(int id, string name, string status, int districtId, string districtName, int regionId, string regionName)
+    public MunicipalityDTO(int id, string name, string status, int districtId, string districtName, int regionId, string regionName, string? imageURL)
     {
         Id = id;
         Name = name;
@@ -19,5 +20,6 @@ public class MunicipalityDTO
         DistrictId = districtId;
         RegionName = regionName;
         RegionId = regionId;
+        ImageURL = imageURL;
     }
 }

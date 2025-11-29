@@ -4,7 +4,7 @@ import Municipality from "@/app/types/structure/municipality";
 
 export async function getMunicipalities() {
     const res = await fetch(getAPIUrl(`structure/municipalities`), {
-        cache: "force-cache",
+        cache: "no-cache",
         next: { revalidate: 60 * 60 * 24 },
     });
 

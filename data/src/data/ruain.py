@@ -1,6 +1,9 @@
 import db.connection as db_conn
 import logging
 
+from services.wiki_image_service import get_all_municipality_images
+
+
 def read(data: list[dict]):
     municipalities = []
     districts = []
@@ -69,15 +72,21 @@ def read(data: list[dict]):
 
             logging.info("Inserted/Found district: %s with ID %d", district["districtName"], district_id)
 
+    wiki_images_map = get_all_municipality_images()
+
+    for image in wiki_images_map.items():
+        logging.info("Wikidata image: %s -> %s", image[0], image[1])
+
     for municipality in municipalities:
         district_id = district_ids.get(municipality["districtCodeRUIAN"])
         region_id = region_ids.get(municipality["regionCodeRUIAN"])
+        image_url = wiki_images_map.get(municipality["municipalityName"])
 
         cursor.execute("""
-            INSERT INTO municipalities (municipality_name, municipality_status, district_id, region_id)
-            VALUES (%s, %s, %s, %s)
+            INSERT INTO municipalities (municipality_name, municipality_status, district_id, region_id, municipality_image_url)
+            VALUES (%s, %s, %s, %s, %s)
             ON CONFLICT (municipality_name) DO NOTHING;
-        """, (municipality["municipalityName"], municipality["municipalityStatus"], district_id, region_id))
+        """, (municipality["municipalityName"], municipality["municipalityStatus"], district_id, region_id, image_url))
 
         logging.info("Inserted/Found municipality: %s", municipality["municipalityName"])
 

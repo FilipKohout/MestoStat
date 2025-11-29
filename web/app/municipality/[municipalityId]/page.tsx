@@ -53,7 +53,7 @@ export default async function MunicipalityPage({ params }: { params: Promise<{ m
             <div className="relative h-[500px] w-full border-slate-800">
                 <div className="absolute inset-0">
                     <img
-                        src="https://images.unsplash.com/photo-1519677100203-a0e668c92439?q=80&w=2500&auto=format&fit=crop"
+                        src={municipality.imageURL || "https://images.unsplash.com/photo-1519677100203-a0e668c92439?q=80&w=2500&auto=format&fit=crop"}
                         alt={`Foto obce ${municipality.name}`}
                         className="h-full w-full object-cover"
                     />

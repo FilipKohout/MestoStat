@@ -16,5 +16,6 @@ CREATE TABLE IF NOT EXISTS municipalities (
     municipality_name VARCHAR(255) UNIQUE,
     municipality_status VARCHAR(50) NOT NULL,
     district_id INT REFERENCES districts(district_id),
-    region_id INT REFERENCES regions(region_id)
+    region_id INT REFERENCES regions(region_id),
+    municipality_image_url VARCHAR(2048)
 );

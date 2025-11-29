@@ -6,4 +6,5 @@ export default interface Municipality {
     regionId: number;
     districtName: string;
     districtId: number;
+    imageURL: string;
 }

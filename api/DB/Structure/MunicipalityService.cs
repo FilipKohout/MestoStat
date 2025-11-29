@@ -28,7 +28,8 @@ public class MunicipalityService
                 d.district_id,
                 d.district_name,
                 r.region_id,
-                r.region_name
+                r.region_name,
+                m.municipality_image_url
             FROM municipalities m
             JOIN districts d ON m.district_id = d.district_id
             JOIN regions r ON m.region_id = r.region_id
@@ -59,6 +60,7 @@ public class MunicipalityService
         await using var reader = await cmd.ExecuteReaderAsync();
 
         while (await reader.ReadAsync())
+        {
             municipalities.Add(new MunicipalityDTO(
                 GetInt32Safe(reader, "municipality_id"),
                 GetStringSafe(reader, "municipality_name"),
@@ -66,8 +68,10 @@ public class MunicipalityService
                 GetInt32Safe(reader, "district_id"),
                 GetStringSafe(reader, "district_name"),
                 GetInt32Safe(reader, "region_id"),
-                GetStringSafe(reader, "region_name")
+                GetStringSafe(reader, "region_name"),
+                GetStringSafe(reader, "municipality_image_url") 
             ));
+        }
 
         return municipalities;
     }

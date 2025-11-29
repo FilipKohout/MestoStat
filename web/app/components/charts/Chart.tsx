@@ -13,8 +13,21 @@ import { toFixedNumber } from "@react-stately/utils";
 import useAllTablesMetadata from "@/app/hooks/charts/useAllTablesMetadata";
 import DatabaseIcon from "@/app/components/icons/DatabaseIcon";
 import StatBox from "@/app/components/utils/StatBox";
+import Dropdown, { DropdownOption } from "@/app/components/utils/Dropdown";
 
-type ChartProps = TableDataParams & {
+type TableVariant = {
+    id: number;
+    label: string;
+}
+
+type ChartProps = {
+    variants: TableVariant[];
+
+    startDate: Date,
+    endDate: Date,
+    identifierId: number;
+    periodicityId: number;
+
     title: string;
     addTotalCategory: boolean;
     summaries: {
@@ -26,8 +39,16 @@ type ChartProps = TableDataParams & {
 }
 
 export function Chart(props: ChartProps) {
-    const { title, tableId, addTotalCategory, summaries: { average, total, current, max } } = props;
-    const { data, isLoading, isError } = useTableData(props);
+    const { variants, title, addTotalCategory, summaries: { average, total, current, max } } = props;
+
+    const [variant, setVariant] = useState(variants[0].id);
+    const { data, isLoading, isError } = useTableData({
+        tableId: variant,
+        startDate: props.startDate,
+        endDate: props.endDate,
+        identifierId: props.identifierId,
+        periodicityId: props.periodicityId,
+    } as TableDataParams);
     const { data: allMetadata } = useAllTablesMetadata();
 
     const formattedData = useMemo(() => {
@@ -53,8 +74,8 @@ export function Chart(props: ChartProps) {
 
     const metadata = useMemo(() => {
         if (!allMetadata) return null;
-        return allMetadata.find(meta => meta.tableId == tableId);
-    }, [allMetadata, tableId]);
+        return allMetadata.find(meta => meta.tableId == variant);
+    }, [allMetadata, variant]);
 
     const [activeCategories, setActiveCategories] = useState<string[]>(allCategories);
 
@@ -100,7 +121,9 @@ export function Chart(props: ChartProps) {
                         <DatabaseIcon className="w-3.5 h-3.5" />
                     </Button>
                 }
-            />
+            >
+                <Dropdown options={variants.map(v => ({ label: v.label, value: v.id } as DropdownOption))} value={variant} onChange={val => setVariant(val as number)} />
+            </DashboardCard.Header>
 
             <DashboardCard.Content isLoading={isLoading} isError={isError}>
                 <div className="w-full flex flex-row flex-nowrap items-center justify-start gap-3 overflow-x-auto py-2 mb-2 px-1 scrollbar-hide">

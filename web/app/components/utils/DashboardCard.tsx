@@ -23,7 +23,7 @@ interface HeaderProps extends React.HTMLAttributes<HTMLDivElement> {
 function Header({ children, className, title, action, ...props }: HeaderProps) {
     return (
         <div className={cnTailwind("flex items-center justify-between gap-2 min-h-[28px]", className)} {...props}>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-4">
                 {title && <h2 className="text-base font-semibold text-white shrink-0">{title}</h2>}
                 {children}
             </div>

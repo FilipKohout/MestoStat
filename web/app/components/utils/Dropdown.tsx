@@ -51,7 +51,7 @@ export default function Dropdown({ options, value, onChange, placeholder = "Vybr
                 onClick={() => setIsOpen(!isOpen)}
                 icon={icon}
                 className={cnTailwind(
-                    "gap-2 bg-slate-900/50 border-slate-800 text-slate-300 min-w-[140px]",
+                    "gap-2 bg-slate-900/50 border-slate-800 text-slate-300 min-w-[100px]",
                     isOpen
                         ? "bg-slate-800 border-slate-600 text-white ring-2 ring-blue-500/20"
                         : "hover:bg-slate-800 hover:text-white hover:border-slate-700"

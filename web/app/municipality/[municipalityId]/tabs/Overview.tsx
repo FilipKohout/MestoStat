@@ -22,7 +22,9 @@ export default function Overview() {
                         current: true
                     }}
                     title="Počet Obyvatel"
-                    tableId={1}
+                    variants={[
+                        { id: 1, label: "Pohlaví" }
+                    ]}
                     startDate={new Date(startDate || 0)}
                     endDate={new Date(endDate || 0)}
                     identifierId={Number(municipalityId)}

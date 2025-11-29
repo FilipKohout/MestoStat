@@ -1,4 +1,3 @@
-import ClientTabsSection from "@/app/municipality/[municipalityId]/TabsSection";
 import { fetchQuickMunicipalityDataQuery, } from "@/app/services/charts/quickMunicipalityData";
 import { fetchMunicipalityQuery } from "@/app/services/structure/municipalityStructure";
 import { notFound } from "next/navigation";
@@ -6,6 +5,9 @@ import NumberChartCard from "@/app/components/charts/NumberChartCard";
 import { HydrationBoundary } from "@tanstack/react-query";
 import { dehydrate, QueryClient } from "@tanstack/query-core";
 import { prefetchAllTablesMetadata } from "@/app/services/charts/tableMetadata";
+import Badge from "@/app/components/utils/Badge";
+import MunicipalityPageClient from "@/app/municipality/[municipalityId]/MunicipalityPageClient";
+import { prefetchTablePeriodicities } from "@/app/services/charts/tableDefinitions";
 
 export default async function MunicipalityPage({ params }: { params: Promise<{ municipalityId: number }> }) {
     const { municipalityId } = await params;
@@ -23,6 +25,7 @@ export default async function MunicipalityPage({ params }: { params: Promise<{ m
         notFound();
 
     await prefetchAllTablesMetadata(client);
+    await prefetchTablePeriodicities(client);
 
     const getStatsChangePer = (current: number, previous: number) => {
         const change = ((current - previous) / previous) * 100;
@@ -30,6 +33,7 @@ export default async function MunicipalityPage({ params }: { params: Promise<{ m
     }
 
     const populationChange = getStatsChangePer(quickData.population[0].totalPopulation, quickData.population[1].totalPopulation);
+
     const stats = [
         {
             label: "Obyvatelé",
@@ -61,9 +65,9 @@ export default async function MunicipalityPage({ params }: { params: Promise<{ m
                         <div className="flex flex-col gap-6">
                             <div className="space-y-2">
                                 <div className="flex items-center gap-3">
-                                    <span className="px-2.5 py-0.5 rounded-full bg-blue-600 text-white text-xs font-bold uppercase tracking-wider shadow-lg shadow-blue-900/50">
+                                    <Badge variant="primary" size="md">
                                         {municipality.status}
-                                    </span>
+                                    </Badge>
                                 </div>
                                 <h1 className="text-5xl md:text-6xl font-bold text-white tracking-tight drop-shadow-xl">
                                     {municipality.name}
@@ -79,8 +83,8 @@ export default async function MunicipalityPage({ params }: { params: Promise<{ m
             </div>
 
             <main className="mx-auto max-w-7xl px-4 sm:px-6">
-                <HydrationBoundary state={dehydrate(client)} >
-                    <ClientTabsSection />
+                <HydrationBoundary state={dehydrate(client)}>
+                    <MunicipalityPageClient />
                 </HydrationBoundary>
             </main>
         </div>

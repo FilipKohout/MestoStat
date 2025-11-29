@@ -20,6 +20,12 @@ def read(data: list[dict], semester: int):
         if not municipality_name or not year or value in (None, ""):
             continue
 
+        try:
+            year = int(year)
+        except ValueError:
+            logging.warning("Invalid year '%s' in municipality %s", year, municipality_name)
+            continue
+
         cursor.execute("""
             SELECT municipality_id 
             FROM municipalities 

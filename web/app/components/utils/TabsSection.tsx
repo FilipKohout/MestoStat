@@ -1,17 +1,15 @@
 'use client';
 
 import { useState } from "react";
-import Overview from "./Overview";
 
-const tabs = [
-    {"label": "Přehled", "component": <Overview />},
-    {"label": "Demografie", "component": <div>Demografie content</div>},
-    {"label": "Ekonomika", "component": <div>Ekonomika content</div>},
-    {"label": "Infrastruktura", "component": <div>Infrastruktura content</div>},
-    {"label": "Projekty", "component": <div>Projekty content</div>},
-];
+type tabSectionProps = {
+    tabs: {
+        label: string;
+        component: React.ReactNode;
+    }[];
+}
 
-export default function ClientTabsSection() {
+export default function ClientTabsSection({ tabs }: tabSectionProps) {
     const [activeTab, setActiveTab] = useState("Přehled");
 
     return (

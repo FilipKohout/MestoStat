@@ -1,7 +1,7 @@
 import React, { ButtonHTMLAttributes } from "react";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-    variant?: "primary" | "secondary" | "outline" | "ghost" | "active";
+    variant?: "primary" | "secondary" | "outline" | "ghost" | "active" | "menu-item" | "menu-item-active";
     size?: "xs" | "sm" | "md";
     className?: string;
     icon?: React.ReactNode;
@@ -20,12 +20,16 @@ export default function Button({ children, variant = "secondary", size = "xs", c
         outline: "text-slate-400 border-slate-800 bg-transparent hover:border-slate-700 hover:text-slate-200 hover:bg-slate-800/30",
 
         secondary: "bg-slate-800 text-slate-200 border-slate-700 hover:bg-slate-700",
+
+        "menu-item": "w-full justify-between text-slate-300 border-transparent bg-transparent hover:bg-slate-800 hover:text-white font-normal text-left",
+
+        "menu-item-active": "w-full justify-between bg-blue-600/10 text-blue-400 border-transparent font-medium text-left",
     };
 
     const sizes = {
-        xs: "text-xs px-2 py-1 gap-1.5",
-        sm: "text-sm px-3 py-1.5 gap-2",
-        md: "text-sm px-4 py-2 gap-2",
+        xs: "text-xs px-2 py-0.5 gap-1.5",
+        sm: "text-sm px-3 py-1 gap-2",
+        md: "text-sm px-4 py-1.5 gap-2",
     };
 
     const classes = `

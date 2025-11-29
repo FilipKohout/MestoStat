@@ -11,3 +11,15 @@ export const HEX_COLORS: { [key: string]: string } = {
     indigo: "#6366f1",
     fuchsia: "#d946ef"
 };
+
+export const DEFAULT_PERIODICITY = 4;
+export const DEFAULT_DATE_RANGE_PRESET_INDEX = 5;
+
+export const DATE_RANGE_PRESETS = [
+    { label: "Posledních 180 dní", days: 180 },
+    { label: "Poslední rok", days: 365 },
+    { label: "Posledních 5 let", days: 365 * 5 },
+    { label: "Posledních 10 let", days: 365 * 10 },
+    { label: "Posledních 20 let", days: 365 * 20 },
+    { label: "Posledních 30 let", days: 365 * 30 },
+];

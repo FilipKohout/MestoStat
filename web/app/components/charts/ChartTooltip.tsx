@@ -24,7 +24,7 @@ export const CustomTooltip = ({ payload, active, label }: TooltipProps) => {
                                 }}
                             />
                             <span className="text-sm font-medium text-slate-300">
-                                {category.name}
+                                {category.name == "total" ? "celkem" : category.name}
                             </span>
                         </div>
 

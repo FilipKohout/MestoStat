@@ -23,7 +23,8 @@ export default function Overview() {
                     }}
                     title="Počet Obyvatel"
                     variants={[
-                        { id: 1, label: "Pohlaví" }
+                        { id: 1, label: "Pohlaví" },
+                        { id: 2, label: "Věk" },
                     ]}
                     startDate={new Date(startDate || 0)}
                     endDate={new Date(endDate || 0)}

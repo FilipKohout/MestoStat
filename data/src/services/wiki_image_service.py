@@ -43,7 +43,7 @@ def get_all_municipality_images():
         data = r.json()
         bindings = data.get('results', {}).get('bindings', [])
 
-        logging.info(f"Wikidata vrátila {len(bindings)} záznamů.")
+        logging.info(f"Wikidata returned {len(bindings)} records")
 
         if len(bindings) == 0:
             logging.warning("Unable to fetch municipality images from Wikidata: No data returned.")

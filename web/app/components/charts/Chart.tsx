@@ -175,7 +175,7 @@ export function Chart(props: ChartProps) {
                                     boxShadow: isActive ? `0 0 8px ${hexColor}80` : 'none'
                                 }}
                             />
-                            {category}
+                            {category === "total" ? "celkem" : category}
                         </Button>
                     );
                 })}

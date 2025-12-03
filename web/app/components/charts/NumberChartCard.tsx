@@ -7,9 +7,9 @@ type NumberChartCardProps = {
     label: string;
     val: string | number;
     change: string;
-    color: string; // Očekává např. "text-blue-300"
+    color: string;
     data: { date: string; val: number }[];
-    chartColor: string; // Očekává Tremor barvu, např. "blue"
+    chartColor: string;
 }
 
 export default function NumberChartCard({ label, change, color, data, chartColor, val }: NumberChartCardProps) {
@@ -50,8 +50,9 @@ export default function NumberChartCard({ label, change, color, data, chartColor
                     categories={["val"]}
                     index="date"
                     colors={[chartColor]}
-                    className="h-10 w-24"
+                    className="h-10 w-24 chart"
                     curveType="monotone"
+                    noDataText="Žádná data"
                 />
             </div>
         </DashboardCard>

@@ -1,10 +1,10 @@
-import { compactValueFormatter } from "@/app/lib/utils";
+import { compactValueFormatter, percentValueFormatter } from "@/app/lib/utils";
 import { HEX_COLORS } from "@/app/lib/consts";
 import { Frame } from "@/app/components/utils/Frame";
 
-interface TooltipProps { payload: Array<{ name: string, value: number, color: string }>, active: boolean, label: string }
+interface TooltipProps { payload: Array<{ name: string, value: number, color: string }>, active: boolean, label: string, percentage?: boolean }
 
-export const CustomTooltip = ({ payload, active, label }: TooltipProps) => {
+export const CustomTooltip = ({ payload, active, label, percentage }: TooltipProps) => {
     if (!active || !payload || payload.length === 0) return null;
 
     const sortedPayload = [...payload].sort((a, b) => b.value - a.value);
@@ -29,7 +29,7 @@ export const CustomTooltip = ({ payload, active, label }: TooltipProps) => {
                         </div>
 
                         <span className="text-sm font-bold text-white tabular-nums">
-                            {compactValueFormatter(category.value)}
+                            {percentage ? percentValueFormatter(category.value) + "%" : compactValueFormatter(category.value)}
                         </span>
                     </div>
                 ))}

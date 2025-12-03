@@ -32,16 +32,16 @@ export default async function MunicipalityPage({ params }: { params: Promise<{ m
         return `${change >= 0 ? "+" : ""}${change.toFixed(1)}%`;
     }
 
-    const populationChange = getStatsChangePer(quickData.population[0].totalPopulation, quickData.population[1].totalPopulation);
+    const populationChange = quickData?.population?.[0]?.totalPopulation ? getStatsChangePer(quickData.population[0].totalPopulation, quickData.population[1].totalPopulation) : "N/A";
 
     const stats = [
         {
             label: "Obyvatelé",
-            val: quickData.population[0].totalPopulation.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " "),
+            val: quickData?.population?.[0]?.totalPopulation.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") || "-",
             change: populationChange,
             color: populationChange.includes("+") ? "text-blue-300" : "text-rose-300",
             chartColor: "blue",
-            data: quickData.population.map(item => ({ date: item.startPeriod, val: item.totalPopulation })).slice(0, 10),
+            data: quickData.population.map(item => ({ date: item.startPeriod, val: item.totalPopulation })).slice(0, 20 ),
         },
         { label: "Rozpočet", val: "3.4 M", change: "+5.2%", color: "text-cyan-300", chartColor: "cyan", data: [{ date: "1", val: 10 }, { date: "5", val: 40 }] },
         { label: "Výdaje", val: "2.1 M", change: "-1.2%", color: "text-rose-300", chartColor: "rose", data: [{ date: "1", val: 80 }, { date: "5", val: 30 }] },

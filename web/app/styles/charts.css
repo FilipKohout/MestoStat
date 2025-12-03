@@ -17,3 +17,7 @@
     stroke: #475569 !important;
     stroke-dasharray: 4 4;
 }
+
+.chart div {
+    border: none !important;
+}

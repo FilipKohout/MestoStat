@@ -11,7 +11,7 @@ export interface TableDataParams {
 
 export async function getTableData(params: TableDataParams) {
     const res = await fetch(getAPIUrl(`stats/data/${params.tableId}`), {
-        cache: "force-cache",
+        cache: "default",
         next: { revalidate: 60 * 60 * 24 },
         method: "POST",
         headers: {

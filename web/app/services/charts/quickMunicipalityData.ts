@@ -4,7 +4,7 @@ import QuickMunicipalityData from "@/app/types/data/quickMunicipalityData";
 
 export async function getQuickMunicipalityData(municipalityId: number) {
     const res = await fetch(getAPIUrl(`stats/data/municipality/${municipalityId}`), {
-        cache: "force-cache",
+        cache: "default",
         next: { revalidate: 60 * 60 * 24 },
     });
 

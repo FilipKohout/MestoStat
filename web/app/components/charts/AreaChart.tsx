@@ -1,26 +1,28 @@
-'use client';
+"use client";
 
 import { useState, useMemo, useEffect } from "react";
-import { AreaChart, CustomTooltipProps } from "@tremor/react";
+import { AreaChart as TremorAreaChart, CustomTooltipProps } from "@tremor/react";
 import { DashboardCard } from "@/app/components/utils/DashboardCard";
 import { CustomTooltip } from "@/app/components/charts/ChartTooltip";
 import useTableData from "@/app/hooks/charts/useTableData";
 import { TableDataParams } from "@/app/services/charts/tableData";
-import { dateFormatter, compactValueFormatter, standardValueFormatter } from "@/app/lib/utils";
+import {
+    dateFormatter,
+    compactValueFormatter,
+    standardValueFormatter,
+    getCategoryColorName,
+    getCategoryColorHex
+} from "@/app/lib/utils";
 import { CHART_COLOR_PALETTE as COLOR_PALETTE, HEX_COLORS, CHART_INDEX_KEY as INDEX_KEY } from "@/app/lib/consts";
 import Button from "@/app/components/utils/Button";
 import { toFixedNumber } from "@react-stately/utils";
-import useAllTablesMetadata from "@/app/hooks/charts/useAllTablesMetadata";
 import DatabaseIcon from "@/app/components/icons/DatabaseIcon";
 import StatBox from "@/app/components/utils/StatBox";
 import Dropdown, { DropdownOption } from "@/app/components/utils/Dropdown";
+import useTableMetadata from "@/app/hooks/charts/useTableMetadata";
+import { TableVariant } from "@/app/types/charts/TableVariant";
 
-type TableVariant = {
-    id: number;
-    label: string;
-}
-
-type ChartProps = {
+type AreaChartProps = {
     variants: TableVariant[];
 
     startDate: Date,
@@ -38,7 +40,7 @@ type ChartProps = {
     };
 }
 
-export function Chart(props: ChartProps) {
+export function AreaChart(props: AreaChartProps) {
     const { variants, title, addTotalCategory, summaries: { average, total, current, max } } = props;
 
     const [variant, setVariant] = useState(variants[0].id);
@@ -49,7 +51,7 @@ export function Chart(props: ChartProps) {
         identifierId: props.identifierId,
         periodicityId: props.periodicityId,
     } as TableDataParams);
-    const { data: allMetadata } = useAllTablesMetadata();
+    const { metadata } = useTableMetadata(variant);
 
     const formattedData = useMemo(() => {
         if (!data) return [];
@@ -72,11 +74,6 @@ export function Chart(props: ChartProps) {
         return Object.keys(formattedData[0]).filter(key => key !== INDEX_KEY);
     }, [formattedData]);
 
-    const metadata = useMemo(() => {
-        if (!allMetadata) return null;
-        return allMetadata.find(meta => meta.tableId == variant);
-    }, [allMetadata, variant]);
-
     const [activeCategories, setActiveCategories] = useState<string[]>(allCategories);
 
     const toggleCategory = (category: string) =>
@@ -85,16 +82,6 @@ export function Chart(props: ChartProps) {
                 ? prev.filter(c => c !== category)
                 : [...prev, category]
         );
-
-    const getCategoryColorName = (category: string) => {
-        const index = allCategories.indexOf(category);
-        return COLOR_PALETTE[index % COLOR_PALETTE.length];
-    };
-
-    const getCategoryColorHex = (category: string) => {
-        const colorName = getCategoryColorName(category);
-        return HEX_COLORS[colorName] || "#cbd5e1";
-    };
 
     const lastValue = formattedData?.length ? formattedData[formattedData.length - 1].total : null;
     const firstValue = formattedData?.length ? formattedData[0].total : null;
@@ -135,12 +122,12 @@ export function Chart(props: ChartProps) {
                     {max && <StatBox label="Maximum" value={maxValue} />}
                 </div>
 
-                <AreaChart
-                    className="h-80 w-full"
+                <TremorAreaChart
+                    className="h-80 w-full chart"
                     data={formattedData}
                     index={INDEX_KEY}
                     categories={activeCategories}
-                    colors={activeCategories.map(cat => getCategoryColorName(cat))}
+                    colors={activeCategories.map(cat => getCategoryColorName(allCategories, cat))}
                     valueFormatter={compactValueFormatter}
                     yAxisWidth={55}
                     showLegend={false}
@@ -151,7 +138,7 @@ export function Chart(props: ChartProps) {
                     showAnimation={true}
                     stack={false}
                     animationDuration={500}
-                    customTooltip={CustomTooltip! as (props: CustomTooltipProps) => never}
+                    customTooltip={CustomTooltip as (props: CustomTooltipProps) => never}
                     noDataText="Žádná data"
                 />
             </DashboardCard.Content>
@@ -159,7 +146,7 @@ export function Chart(props: ChartProps) {
             <DashboardCard.Footer>
                 {allCategories.map((category) => {
                     const isActive = activeCategories.includes(category);
-                    const hexColor = getCategoryColorHex(category);
+                    const hexColor = getCategoryColorHex(allCategories, category);
 
                     return (
                         <Button
@@ -180,7 +167,6 @@ export function Chart(props: ChartProps) {
                     );
                 })}
             </DashboardCard.Footer>
-
         </DashboardCard>
     );
 }

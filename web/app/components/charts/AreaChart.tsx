@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react"; // Přidáno useCallback
 import { AreaChart as TremorAreaChart, CustomTooltipProps } from "@tremor/react";
 import { DashboardCard } from "@/app/components/utils/DashboardCard";
 import { CustomTooltip } from "@/app/components/charts/ChartTooltip";
@@ -13,9 +13,8 @@ import {
     getCategoryColorName,
     getCategoryColorHex
 } from "@/app/lib/utils";
-import { CHART_COLOR_PALETTE as COLOR_PALETTE, HEX_COLORS, CHART_INDEX_KEY as INDEX_KEY } from "@/app/lib/consts";
+import { CHART_INDEX_KEY as INDEX_KEY } from "@/app/lib/consts"; // Odstranil jsem COLOR_PALETTE a HEX_COLORS, protože se používají přes getCategoryColorName/Hex
 import Button from "@/app/components/utils/Button";
-import { toFixedNumber } from "@react-stately/utils";
 import DatabaseIcon from "@/app/components/icons/DatabaseIcon";
 import StatBox from "@/app/components/utils/StatBox";
 import Dropdown, { DropdownOption } from "@/app/components/utils/Dropdown";
@@ -31,7 +30,7 @@ type AreaChartProps = {
     periodicityId: number;
 
     title: string;
-    addTotalCategory: boolean;
+    addTotalCategory?: boolean;
     summaries: {
         average: boolean;
         total: boolean;
@@ -43,31 +42,39 @@ type AreaChartProps = {
 export function AreaChart(props: AreaChartProps) {
     const { variants, title, addTotalCategory, summaries: { average, total, current, max } } = props;
 
-    const [variant, setVariant] = useState(variants[0].id);
+    const [selectedVariant, setSelectedVariant] = useState<TableVariant>(variants[0]);
+    const { id: tableId, label, digits = 0, aggregationMethod, dataAfix = "" } = selectedVariant;
+
     const { data, isLoading, isError } = useTableData({
-        tableId: variant,
+        tableId: tableId,
         startDate: props.startDate,
         endDate: props.endDate,
         identifierId: props.identifierId,
         periodicityId: props.periodicityId,
     } as TableDataParams);
-    const { metadata } = useTableMetadata(variant);
+    const { metadata } = useTableMetadata(tableId);
 
     const formattedData = useMemo(() => {
         if (!data) return [];
         return data.map((item) => {
+            const rowTotal = Object.keys(item).reduce((sum, key) => {
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-expect-error
+                return key !== INDEX_KEY ? sum + (item[key] ?? 0) : sum;
+            }, 0);
+
             return {
                 ...item,
-                total: addTotalCategory && Object.keys(item).reduce((sum, key) => {
-                        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                        // @ts-expect-error
-                        return key !== INDEX_KEY ? sum + item[key] : sum; },
-                    0
-                ),
+                total: rowTotal,
                 [INDEX_KEY]: dateFormatter(item[INDEX_KEY]),
             };
         });
-    }, [addTotalCategory, data]);
+    }, [data]);
+
+    const dataWithoutTotal = useMemo(() => {
+        if (!formattedData) return [];
+        return formattedData.map(({ total, ...rest }) => rest);
+    }, [formattedData]);
 
     const allCategories = useMemo(() => {
         if (!formattedData || formattedData.length === 0) return [];
@@ -76,22 +83,78 @@ export function AreaChart(props: AreaChartProps) {
 
     const [activeCategories, setActiveCategories] = useState<string[]>(allCategories);
 
-    const toggleCategory = (category: string) =>
+    const toggleCategory = useCallback((category: string) =>
         setActiveCategories(prev =>
             prev.includes(category)
                 ? prev.filter(c => c !== category)
                 : [...prev, category]
-        );
+        ), []);
 
-    const lastValue = formattedData?.length ? formattedData[formattedData.length - 1].total : null;
-    const firstValue = formattedData?.length ? formattedData[0].total : null;
-    const changeOverPeriod = (lastValue && firstValue) ? toFixedNumber(((lastValue - firstValue) / firstValue) * 100, 2) : null;
-    const averageValue = formattedData?.length ? standardValueFormatter(formattedData.reduce((sum, item) => item.total ? sum + item.total : sum, 0) / formattedData.length) : '–';
-    const totalValue = formattedData?.length ? standardValueFormatter(formattedData.reduce((sum, item) => item.total ? sum + item.total : sum, 0)) : '–';
-    const maxValue = formattedData?.length ? standardValueFormatter(formattedData.reduce((max, item) => item.total ? Math.max(max, item.total) : max, 0)) : '–';
+    useEffect(() => {
+        setActiveCategories(allCategories);
+    }, [allCategories]);
 
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    useEffect(() => setActiveCategories(allCategories), [data]);
+    const totalsOnly = useMemo(() => {
+        return formattedData.map(item => item.total).filter(val => typeof val === 'number');
+    }, [formattedData]);
+
+    const calculateSummary = useCallback((
+        summaryFunction: (values: number[]) => number,
+        formatter: (value: number | null | undefined, digits: number, afix: string) => string,
+        defaultValue: string = '–'
+    ) => {
+        if (totalsOnly.length === 0) return defaultValue;
+        return formatter(summaryFunction(totalsOnly), digits, dataAfix);
+    }, [totalsOnly, digits, dataAfix]);
+
+    const currentSummary = useMemo(() => {
+        const lastValue = totalsOnly.length > 0 ? totalsOnly[totalsOnly.length - 1] : null;
+        const firstValue = totalsOnly.length > 0 ? totalsOnly[0] : null;
+
+        let changeOverPeriod: number | null = null;
+        if (lastValue !== null && firstValue !== null && firstValue !== 0) {
+            changeOverPeriod = parseFloat(((lastValue - firstValue) / firstValue * 100).toFixed(2));
+        } else if (lastValue !== null && firstValue === 0 && lastValue !== 0) {
+            changeOverPeriod = 100;
+        } else if (lastValue !== null && firstValue === 0 && lastValue === 0) {
+            changeOverPeriod = 0;
+        }
+
+        return {
+            value: standardValueFormatter(lastValue, digits, dataAfix),
+            trend: changeOverPeriod,
+        };
+    }, [totalsOnly, digits, dataAfix]);
+
+    const averageValue = useMemo(() => calculateSummary(
+        (values) => values.reduce((sum, val) => sum + val, 0) / values.length,
+        standardValueFormatter
+    ), [calculateSummary]);
+
+    const totalValue = useMemo(() => calculateSummary(
+        (values) => values.reduce((sum, val) => sum + val, 0),
+        standardValueFormatter
+    ), [calculateSummary]);
+
+    const maxValue = useMemo(() => calculateSummary(
+        (values) => Math.max(...values),
+        standardValueFormatter
+    ), [calculateSummary]);
+
+    const chartValueFormatter = useCallback((value: number) =>
+            compactValueFormatter(value, digits, dataAfix),
+        [digits, dataAfix]
+    );
+
+    const customAreaChartTooltip = useCallback((args: CustomTooltipProps) => (
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
+        <CustomTooltip
+            {...args}
+            valueFormatter={(value) => standardValueFormatter(value, digits, dataAfix)}
+        />
+    ), [digits, dataAfix]);
+
 
     return (
         <DashboardCard variant="default">
@@ -109,13 +172,13 @@ export function AreaChart(props: AreaChartProps) {
                     </Button>
                 }
             >
-                <Dropdown options={variants.map(v => ({ label: v.label, value: v.id } as DropdownOption))} value={variant} onChange={val => setVariant(val as number)} />
+                <Dropdown options={variants.map(v => ({ label: v.label, value: v.id } as DropdownOption))} value={tableId} onChange={val => setSelectedVariant(variants.find(v => v.id === val)!)} />
             </DashboardCard.Header>
 
             <DashboardCard.Content isLoading={isLoading} isError={isError}>
                 <div className="w-full flex flex-row flex-nowrap items-center justify-start gap-3 overflow-x-auto py-2 mb-2 px-1 scrollbar-hide">
-                    {current && changeOverPeriod !== null && (
-                        <StatBox label="Poslední Období" value={lastValue ? standardValueFormatter(lastValue) : '–'} trend={changeOverPeriod} />
+                    {current && currentSummary.trend !== null && (
+                        <StatBox label="Poslední Období" value={currentSummary.value} trend={currentSummary.trend} />
                     )}
                     {average && <StatBox label="Průměr" value={averageValue} />}
                     {total && <StatBox label="Celkem" value={totalValue} />}
@@ -124,11 +187,11 @@ export function AreaChart(props: AreaChartProps) {
 
                 <TremorAreaChart
                     className="h-80 w-full chart"
-                    data={formattedData}
+                    data={addTotalCategory ? formattedData : dataWithoutTotal}
                     index={INDEX_KEY}
                     categories={activeCategories}
                     colors={activeCategories.map(cat => getCategoryColorName(allCategories, cat))}
-                    valueFormatter={compactValueFormatter}
+                    valueFormatter={chartValueFormatter}
                     yAxisWidth={55}
                     showLegend={false}
                     showGridLines={true}
@@ -138,7 +201,7 @@ export function AreaChart(props: AreaChartProps) {
                     showAnimation={true}
                     stack={false}
                     animationDuration={500}
-                    customTooltip={CustomTooltip as (props: CustomTooltipProps) => never}
+                    customTooltip={customAreaChartTooltip as (props: CustomTooltipProps) => never}
                     noDataText="Žádná data"
                 />
             </DashboardCard.Content>

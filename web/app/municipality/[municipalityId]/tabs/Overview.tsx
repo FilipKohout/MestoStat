@@ -41,8 +41,24 @@ export default function Overview() {
                 <PieChart
                     title="Struktura Obyvatel"
                     variants={[
-                        { id: 1, label: "Pohlaví", aggregationMethod: "AVG" },
-                        { id: 3, label: "Věk", aggregationMethod: "AVG" },
+                        { id: 1, label: "Pohlaví", aggregationMethod: "AVG"},
+                        { id: 3, label: "Věk", aggregationMethod: "AVG"},
+                    ]}
+
+                    {...filters}
+                />
+
+                <AreaChart
+                    summaries={{
+                        max: true,
+                        average: true,
+                        total: false,
+                        current: true
+                    }}
+                    title="Nezaměstnanost"
+                    variants={[
+                        { id: 4, label: "Procento", digits: 2, dataAfix: "%" },
+                        { id: 5, label: "Počet" },
                     ]}
 
                     {...filters}

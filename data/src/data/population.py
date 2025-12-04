@@ -1,60 +1,15 @@
-from typing import List, Dict
-
 import db.connection as db_conn
 import services.stats_service as stats_service
 import logging
 
-def get_general_data(data: list[dict], semester: int, identifierKey: str, municipalityKey: str, yearKey: str, valueKey: str = "Hodnota") -> List[dict]:
-    cursor = db_conn.connection.cursor()
-
-    general_data = []
-
-    for entry in data:
-        municipality_name = entry.get(municipalityKey)
-        identifier = entry.get(identifierKey)
-        year = entry.get(yearKey)
-        value = entry.get(valueKey)
-
-        if not municipality_name or not year or value in (None, ""):
-            continue
-
-        try:
-            year = int(year)
-        except ValueError:
-            logging.warning("Invalid year '%s' in municipality %s", year, municipality_name)
-            continue
-
-        cursor.execute("""
-            SELECT municipality_id 
-            FROM municipalities 
-            WHERE municipality_name = %s
-        """, (municipality_name,))
-        row = cursor.fetchone()
-
-        if row is None:
-            logging.warning("Municipality not found DB: %s", municipality_name)
-            continue
-
-        municipality_id = row[0]
-        date_recorded = f"{year}-01-01" if semester == 1 else f"{year}-07-01"
-
-        general_data.append({
-            "municipality_id": municipality_id,
-            "municipality_name": municipality_name,
-            "date_recorded": date_recorded,
-            "value": value,
-            "identifier": identifier,
-        })
-
-    logging.info(f"Found {len(general_data)} records to process")
-
-    return general_data
+from typing import List, Dict
+from services.csu_service import get_general_data
 
 
 def read_by_sex(data: list[dict], semester: int):
     cursor = db_conn.connection.cursor()
 
-    raw_data = get_general_data(data, semester, "Pohlaví", "Kraje a obce-Obec", "Roky")
+    raw_data = get_general_data(data, "01-01" if semester == 1 else "07-01", "Pohlaví", "Kraje a obce-Obec", "Roky")
     grouped_data: Dict[tuple, Dict[str, int]] = {}
 
     for record in raw_data:
@@ -108,7 +63,7 @@ def read_by_sex(data: list[dict], semester: int):
 def read_by_age(data: list[dict], semester: int):
     cursor = db_conn.connection.cursor()
 
-    raw_data = get_general_data(data, semester, "Věkové skupiny (pětileté)", "Všechna území", "Rok")
+    raw_data = get_general_data(data, "01-01" if semester == 1 else "07-01", "Věkové skupiny (pětileté)", "Všechna území", "Rok")
 
     db_columns = [
         "0", "1 - 4", "5 - 9", "10 - 14", "15 - 19", "20 - 24",
@@ -169,3 +124,4 @@ def read_by_age(data: list[dict], semester: int):
     cursor.close()
 
     stats_service.update_stats_table("population_by_age_data")
+    stats_service.update_stats_table("population_by_age_data_age_grouped")

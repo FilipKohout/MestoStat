@@ -10,17 +10,32 @@ export function getAPIUrl(route: string): string {
     return `${process.env.NEXT_PUBLIC_API_URL}/${route}`;
 }
 
-export function compactValueFormatter(number: number) {
-    return Intl.NumberFormat("cs-CZ", { notation: "compact" }).format(number).toString();
-}
+export const compactValueFormatter = (value: number | null | undefined, digits: number = 0, dataAfix: string = ""): string => {
+    if (value === null || value === undefined) return "–";
+    const formatted = new Intl.NumberFormat("cs-CZ", {
+        notation: "compact",
+        maximumFractionDigits: digits,
+    }).format(value);
+    return `${formatted}${dataAfix}`;
+};
 
-export function standardValueFormatter(number: number) {
-    return Intl.NumberFormat("cs-CZ", { notation: "standard" }).format(toFixedNumber(number, 0)).toString();
-}
+export const standardValueFormatter = (value: number | null | undefined, digits: number = 0, dataAfix: string = ""): string => {
+    if (value === null || value === undefined) return "–";
+    const formatted = new Intl.NumberFormat("cs-CZ", {
+        minimumFractionDigits: digits,
+        maximumFractionDigits: digits,
+    }).format(value);
+    return `${formatted}${dataAfix}`;
+};
 
-export function percentValueFormatter(number: number) {
-    return Intl.NumberFormat("cs-CZ", { notation: "standard" }).format(toFixedNumber(number, 1)).toString();
-}
+export const percentValueFormatter = (value: number | null | undefined, digits: number = 1): string => {
+    if (value === null || value === undefined) return "–";
+    const formatted = new Intl.NumberFormat("cs-CZ", {
+        minimumFractionDigits: digits,
+        maximumFractionDigits: digits,
+    }).format(value);
+    return formatted;
+};
 
 export function dateFormatter(date: string) {
     return new Intl.DateTimeFormat("cs-CZ", { dateStyle: "medium" }).format(new Date(date));

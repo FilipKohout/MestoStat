@@ -37,7 +37,7 @@ def fetch_all_data():
             file_path.write_text(response.text, encoding="utf-8")
             logging.info(f"Saved raw file for {name}")
 
-        data = None
+            data = None
 
         try:
             logging.info(f"Converting {name} from {ext} format")

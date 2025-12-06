@@ -43,3 +43,4 @@ def read_unemployment(data: list[dict]):
     cursor.close()
 
     stats_service.update_stats_table("unemployment_data")
+    stats_service.update_stats_table("unemployment_data_estimated_count")

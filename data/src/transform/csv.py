@@ -5,23 +5,23 @@ import io
 _CZECH_CHARS = set("ěščřžýáíéúůťňďĚŠČŘŽÝÁÍÉÚŮŤŇĎ")
 _MOJIBAKE_MARKERS = ("Ã", "Â", "Ä", "Ă")
 
+
 def _score_text(text: str) -> int:
     cz = sum(1 for ch in text if ch in _CZECH_CHARS)
     markers = sum(text.count(m) for m in _MOJIBAKE_MARKERS)
     return cz - markers * 5
+
 
 def _try_repairs(raw: bytes, enc: str) -> list[tuple[str, str]]:
     results = []
     try:
         decoded = raw.decode(enc, errors="replace")
         results.append((decoded, enc))
-        # common fix: UTF-8 bytes were decoded as Latin-1 -> re-decode
         try:
             fixed = decoded.encode("latin-1", errors="replace").decode("utf-8", errors="replace")
             results.append((fixed, f"{enc} -> latin1->utf8"))
         except Exception:
             pass
-        # reverse attempt: decoded as utf-8 then interpreted as latin1
         try:
             rev = decoded.encode("utf-8", errors="replace").decode("latin-1", errors="replace")
             results.append((rev, f"{enc} -> utf8->latin1"))
@@ -31,11 +31,8 @@ def _try_repairs(raw: bytes, enc: str) -> list[tuple[str, str]]:
         pass
     return results
 
+
 def _detect_best_encoding(file_path: str, sample_size: int = 200000) -> tuple[str, str]:
-    """
-    Detekce kódování na vzorku souboru. Vrací (enc, method) — enc je
-    původní kandidát, method je použitá oprava (např. 'cp1250' nebo 'utf-8 -> latin1->utf8').
-    """
     with open(file_path, "rb") as bf:
         raw = bf.read(sample_size)
 
@@ -50,20 +47,17 @@ def _detect_best_encoding(file_path: str, sample_size: int = 200000) -> tuple[st
 
     best_enc = ""
     best_method = "binary"
-    best_score = -10**9
+    best_score = -10 ** 9
     for enc in candidates:
         for text, method in _try_repairs(raw, enc):
             score = _score_text(text)
-            # prefer chardet choice when scores equal and confidence decent
             if score > best_score or (score == best_score and enc == detected_enc):
                 best_score = score
                 best_enc = enc
                 best_method = method
 
-    # fallback: pokud nic rozumného, pokus jako cp1250
     if best_score < 0:
         try:
-            # vrátíme informaci, že fallback je cp1250
             best_enc = "cp1250"
             best_method = "cp1250-fallback"
         except Exception:
@@ -71,11 +65,8 @@ def _detect_best_encoding(file_path: str, sample_size: int = 200000) -> tuple[st
             best_method = "utf8-fallback"
     return best_enc, best_method
 
+
 def _apply_method_to_raw(raw: bytes, enc: str, method: str) -> str:
-    """
-    Aplikuje zvolenou metodu dekódování na celé raw bytes.
-    Metody odpovídají těm, které vytváří _try_repairs a fallbacky.
-    """
     try:
         if method == enc:
             return raw.decode(enc, errors="replace")
@@ -89,32 +80,46 @@ def _apply_method_to_raw(raw: bytes, enc: str, method: str) -> str:
             return raw.decode("cp1250", errors="replace")
         if method == "utf8-fallback":
             return raw.decode("utf-8", errors="replace")
-        # default safe decode
         return raw.decode(enc, errors="replace")
     except Exception:
         return raw.decode("utf-8", errors="replace")
 
-def decode(file_path: str) -> list[dict]:
-    # detekce kódování na vzorku
-    enc, method = _detect_best_encoding(file_path)
-    # načíst celý soubor a dekódovat podle detekce
-    with open(file_path, "rb") as bf:
-        full_raw = bf.read()
-    text = _apply_method_to_raw(full_raw, enc, method)
 
-    # použít StringIO do csv readeru
-    sio = io.StringIO(text)
-    # najít první neprázdný řádek pro odhad oddělovače
+def decode(file_path: str) -> list[dict]:
+    enc, method = _detect_best_encoding(file_path)
+    with open(file_path, "rb") as bf:
+        full_raw_bytes = bf.read()
+
+    decoded_text = _apply_method_to_raw(full_raw_bytes, enc, method)
+    final_encoding_for_reencode = enc
+
+    if "latin1->utf8" in method:
+        final_encoding_for_reencode = "utf-8"
+    elif "utf8->latin1" in method:
+        final_encoding_for_reencode = "latin-1"
+    elif "cp1250-fallback" in method:
+        final_encoding_for_reencode = "cp1250"
+    elif "utf8-fallback" in method:
+        final_encoding_for_reencode = "utf-8"
+
+    re_encoded_bytes = decoded_text.encode(final_encoding_for_reencode, errors='replace')
+    byte_stream = io.BytesIO(re_encoded_bytes)
+    text_wrapper = io.TextIOWrapper(byte_stream, encoding=final_encoding_for_reencode, newline='')
+
     first = None
-    pos = sio.tell()
-    for line in sio:
+    current_pos = text_wrapper.tell()
+    for line in text_wrapper:
         if line.strip():
             first = line
             break
-        pos = sio.tell()
+        current_pos = text_wrapper.tell()
+
     if not first:
         return []
+
     delimiter = ";" if ";" in first else ","
-    sio.seek(0)
-    reader = csv.DictReader(sio, delimiter=delimiter)
+
+    text_wrapper.seek(0)
+
+    reader = csv.DictReader(text_wrapper, delimiter=delimiter)
     return [row for row in reader]

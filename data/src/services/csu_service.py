@@ -3,6 +3,9 @@ from typing import List, Dict
 import db.connection as db_conn
 import logging
 
+from services.structure_service import find_municipality_by_name
+
+
 def get_general_data(data: list[dict], date: str, identifierKey: str, municipalityKey: str, yearKey: str, valueKey: str = "Hodnota") -> List[dict]:
     cursor = db_conn.connection.cursor()
 
@@ -23,18 +26,11 @@ def get_general_data(data: list[dict], date: str, identifierKey: str, municipali
             logging.warning("Invalid year '%s' in municipality %s", year, municipality_name)
             continue
 
-        cursor.execute("""
-            SELECT municipality_id 
-            FROM municipalities 
-            WHERE municipality_name = %s
-        """, (municipality_name,))
-        row = cursor.fetchone()
+        municipality_id = find_municipality_by_name(municipality_name)
 
-        if row is None:
-            logging.warning("Municipality not found DB: %s", municipality_name)
+        if municipality_id is None:
             continue
 
-        municipality_id = row[0]
         date_recorded = f"{year}-{date}"
 
         general_data.append({

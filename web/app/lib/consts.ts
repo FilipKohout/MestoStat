@@ -11,7 +11,7 @@ export const HEX_COLORS: { [key: string]: string } = {
 };
 
 export const DEFAULT_PERIODICITY = 4;
-export const DEFAULT_DATE_RANGE_PRESET_INDEX = 5;
+export const DEFAULT_DATE_RANGE_PRESET_INDEX = 6;
 
 export const DATE_RANGE_PRESETS = [
     { label: "Posledních 180 dní", days: 180 },
@@ -20,4 +20,5 @@ export const DATE_RANGE_PRESETS = [
     { label: "Posledních 10 let", days: 365 * 10 },
     { label: "Posledních 20 let", days: 365 * 20 },
     { label: "Posledních 30 let", days: 365 * 30 },
+    { label: "Posledních 60 let", days: 365 * 60 },
 ];

@@ -64,8 +64,10 @@ export function AreaChart(props: AreaChartProps) {
             }, 0);
 
             return {
-                ...item,
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-expect-error
                 total: rowTotal,
+                ...item,
                 [INDEX_KEY]: dateFormatter(item[INDEX_KEY]),
             };
         });
@@ -178,7 +180,7 @@ export function AreaChart(props: AreaChartProps) {
             <DashboardCard.Content isLoading={isLoading} isError={isError}>
                 <div className="w-full flex flex-row flex-nowrap items-center justify-start gap-3 overflow-x-auto py-2 mb-2 px-1 scrollbar-hide">
                     {current && currentSummary.trend !== null && (
-                        <StatBox label="Poslední Období" value={currentSummary.value} trend={currentSummary.trend} />
+                        <StatBox label="Změna za Období" value={currentSummary.value} trend={currentSummary.trend} />
                     )}
                     {average && <StatBox label="Průměr" value={averageValue} />}
                     {total && <StatBox label="Celkem" value={totalValue} />}

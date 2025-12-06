@@ -124,3 +124,36 @@ VALUES
     ((SELECT table_id FROM statistics WHERE table_name = 'population_by_age_data_age_grouped'), '65 - 84', '65 - 84', 'AVG'),
     ((SELECT table_id FROM statistics WHERE table_name = 'population_by_age_data_age_grouped'), '85+', '85+', 'AVG')
     ON CONFLICT (table_id, column_name) DO NOTHING;
+
+CREATE TABLE population_movement_data (
+    data_id SERIAL PRIMARY KEY,
+    municipality_id INT NOT NULL REFERENCES municipalities(municipality_id),
+    date_recorded DATE NOT NULL,
+    population_total INT NOT NULL,
+    births INT NOT NULL,
+    deaths INT NOT NULL,
+    immigrants INT NOT NULL,
+    emigrants INT NOT NULL,
+
+    UNIQUE (municipality_id, date_recorded)
+);
+
+INSERT INTO statistics (table_name, last_updated, periodicity_id, structure_level_id, source_domain)
+VALUES
+    (
+        'population_movement_data',
+        NOW(),
+        (SELECT p.periodicity_id FROM periodicities p WHERE periodicity_name = 'Ročně'),
+        (SELECT s.structure_level_id FROM structure_levels s WHERE structure_level_name = 'Obec'),
+        'https://csu.gov.cz/'
+    )
+ON CONFLICT (table_name) DO NOTHING;
+
+INSERT INTO statistic_columns (table_id, column_name, alias, aggregation_method)
+VALUES
+    ((SELECT table_id FROM statistics WHERE table_name = 'population_movement_data'), 'population_total', 'total', 'AVG'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'population_movement_data'), 'births', 'narození', 'AVG'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'population_movement_data'), 'deaths', 'zemřelí', 'AVG'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'population_movement_data'), 'immigrants', 'přistěhovalí', 'AVG'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'population_movement_data'), 'emigrants', 'outstěhovalí', 'AVG')
+ON CONFLICT (table_id, column_name) DO NOTHING;

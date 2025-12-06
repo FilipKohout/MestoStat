@@ -29,7 +29,7 @@ export default function Overview() {
                         total: false,
                         current: true
                     }}
-                    title="Počet Obyvatel"
+                    title="Demografie Obyvatel"
                     variants={[
                         { id: 1, label: "Pohlaví" },
                         { id: 3, label: "Věk" },
@@ -39,7 +39,7 @@ export default function Overview() {
                 />
 
                 <PieChart
-                    title="Struktura Obyvatel"
+                    title="Demografie Obyvatel"
                     variants={[
                         { id: 1, label: "Pohlaví", aggregationMethod: "AVG"},
                         { id: 3, label: "Věk", aggregationMethod: "AVG"},
@@ -59,6 +59,22 @@ export default function Overview() {
                     variants={[
                         { id: 4, label: "Procento", digits: 2, dataAfix: "%" },
                         { id: 5, label: "Počet" },
+                    ]}
+
+                    {...filters}
+                />
+
+                <AreaChart
+                    addTotalCategory
+                    summaries={{
+                        max: true,
+                        average: true,
+                        total: false,
+                        current: true
+                    }}
+                    title="Změny Obyvatel"
+                    variants={[
+                        { id: 6, label: "Historický" },
                     ]}
 
                     {...filters}

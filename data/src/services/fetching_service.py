@@ -34,7 +34,7 @@ def fetch_all_data():
             response = requests.get(url)
             response.raise_for_status()
 
-            file_path.write_text(response.text, encoding="utf-8")
+            file_path.write_bytes(response.content)
             logging.info(f"Saved raw file for {name}")
 
             data = None

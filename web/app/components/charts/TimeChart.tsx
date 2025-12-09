@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useMemo, useEffect, useCallback } from "react"; // Přidáno useCallback
-import { AreaChart as TremorAreaChart, CustomTooltipProps } from "@tremor/react";
+import { useState, useMemo, useEffect, useCallback } from "react";
+import { AreaChart as TremorAreaChart, BarChart as TremorBarChart, CustomTooltipProps } from "@tremor/react";
 import { DashboardCard } from "@/app/components/utils/DashboardCard";
 import { CustomTooltip } from "@/app/components/charts/ChartTooltip";
 import useTableData from "@/app/hooks/charts/useTableData";
@@ -13,7 +13,7 @@ import {
     getCategoryColorName,
     getCategoryColorHex
 } from "@/app/lib/utils";
-import { CHART_INDEX_KEY as INDEX_KEY } from "@/app/lib/consts"; // Odstranil jsem COLOR_PALETTE a HEX_COLORS, protože se používají přes getCategoryColorName/Hex
+import { CHART_INDEX_KEY as INDEX_KEY } from "@/app/lib/consts";
 import Button from "@/app/components/utils/Button";
 import DatabaseIcon from "@/app/components/icons/DatabaseIcon";
 import StatBox from "@/app/components/utils/StatBox";
@@ -21,7 +21,7 @@ import Dropdown, { DropdownOption } from "@/app/components/utils/Dropdown";
 import useTableMetadata from "@/app/hooks/charts/useTableMetadata";
 import { TableVariant } from "@/app/types/charts/TableVariant";
 
-type AreaChartProps = {
+type TimeChartProps = {
     variants: TableVariant[];
 
     startDate: Date,
@@ -30,6 +30,8 @@ type AreaChartProps = {
     periodicityId: number;
 
     title: string;
+    type: "area" | "bar";
+    stacked?: boolean;
     addTotalCategory?: boolean;
     summaries: {
         average: boolean;
@@ -39,7 +41,7 @@ type AreaChartProps = {
     };
 }
 
-export function AreaChart(props: AreaChartProps) {
+export function TimeChart(props: TimeChartProps) {
     const { variants, title, addTotalCategory, summaries: { average, total, current, max } } = props;
 
     const [selectedVariant, setSelectedVariant] = useState<TableVariant>(variants[0]);
@@ -157,6 +159,7 @@ export function AreaChart(props: AreaChartProps) {
         />
     ), [digits, dataAfix]);
 
+    const Component = props.type === "area" ? TremorAreaChart : TremorBarChart;
 
     return (
         <DashboardCard variant="default">
@@ -187,7 +190,7 @@ export function AreaChart(props: AreaChartProps) {
                     {max && <StatBox label="Maximum" value={maxValue} />}
                 </div>
 
-                <TremorAreaChart
+                <Component
                     className="h-80 w-full chart"
                     data={addTotalCategory ? formattedData : dataWithoutTotal}
                     index={INDEX_KEY}
@@ -201,7 +204,7 @@ export function AreaChart(props: AreaChartProps) {
                     showXAxis={true}
                     curveType="monotone"
                     showAnimation={true}
-                    stack={false}
+                    stack={props.stacked || false}
                     animationDuration={500}
                     customTooltip={customAreaChartTooltip as (props: CustomTooltipProps) => never}
                     noDataText="Žádná data"

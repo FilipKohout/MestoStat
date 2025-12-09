@@ -145,7 +145,7 @@ VALUES
         NOW(),
         (SELECT p.periodicity_id FROM periodicities p WHERE periodicity_name = 'Ročně'),
         (SELECT s.structure_level_id FROM structure_levels s WHERE structure_level_name = 'Obec'),
-        'https://csu.gov.cz/'
+        'https://csu.gov.cz/databaze-demografickych-udaju-za-obce-cr'
     )
 ON CONFLICT (table_name) DO NOTHING;
 
@@ -155,5 +155,5 @@ VALUES
     ((SELECT table_id FROM statistics WHERE table_name = 'population_movement_data'), 'births', 'narození', 'AVG'),
     ((SELECT table_id FROM statistics WHERE table_name = 'population_movement_data'), 'deaths', 'zemřelí', 'AVG'),
     ((SELECT table_id FROM statistics WHERE table_name = 'population_movement_data'), 'immigrants', 'přistěhovalí', 'AVG'),
-    ((SELECT table_id FROM statistics WHERE table_name = 'population_movement_data'), 'emigrants', 'outstěhovalí', 'AVG')
+    ((SELECT table_id FROM statistics WHERE table_name = 'population_movement_data'), 'emigrants', 'odstěhovalí', 'AVG')
 ON CONFLICT (table_id, column_name) DO NOTHING;

@@ -124,6 +124,7 @@ public class StatsQueryService
                 males + females AS total_population
             FROM population_by_sex_data
             WHERE municipality_id = @municipalityId
+            ORDER BY date_recorded DESC
         ";
         
         cmd.Parameters.AddWithValue("municipalityId", municipalityId);

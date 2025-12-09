@@ -6,15 +6,15 @@ import DatabaseIcon from "@/app/components/icons/DatabaseIcon";
 import { TableDataParams } from "@/app/services/charts/tableData";
 import useTableMetadata from "@/app/hooks/charts/useTableMetadata";
 import useTableData from "@/app/hooks/charts/useTableData";
-import { useMemo, useState, useCallback } from "react"; // Přidán useCallback
+import { useMemo, useState, useCallback } from "react";
 import {
     compactValueFormatter,
     getCategoryColorName,
     percentValueFormatter,
-    standardValueFormatter, // Nově importován standardValueFormatter
+    standardValueFormatter,
 } from "@/app/lib/utils";
 import StatBox from "@/app/components/utils/StatBox";
-import { DonutChart, CustomTooltipProps } from "@tremor/react"; // Importován CustomTooltipProps pro typování
+import { DonutChart, CustomTooltipProps } from "@tremor/react";
 import { CustomTooltip } from "@/app/components/charts/ChartTooltip";
 import Dropdown, { DropdownOption } from "@/app/components/utils/Dropdown";
 import { TableVariant } from "@/app/types/charts/TableVariant";

@@ -1,4 +1,3 @@
-import { compactValueFormatter, standardValueFormatter } from "@/app/lib/utils";
 import { HEX_COLORS } from "@/app/lib/consts";
 import { Frame } from "@/app/components/utils/Frame";
 

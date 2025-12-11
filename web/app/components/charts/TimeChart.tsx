@@ -177,7 +177,9 @@ export function TimeChart(props: TimeChartProps) {
                     </Button>
                 }
             >
-                <Dropdown options={variants.map(v => ({ label: v.label, value: v.id } as DropdownOption))} value={tableId} onChange={val => setSelectedVariant(variants.find(v => v.id === val)!)} />
+                {variants.length > 1 &&
+                    <Dropdown options={variants.map(v => ({ label: v.label, value: v.id } as DropdownOption))} value={tableId} onChange={val => setSelectedVariant(variants.find(v => v.id === val)!)} />
+                }
             </DashboardCard.Header>
 
             <DashboardCard.Content isLoading={isLoading} isError={isError}>

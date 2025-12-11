@@ -5,7 +5,6 @@ import useDateRange from "@/app/hooks/charts/useDateRange";
 import usePeriod from "@/app/hooks/charts/usePeriod";
 import { useParams } from "next/navigation";
 import PieChart from "@/app/components/charts/PieChart";
-import { BarChart } from "@/app/components/charts/BarChart";
 
 export default function Overview() {
     const { startDate, endDate } = useDateRange();
@@ -76,9 +75,9 @@ export default function Overview() {
                         current: true
                     }}
                     type="area"
-                    title="Změny Obyvatel"
+                    title="Obyvatelstvo Historicky"
                     variants={[
-                        { id: 6, label: "Historický" },
+                        { id: 6, label: "" },
                     ]}
 
                     {...filters}
@@ -96,7 +95,7 @@ export default function Overview() {
                     }}
                     title="Změny Obyvatel"
                     variants={[
-                        { id: 6, label: "Historický" },
+                        { id: 8, label: "" },
                     ]}
 
                     {...filters}

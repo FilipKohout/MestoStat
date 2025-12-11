@@ -157,3 +157,33 @@ VALUES
     ((SELECT table_id FROM statistics WHERE table_name = 'population_movement_data'), 'immigrants', 'přistěhovalí', 'AVG'),
     ((SELECT table_id FROM statistics WHERE table_name = 'population_movement_data'), 'emigrants', 'odstěhovalí', 'AVG')
 ON CONFLICT (table_id, column_name) DO NOTHING;
+
+CREATE OR REPLACE VIEW population_movement_data_change AS
+SELECT
+    data_id,
+    municipality_id,
+    date_recorded,
+    births,
+    -deaths as deaths,
+    immigrants,
+    -emigrants as emigrants
+FROM population_movement_data;
+
+INSERT INTO statistics (table_name, last_updated, periodicity_id, structure_level_id, source_domain)
+VALUES
+    (
+        'population_movement_data_change',
+        NOW(),
+        (SELECT p.periodicity_id FROM periodicities p WHERE periodicity_name = 'Ročně'),
+        (SELECT s.structure_level_id FROM structure_levels s WHERE structure_level_name = 'Obec'),
+        'https://csu.gov.cz/databaze-demografickych-udaju-za-obce-cr'
+    )
+ON CONFLICT (table_name) DO NOTHING;
+
+INSERT INTO statistic_columns (table_id, column_name, alias, aggregation_method)
+VALUES
+    ((SELECT table_id FROM statistics WHERE table_name = 'population_movement_data_change'), 'births', 'narození', 'AVG'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'population_movement_data_change'), 'deaths', 'zemřelí', 'AVG'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'population_movement_data_change'), 'immigrants', 'přistěhovalí', 'AVG'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'population_movement_data_change'), 'emigrants', 'odstěhovalí', 'AVG')
+ON CONFLICT (table_id, column_name) DO NOTHING;

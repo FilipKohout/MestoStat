@@ -110,3 +110,4 @@ def read_population_movement_historic(rows: list[dict]):
     cursor.close()
 
     stats_service.update_stats_table("population_movement_data")
+    stats_service.update_stats_table("population_movement_data_change")

@@ -30,21 +30,15 @@ def _iter_rows(sheet: Worksheet) -> Iterator[Dict[str, Any]]:
 
 
 def decode(file_path: str) -> dict[str, list[dict]]:
-    """
-    Decodes an XLSX file into a dictionary where keys are sheet names
-    and values are lists of dictionaries (rows).
-    """
     results: dict[str, list[dict]] = {}
     try:
-        workbook = openpyxl.load_workbook(file_path, data_only=True)  # data_only=True to get cell values, not formulas
+        workbook = openpyxl.load_workbook(file_path, data_only=True)
         for sheet_name in workbook.sheetnames:
             sheet = workbook[sheet_name]
             rows = list(_iter_rows(sheet))
             results[sheet_name] = rows
     except Exception as e:
-        # Handle cases where the file might be corrupted or not a valid XLSX
         print(f"Error decoding XLSX file {file_path}: {e}")
-        # Optionally, you might want to log this error and return an empty dict or re-raise
-        return {}  # Return empty if decoding fails
+        return {}
 
     return results

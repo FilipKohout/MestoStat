@@ -4,6 +4,7 @@ import requests
 
 from pathlib import Path
 from data.urls import URLS
+from services.budget_service import update_URLS_with_budget
 from transform.formats import FORMATS
 from utils.consts import RAW_DIR
 from services.stats_service import get_last_updated
@@ -13,6 +14,8 @@ def fetch_all_data():
     logging.info("Fetching all data")
 
     Path(RAW_DIR).mkdir(parents=True, exist_ok=True)
+
+    update_URLS_with_budget()
 
     for name, (url, ext, read, table_name, update_period) in URLS.items():
         file_path = RAW_DIR / f"{name}.{ext}"
@@ -32,12 +35,15 @@ def fetch_all_data():
         if need_fetch:
             logging.info(f"Fetching {name} from {url}")
             response = requests.get(url)
+            if response.status_code == 404:
+                logging.warning(f"No data for {name}, skipping")
+                continue
             response.raise_for_status()
 
             file_path.write_bytes(response.content)
             logging.info(f"Saved raw file for {name}")
 
-            data = None
+        data = None
 
         try:
             logging.info(f"Converting {name} from {ext} format")

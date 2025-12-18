@@ -7,8 +7,6 @@ from utils.utils import clean_key, parse_int
 
 
 def read_demographics_sheets(data: dict[str, list[dict]]):
-    logging.info("Starting dispatch of demographic data...")
-
     for sheet_name, rows_list in data.items():
         if not rows_list:
             continue
@@ -19,8 +17,6 @@ def read_demographics_sheets(data: dict[str, list[dict]]):
             pass
         else:
             read_population_movement_historic(rows_list)
-
-    logging.info("Dispatch finished.")
 
 def read_population_movement_historic(rows: list[dict]):
     cursor = db_conn.connection.cursor()

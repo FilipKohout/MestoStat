@@ -1,6 +1,5 @@
 import db.connection as db_conn
 import logging
-
 from services.wiki_image_service import get_all_municipality_images
 
 
@@ -33,6 +32,7 @@ def read(data: list[dict]):
             "districtCodeRUIAN": entry.get("Kód Okresu"),
             "regionCodeRUIAN": entry.get("Kód Kraje (VÚSC)"),
             "regionName": entry.get("Název Okresu"),
+            "zuj": entry.get("Kód"),
         }
 
         municipalities.append(municipality)
@@ -83,10 +83,10 @@ def read(data: list[dict]):
         image_url = wiki_images_map.get(municipality["municipalityName"])
 
         cursor.execute("""
-            INSERT INTO municipalities (municipality_name, municipality_status, district_id, region_id, municipality_image_url)
-            VALUES (%s, %s, %s, %s, %s)
+            INSERT INTO municipalities (municipality_name, municipality_status, district_id, region_id, municipality_image_url, zuj)
+            VALUES (%s, %s, %s, %s, %s, %s)
             ON CONFLICT (municipality_name) DO NOTHING;
-        """, (municipality["municipalityName"], municipality["municipalityStatus"], district_id, region_id, image_url))
+        """, (municipality["municipalityName"], municipality["municipalityStatus"], district_id, region_id, image_url, municipality["zuj"]))
 
         #logging.info("Inserted/Found municipality: %s", municipality["municipalityName"])
 

@@ -13,7 +13,7 @@ def read_budget_files(data: dict[str, list[dict]]):
 def read_budget_data(data: list[dict]):
     cursor = db_conn.connection.cursor()
 
-    logging.info(data)
+    #logging.info(data)
 
     sql = """
     """

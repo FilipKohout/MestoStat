@@ -29,7 +29,10 @@ public class MunicipalityService
                 d.district_name,
                 r.region_id,
                 r.region_name,
-                m.municipality_image_url
+                m.zuj,
+                m.municipality_image_url,
+                m.ico,
+                m.dic
             FROM municipalities m
             JOIN districts d ON m.district_id = d.district_id
             JOIN regions r ON m.region_id = r.region_id
@@ -69,7 +72,10 @@ public class MunicipalityService
                 GetStringSafe(reader, "district_name"),
                 GetInt32Safe(reader, "region_id"),
                 GetStringSafe(reader, "region_name"),
-                GetStringSafe(reader, "municipality_image_url") 
+                GetInt32Safe(reader, "zuj"),
+                GetStringSafe(reader, "municipality_image_url"),
+                GetStringSafe(reader, "ico"),
+                GetStringSafe(reader, "dic")
             ));
         }
 

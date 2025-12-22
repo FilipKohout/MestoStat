@@ -13,8 +13,11 @@ CREATE TABLE IF NOT EXISTS districts (
 
 CREATE TABLE IF NOT EXISTS municipalities (
     municipality_id SERIAL PRIMARY KEY,
-    municipality_name VARCHAR(255) UNIQUE,
+    municipality_name VARCHAR(255) NOT NULL,
     municipality_status VARCHAR(50) NOT NULL,
+    zuj INT NOT NULL UNIQUE,
+    ico VARCHAR(20) UNIQUE,
+    dic VARCHAR(20) UNIQUE,
     district_id INT REFERENCES districts(district_id),
     region_id INT REFERENCES regions(region_id),
     municipality_image_url VARCHAR(2048)

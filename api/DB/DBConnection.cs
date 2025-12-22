@@ -39,7 +39,6 @@ public class DBConnection
                 var conn = new NpgsqlConnection(_connString);
                 await conn.OpenAsync();
                 
-                Console.WriteLine("DB connection established");
                 return conn;
             }
             catch (Exception ex)

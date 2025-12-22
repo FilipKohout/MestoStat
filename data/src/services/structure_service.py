@@ -5,26 +5,46 @@ import logging
 
 from utils.utils import normalize_name
 
-municipality_map = {}
+municipality_map_by_name = {}
+municipality_map_by_zuj = {}
 
 def find_municipality_by_name(municipality_name: str) -> int | None:
     cursor = db_conn.connection.cursor()
 
     normalized_name = normalize_name(municipality_name)
 
-    if municipality_map.get(normalized_name) is None:
+    if municipality_map_by_name.get(normalized_name) is None:
         logging.info("Loading municipalities cache...")
         cursor.execute("SELECT municipality_name, municipality_id FROM municipalities")
         results = cursor.fetchall()
 
         for name, m_id in results:
             norm_name = normalize_name(name)
-            municipality_map[norm_name] = m_id
+            municipality_map_by_name[norm_name] = m_id
 
-    municipality_id = municipality_map.get(normalized_name)
+    municipality_id = municipality_map_by_name.get(normalized_name)
 
     if municipality_id is None:
-        logging.warning("Municipality not found DB: %s", municipality_name)
+        logging.warning("Municipality name not found DB: %s", municipality_name)
+        return None
+
+    return municipality_id
+
+def find_municipality_by_zuj(zuj: str) -> int | None:
+    cursor = db_conn.connection.cursor()
+
+    if municipality_map_by_zuj.get(zuj) is None:
+        logging.info("Loading municipalities cache...")
+        cursor.execute("SELECT municipality_id, zuj FROM municipalities")
+        results = cursor.fetchall()
+
+        for id, zuj in results:
+            municipality_map_by_zuj[zuj] = id
+
+    municipality_id = municipality_map_by_zuj.get(zuj)
+
+    if municipality_id is None:
+        logging.warning("Municipality ZUJ not found DB: %s", zuj)
         return None
 
     return municipality_id

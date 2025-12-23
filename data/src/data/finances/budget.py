@@ -12,7 +12,7 @@ def _parse_money(value) -> float:
     except ValueError:
         return 0.0
 
-def _get_category(paragraph: str) -> str:
+def _get_expenses_category(paragraph: str) -> str:
     p = str(paragraph).strip()
     best_match = "Ostatní (Nespecifikováno)"
     max_len = 0
@@ -24,6 +24,23 @@ def _get_category(paragraph: str) -> str:
                     best_match = category
                     max_len = len(prefix)
     return best_match
+
+def _get_income_category(polozka: str) -> str:
+    p = str(polozka).strip()
+    if p.startswith(("11", "12")): return "Sdílené daně"
+    if p.startswith(("133", "134")): return "Místní poplatky"
+    if p == "1511": return "Daň z nemovitosti"
+    if p.startswith("1"): return "Ostatní daňové příjmy"
+
+    if p.startswith("213"): return "Příjmy z pronájmu"
+    if p.startswith("2"): return "Příjmy z vlastní činnosti"
+
+    if p.startswith("3"): return "Prodej majetku"
+
+    if p.startswith("41"): return "Provozní dotace"
+    if p.startswith("42"): return "Investiční dotace"
+
+    return "Ostatní příjmy"
 
 def read_budget_files(data: dict[str, list[dict]]):
     for sheet_name, rows_list in data.items():
@@ -38,7 +55,8 @@ def read_budget_files(data: dict[str, list[dict]]):
 
 def read_budget_data(rows: list[dict]):
     cursor = db_conn.connection.cursor()
-    data = {}
+    expenses_data = {}
+    income_data = {}
 
     for entry in rows:
         ico = str(entry.get("ZC_ICO:ZC_ICO")).strip()[2:]
@@ -48,38 +66,60 @@ def read_budget_data(rows: list[dict]):
         actual = _parse_money(entry.get("ZU_ROZKZ:ZU_ROZKZ"))
         adjusted = _parse_money(entry.get("ZU_ROZPZM:ZU_ROZPZM"))
 
-        # Filter only expenses
-        if not (state.startswith("5") or state.startswith("6")):
-            continue
-
         date_recorded = date[:4] + "-" + date[5:7] + "-1"
-        category = _get_category(paragraph)
         muni_id = structure_service.find_municipality_by_ico(ico)
 
         if not muni_id:
             logging.warning(f"Municipality with IČO {ico} not found, skipping budget entry")
             continue
 
-        key = (muni_id, date_recorded, category)
+        if state.startswith("5") or state.startswith("6"):
+            expenses_category = _get_expenses_category(paragraph)
+            expenses_key = (muni_id, date_recorded, expenses_category)
 
-        if key not in data:
-            data[key] = {"actual": 0.0, "adjusted": 0.0}
+            if expenses_key not in expenses_data:
+                expenses_data[expenses_key] = {"actual": 0.0, "adjusted": 0.0}
 
-        data[key]["actual"] += actual
-        data[key]["adjusted"] += adjusted
+            expenses_data[expenses_key]["actual"] += actual
+            expenses_data[expenses_key]["adjusted"] += adjusted
+        elif state.startswith("1") or state.startswith("2") or state.startswith("3") or state.startswith("4"):
+            income_category = _get_income_category(state)
+            income_key = (muni_id, date_recorded, income_category)
 
-    sql = """
-        INSERT INTO budget_data
+            if income_key not in income_data:
+                income_data[income_key] = {"actual": 0.0, "adjusted": 0.0}
+
+            income_data[income_key]["actual"] += actual
+            income_data[income_key]["adjusted"] += adjusted
+
+    expenses_sql = """
+        INSERT INTO budget_expenses_data
             (municipality_id, date_recorded, category_name, actual_spending, budget_adjusted)
         VALUES (%s, %s, %s, %s, %s)
         ON CONFLICT (municipality_id, date_recorded, category_name) DO NOTHING; 
     """
 
-    for (muni_id, date_recorded, category), values in data.items():
+    income_sql = """
+        INSERT INTO budget_income_data
+            (municipality_id, date_recorded, category_name, actual_income, budget_adjusted)
+        VALUES (%s, %s, %s, %s, %s)
+        ON CONFLICT (municipality_id, date_recorded, category_name) DO NOTHING;
+    """
+
+    for (muni_id, date_recorded, category), values in expenses_data.items():
         params = [muni_id, date_recorded, category, values["actual"], values["adjusted"]]
 
         try:
-            cursor.execute(sql, params)
+            cursor.execute(expenses_sql, params)
+        except Exception as e:
+            logging.error(f"Failed to insert budget data for municipality ID {muni_id}: {e}")
+            continue
+
+    for (muni_id, date_recorded, category), values in income_data.items():
+        params = [muni_id, date_recorded, category, values["actual"], values["adjusted"]]
+
+        try:
+            cursor.execute(income_sql, params)
         except Exception as e:
             logging.error(f"Failed to insert budget data for municipality ID {muni_id}: {e}")
             continue

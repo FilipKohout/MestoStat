@@ -1,36 +1,32 @@
 from typing import Final, Dict, Tuple, Callable, Any
 import data.ruain as ruian
-from data.population_by_age import read_by_age
-from data.population_by_sex import read_by_sex
-from data.population_movement import read_population_movement_historic, read_demographics_sheets
-from data.unemployment import read_unemployment
-import data.accounting_unit as accounting_unit
+import data.finances.accounting_unit as accounting_unit
 
 URLS: Final[Dict[
     str,
     Tuple[
-        str,
-        str,
-        Callable[[list | dict], Any],
-        str | None,
-        bool | int
+        str, # URL
+        str, # Format
+        Callable[[list | dict], Any], # Read function
+        str | None, # Table name, used to get the date of the last update
+        bool | int # Update period in seconds or False if no automatic updates
     ]
 ]] = {
-    "ruian": (
-        "https://vdp.cuzk.gov.cz/vdp/ruian/obce?sort=UZEMI&ohradaId=&nespravny=&kodVc=&kodOk=&kodOp=&kodPu=&nazevOb=&statusKod=&search=&mediaType=csv",
-        "csv",
-        ruian.read,
-        None,
-        False,
-    ),
-
-    "AccountingUnit": (
-        "https://monitor.statnipokladna.gov.cz/data/csv/CIS_UCJED.CSV",
-        "csv",
-        accounting_unit.read,
-        None,
-        False,
-    ),
+    # "ruian": (
+    #     "https://vdp.cuzk.gov.cz/vdp/ruian/obce?sort=UZEMI&ohradaId=&nespravny=&kodVc=&kodOk=&kodOp=&kodPu=&nazevOb=&statusKod=&search=&mediaType=csv",
+    #     "csv",
+    #     ruian.read,
+    #     None,
+    #     False,
+    # ),
+    #
+    # "AccountingUnit": (
+    #     "https://monitor.statnipokladna.gov.cz/data/csv/CIS_UCJED.CSV",
+    #     "csv",
+    #     accounting_unit.read,
+    #     None,
+    #     False,
+    # ),
     #
     # "PopulationBySex1stJulYearly": (
     #     "https://data.csu.gov.cz/api/dotaz/v1/data/vybery/uzivatelske/25b5ffc4-405c-4a1b-9dca-0c605edcb645?format=CSV&rozsah=CELY_VYBER&poznamky=false",

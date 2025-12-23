@@ -2,6 +2,7 @@ import logging
 
 import db.connection as db_conn
 
+# Types of different municipalities (obec, městys, statutární město, ...)
 allowed_sub_types = ["11", "12", "41", "50", "51", "52", "42", "43", "60", "61"]
 
 def read(data: list[dict]):
@@ -15,6 +16,7 @@ def read(data: list[dict]):
             ico = entry.get("/BIC/ZC_ICO IČO")
             dic = entry.get("/BIC/ZC_DIC DIČ")
 
+            # Assign an IČO and DIČ to all municipalities
             cursor.execute("""
                 UPDATE municipalities
                 SET ico = %s, dic = %s

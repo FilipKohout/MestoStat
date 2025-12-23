@@ -1,5 +1,5 @@
 import db.connection as db_conn
-import services.stats_service as stats_service
+import services.table_service as table_service
 import logging
 
 from typing import List, Dict
@@ -57,4 +57,4 @@ def read_by_sex(data: list[dict], semester: int):
     db_conn.connection.commit()
     cursor.close()
 
-    stats_service.update_stats_table("population_by_sex_data")
+    table_service.update_stats_table("population_by_sex_data")

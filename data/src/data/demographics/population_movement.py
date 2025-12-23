@@ -1,5 +1,5 @@
 import db.connection as db_conn
-import services.stats_service as stats_service
+import services.table_service as table_service
 import logging
 
 from services.structure_service import find_municipality_by_name
@@ -105,5 +105,4 @@ def read_population_movement_historic(rows: list[dict]):
     db_conn.connection.commit()
     cursor.close()
 
-    stats_service.update_stats_table("population_movement_data")
-    stats_service.update_stats_table("population_movement_data_change")
+    table_service.update_stats_table("population_movement_data")

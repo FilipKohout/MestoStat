@@ -52,8 +52,6 @@ def read(data: list[dict]):
             region_id = row[0]
             region_ids[region["regionCodeRUIAN"]] = region_id
 
-            #logging.info("Inserted/Found region: %s with ID %d", region["regionName"], region_id)
-
     district_ids = {}
     for district in districts:
         region_id = region_ids.get(district["regionCodeRUIAN"])
@@ -70,12 +68,7 @@ def read(data: list[dict]):
             district_id = row[0]
             district_ids[district["districtCodeRUIAN"]] = district_id
 
-            #logging.info("Inserted/Found district: %s with ID %d", district["districtName"], district_id)
-
     wiki_images_map = get_all_municipality_images()
-
-    #for image in wiki_images_map.items():
-        #logging.info("Wikidata image: %s -> %s", image[0], image[1])
 
     for municipality in municipalities:
         district_id = district_ids.get(municipality["districtCodeRUIAN"])
@@ -85,10 +78,8 @@ def read(data: list[dict]):
         cursor.execute("""
             INSERT INTO municipalities (municipality_name, municipality_status, district_id, region_id, municipality_image_url, zuj)
             VALUES (%s, %s, %s, %s, %s, %s)
-            ON CONFLICT (municipality_name) DO NOTHING;
+            ON CONFLICT (zuj) DO NOTHING;
         """, (municipality["municipalityName"], municipality["municipalityStatus"], district_id, region_id, image_url, municipality["zuj"]))
-
-        #logging.info("Inserted/Found municipality: %s", municipality["municipalityName"])
 
     db_conn.connection.commit()
     cursor.close()

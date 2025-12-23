@@ -25,6 +25,9 @@ VALUES
     ((SELECT table_id FROM statistics WHERE table_name = 'population_by_sex_data'), 'females', 'ženy', 'AVG')
 ON CONFLICT (table_id, column_name) DO NOTHING;
 
+
+
+
 CREATE TABLE population_by_age_data (
     data_id SERIAL PRIMARY KEY,
     municipality_id INT NOT NULL REFERENCES municipalities(municipality_id),
@@ -91,6 +94,9 @@ VALUES
     ((SELECT table_id FROM statistics WHERE table_name = 'population_by_age_data'), '95+', '95+', 'AVG')
 ON CONFLICT (table_id, column_name) DO NOTHING;
 
+
+
+
 CREATE OR REPLACE VIEW population_by_age_data_age_grouped AS
 SELECT
     data_id,
@@ -125,6 +131,9 @@ VALUES
     ((SELECT table_id FROM statistics WHERE table_name = 'population_by_age_data_age_grouped'), '85+', '85+', 'AVG')
     ON CONFLICT (table_id, column_name) DO NOTHING;
 
+
+
+
 CREATE TABLE population_movement_data (
     data_id SERIAL PRIMARY KEY,
     municipality_id INT NOT NULL REFERENCES municipalities(municipality_id),
@@ -157,6 +166,9 @@ VALUES
     ((SELECT table_id FROM statistics WHERE table_name = 'population_movement_data'), 'immigrants', 'přistěhovalí', 'AVG'),
     ((SELECT table_id FROM statistics WHERE table_name = 'population_movement_data'), 'emigrants', 'odstěhovalí', 'AVG')
 ON CONFLICT (table_id, column_name) DO NOTHING;
+
+
+
 
 CREATE OR REPLACE VIEW population_movement_data_change AS
 SELECT

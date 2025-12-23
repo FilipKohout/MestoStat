@@ -1,5 +1,5 @@
 import db.connection as db_conn
-import services.stats_service as stats_service
+import services.table_service as table_service
 import logging
 
 from typing import List, Dict
@@ -42,5 +42,4 @@ def read_unemployment(data: list[dict]):
     db_conn.connection.commit()
     cursor.close()
 
-    stats_service.update_stats_table("unemployment_data")
-    stats_service.update_stats_table("unemployment_data_estimated_count")
+    table_service.update_stats_table("unemployment_data")

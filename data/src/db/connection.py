@@ -26,6 +26,7 @@ except ValueError:
 def connect_with_retries(max_attempts: int = 10, initial_delay: float = 1.0):
     attempt = 0
     delay = initial_delay
+
     while attempt < max_attempts:
         attempt += 1
         try:
@@ -42,9 +43,11 @@ def connect_with_retries(max_attempts: int = 10, initial_delay: float = 1.0):
             return conn
         except OperationalError as e:
             logger.warning("Failed to connect to DB: %s", e)
+
             if attempt >= max_attempts:
                 logger.error("Max connection attempts reached")
                 raise
+
             time.sleep(delay)
             delay = min(delay * 2, 30.0)
 

@@ -1,6 +1,6 @@
 import logging
 import requests
-from data.budget import read_budget_files
+from data.finances.budget import read_budget_files
 from data.urls import URLS
 
 BUDGET_URL = "https://monitor.statnipokladna.gov.cz/data/extrakty/csv/FinM/{0}.zip"

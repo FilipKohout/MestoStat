@@ -2,11 +2,13 @@ import db.connection as db_conn
 
 def update_stats_table(table_name: str):
     cursor = db_conn.connection.cursor()
+    search_pattern = f"%{table_name}%"
+
     cursor.execute("""
         UPDATE statistics
         SET last_updated = NOW()
-        WHERE table_name = %s
-    """, (table_name,))
+        WHERE table_name LIKE %s
+    """, (search_pattern,))
 
     db_conn.connection.commit()
     cursor.close()

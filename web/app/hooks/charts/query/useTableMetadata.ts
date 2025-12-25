@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { getAllTablesMetadata } from "@/app/services/charts/tableMetadata";
 import { useMemo } from "react";
-import useAllTablesMetadata from "@/app/hooks/charts/useAllTablesMetadata";
+import useAllTablesMetadata from "@/app/hooks/charts/query/useAllTablesMetadata";
 
 export default function useTableMetadata(tableId: number) {
     const { data: allMetadata } = useAllTablesMetadata();

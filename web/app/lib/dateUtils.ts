@@ -1,4 +1,3 @@
-// app/lib/dateUtils.ts
 export const formatDateForInput = (date: Date) => date.toISOString().split('T')[0];
 
 export const getPresetRange = (days: number) => {

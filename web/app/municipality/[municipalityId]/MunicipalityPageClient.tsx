@@ -4,18 +4,16 @@ import Dropdown, { DropdownOption } from "@/app/components/utils/Dropdown";
 import DateRangePicker from "@/app/components/utils/DateRange";
 import ClientTabsSection from "@/app/components/utils/TabsSection";
 import Overview from "@/app/municipality/[municipalityId]/tabs/Overview";
-import { useState } from "react";
 import IntervalIcon from "@/app/components/icons/IntervalIcon";
-import useTablePeriodicities from "@/app/hooks/charts/useTablePeriodicities";
+import useTablePeriodicities from "@/app/hooks/charts/query/useTablePeriodicities";
 import { DEFAULT_DATE_RANGE_PRESET_INDEX } from "@/app/lib/consts";
-import usePeriod from "@/app/hooks/charts/usePeriod";
+import usePeriod from "@/app/hooks/charts/query/usePeriod";
 
 const tabs = [
     {"label": "Přehled", "component": <Overview />},
-    {"label": "Demografie", "component": <div>Demografie content</div>},
-    {"label": "Ekonomika", "component": <div>Ekonomika content</div>},
-    {"label": "Infrastruktura", "component": <div>Infrastruktura content</div>},
-    {"label": "Projekty", "component": <div>Projekty content</div>},
+    // {"label": "Finance", "component": <Finances />},
+    // {"label": "Demografie", "component": <Demographics />},
+    // {"label": "Školství", "component": <Education />},
 ];
 
 export default function MunicipalityPageClient() {

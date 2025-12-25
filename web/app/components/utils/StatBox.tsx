@@ -1,4 +1,4 @@
-import { cnTailwind } from "@/app/lib/utils";
+import { cnTailwind, percentValueFormatter } from "@/app/lib/utils";
 import { Frame } from "@/app/components/utils/Frame";
 import Badge from "@/app/components/utils/Badge";
 
@@ -7,9 +7,10 @@ interface StatBoxProps {
     value: string | number;
     trend?: number | null;
     className?: string;
+    style?: React.CSSProperties;
 }
 
-export default function StatBox({ label, value, trend, className }: StatBoxProps) {
+export default function StatBox({ label, value, trend, className, style }: StatBoxProps) {
     const getBadgeVariant = (val: number) => {
         if (val > 0) return "success";
         if (val < 0) return "danger";
@@ -25,6 +26,7 @@ export default function StatBox({ label, value, trend, className }: StatBoxProps
                 "rounded-lg px-4 py-2",
                 className
             )}
+            style={style}
         >
             <p className="mb-1 text-xs font-medium text-slate-400 uppercase tracking-wide text-nowrap">
                 {label}
@@ -41,7 +43,7 @@ export default function StatBox({ label, value, trend, className }: StatBoxProps
                         size="sm"
                         className="ml-1 font-bold"
                     >
-                        {trend > 0 ? "+" : ""}{trend}%
+                        {trend > 0 ? "+" : ""}{percentValueFormatter(trend)}%
                     </Badge>
                 )}
             </div>

@@ -1,10 +1,13 @@
 "use client";
 
-import { TimeChart } from "@/app/components/charts/TimeChart";
 import useDateRange from "@/app/hooks/charts/useDateRange";
-import usePeriod from "@/app/hooks/charts/usePeriod";
+import usePeriod from "@/app/hooks/charts/query/usePeriod";
 import { useParams } from "next/navigation";
-import PieChart from "@/app/components/charts/PieChart";
+import { ChartWrapper } from "@/app/components/charts/ChartWrapper";
+import { percentValueFormatter, standardValueFormatter } from "@/app/lib/utils";
+import TimeChart from "@/app/components/charts/wrappedComponents/TimeChart";
+import PieChart from "@/app/components/charts/wrappedComponents/PieChart";
+import { Treemap } from "recharts";
 
 export default function Overview() {
     const { startDate, endDate } = useDateRange();
@@ -18,88 +21,119 @@ export default function Overview() {
         periodicityId: period
     }
 
+    const data: Tree = {
+        type: 'node',
+        name: "boss",
+        value: 0,
+        children: [
+            {type: 'leaf', name:"Mark", value: 90},
+            {type: 'leaf', name:"Robert", value: 12},
+            {type: 'leaf', name:"Emily", value: 34},
+            {type: 'leaf', name:"Marion", value: 53},
+            {type: 'leaf', name:"Nicolas", value: 98},
+            {type: 'leaf', name:"Malki", value: 22},
+            {type: 'leaf', name:"Djé", value: 12},
+            {type: 'leaf', name:"Mélanie", value: 45},
+            {type: 'leaf', name:"Einstein", value: 76}]
+    }
+
     return (
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <TimeChart
-                    addTotalCategory
-                    summaries={{
-                        max: true,
-                        average: true,
-                        total: false,
-                        current: true
-                    }}
-                    type="area"
-                    title="Demografie Obyvatel"
-                    variants={[
-                        { id: 1, label: "Pohlaví" },
-                        { id: 3, label: "Věk" },
-                    ]}
+                <ChartWrapper title={"Rozdělení obyvatel podle"} variants={[
+                    {
+                        tableId: 1,
+                        label: "Pohlaví",
+                        addTotalCategory: true,
+                        component: props => <TimeChart type="area" summaries={{
+                            max: true,
+                            average: true,
+                            current: true
+                        }} {...props} />,
+                        valueFormatter: value => standardValueFormatter(value, 0, "")
+                    },
+                    {
+                        tableId: 3,
+                        label: "Věku",
+                        addTotalCategory: true,
+                        component: props => <TimeChart type="area" summaries={{
+                            max: true,
+                            average: true,
+                            current: true
+                        }} {...props} />,
+                        valueFormatter: value => standardValueFormatter(value, 0, "")
+                    },
+                ]} {...filters} />
 
-                    {...filters}
-                />
+                <ChartWrapper title={"Rozdělení obyvatel podle"} variants={[
+                    {
+                        tableId: 1,
+                        label: "Pohlaví",
+                        component: props => <PieChart type="pie" aggregation="AVG" {...props} />,
+                        valueFormatter: value => percentValueFormatter(value, 2) + "%"
+                    },
+                    {
+                        tableId: 3,
+                        label: "Věku",
+                        component: props => <PieChart type="pie" aggregation="AVG" {...props} />,
+                        valueFormatter: value => percentValueFormatter(value, 2) + "%"
+                    },
+                ]} {...filters} />
 
-                <PieChart
-                    title="Demografie Obyvatel"
-                    variants={[
-                        { id: 1, label: "Pohlaví", aggregationMethod: "AVG"},
-                        { id: 3, label: "Věk", aggregationMethod: "AVG"},
-                    ]}
+                <ChartWrapper title={"Nezaměstnanost"} variants={[
+                    {
+                        tableId: 6,
+                        label: "Procento",
+                        component: props => <TimeChart type="area" summaries={{
+                            max: true,
+                            average: true,
+                            current: true
+                        }} {...props} />,
+                        valueFormatter: value => percentValueFormatter(value, 2) + "%"
+                    },
+                    {
+                        tableId: 7,
+                        label: "Počet",
+                        component: props => <TimeChart type="area" summaries={{
+                            max: true,
+                            average: true,
+                            current: true
+                        }} {...props} />,
+                        valueFormatter: value => standardValueFormatter(value, 0, "")
+                    },
+                ]} {...filters} />
 
-                    {...filters}
-                />
+                <ChartWrapper title={"Obyvatelstvo Historicky"} variants={[
+                    {
+                        tableId: 4,
+                        label: "",
+                        addTotalCategory: true,
+                        component: props => <TimeChart type="area" summaries={{
+                            max: true,
+                            average: true,
+                            current: true
+                        }} {...props} />,
+                        valueFormatter: value => standardValueFormatter(value, 0, "")
+                    },
+                ]} {...filters} />
 
-                <TimeChart
-                    summaries={{
-                        max: true,
-                        average: true,
-                        total: false,
-                        current: true
-                    }}
-                    type="area"
-                    title="Nezaměstnanost"
-                    variants={[
-                        { id: 4, label: "Procento", digits: 2, dataAfix: "%" },
-                        { id: 5, label: "Počet" },
-                    ]}
+                <ChartWrapper title={"Změny Obyvatel"} variants={[
+                    {
+                        tableId: 5,
+                        label: "",
+                        component: props => <TimeChart type="bar" stacked={true} {...props} />,
+                        valueFormatter: value => standardValueFormatter(value, 0, "")
+                    },
+                ]} {...filters} />
 
-                    {...filters}
-                />
-
-                <TimeChart
-                    addTotalCategory
-                    summaries={{
-                        max: true,
-                        average: true,
-                        total: false,
-                        current: true
-                    }}
-                    type="area"
-                    title="Obyvatelstvo Historicky"
-                    variants={[
-                        { id: 6, label: "" },
-                    ]}
-
-                    {...filters}
-                />
-
-                <TimeChart
-                    addTotalCategory={false}
-                    stacked
-                    type="bar"
-                    summaries={{
-                        max: false,
-                        average: false,
-                        total: false,
-                        current: false
-                    }}
-                    title="Změny Obyvatel"
-                    variants={[
-                        { id: 8, label: "" },
-                    ]}
-
-                    {...filters}
-                />
+                <ChartWrapper title={"Rozdělení obyvatel podle"} variants={[
+                    {
+                        tableId: 3,
+                        label: "Věku",
+                        component: props => <Treemap aggregation="AVG" {...props} />,
+                        valueFormatter: value => percentValueFormatter(value, 2) + "%"
+                    },
+                ]} {...filters} />
             </div>
         </div>
     );

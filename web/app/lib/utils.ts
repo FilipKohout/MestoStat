@@ -1,6 +1,5 @@
 import clsx, { type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
-import { toFixedNumber } from "@react-stately/utils";
 import { CHART_COLOR_PALETTE as COLOR_PALETTE, HEX_COLORS } from "@/app/lib/consts";
 
 export function getAPIUrl(route: string): string {

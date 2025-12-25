@@ -25,7 +25,7 @@ VALUES
     ('Obec', 'municipality_id');
 
 CREATE TABLE IF NOT EXISTS statistics (
-    table_id PRIMARY KEY,
+    table_id INT PRIMARY KEY,
     table_name VARCHAR(50) UNIQUE NOT NULL,
     last_updated TIMESTAMP NOT NULL,
     source_domain VARCHAR(255) NOT NULL,

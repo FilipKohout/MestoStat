@@ -7,9 +7,10 @@ CREATE TABLE IF NOT EXISTS unemployment_data (
     UNIQUE (date_recorded, municipality_id)
 );
 
-INSERT INTO statistics (table_name, last_updated, periodicity_id, structure_level_id, source_domain)
+INSERT INTO statistics (table_id, table_name, last_updated, periodicity_id, structure_level_id, source_domain)
 VALUES
     (
+        6,
         'unemployment_data',
         NOW(),
         (SELECT p.periodicity_id FROM periodicities p WHERE periodicity_name = 'Ročně'),
@@ -35,9 +36,10 @@ FROM unemployment_data ud
 JOIN population_by_sex_data pbsd on ud.municipality_id = pbsd.municipality_id
     AND extract(year from ud.date_recorded) = extract(year from pbsd.date_recorded);
 
-INSERT INTO statistics (table_name, last_updated, periodicity_id, structure_level_id, source_domain)
+INSERT INTO statistics (table_id, table_name, last_updated, periodicity_id, structure_level_id, source_domain)
 VALUES
     (
+        7,
         'unemployment_data_estimated_count',
         NOW(),
         (SELECT p.periodicity_id FROM periodicities p WHERE periodicity_name = 'Půlročně'),
@@ -121,14 +123,12 @@ SELECT
     SUM(CASE WHEN category_name = 'Volby' THEN actual_spending ELSE 0 END) AS elections,
     SUM(CASE WHEN category_name IN ('Bankovní poplatky a úroky', 'Pojištění majetku', 'Ostatní finanční operace') THEN actual_spending ELSE 0 END) AS financial_costs,
 
-    SUM(CASE WHEN category_name IN ('Ostatní (Nespecifikováno)', 'Ostatní zemědělství', 'Ostatní bydlení a sítě', 'Ochrana životního prostředí', 'Ostatní správa', 'Zdravotnictví') THEN actual_spending ELSE 0 END) AS other_aggregated,
-
-    SUM(actual_spending) AS total_spending
+    SUM(CASE WHEN category_name IN ('Ostatní (Nespecifikováno)', 'Ostatní zemědělství', 'Ostatní bydlení a sítě', 'Ochrana životního prostředí', 'Ostatní správa', 'Zdravotnictví') THEN actual_spending ELSE 0 END) AS other_aggregated
 FROM budget_expenses_data
 GROUP BY municipality_id, date_recorded;
 
-INSERT INTO statistics (table_name, last_updated, periodicity_id, structure_level_id, source_domain)
-VALUES ('budget_expenses_data_detailed', NOW(), (SELECT periodicity_id FROM periodicities WHERE periodicity_name = 'Měsíčně'), (SELECT structure_level_id FROM structure_levels WHERE structure_level_name = 'Obec'), 'https://monitor.statnipokladna.gov.cz')
+INSERT INTO statistics (table_id, table_name, last_updated, periodicity_id, structure_level_id, source_domain)
+VALUES (8, 'budget_expenses_data_detailed', NOW(), (SELECT periodicity_id FROM periodicities WHERE periodicity_name = 'Měsíčně'), (SELECT structure_level_id FROM structure_levels WHERE structure_level_name = 'Obec'), 'https://monitor.statnipokladna.gov.cz')
 ON CONFLICT (table_name) DO NOTHING;
 
 INSERT INTO statistic_columns (table_id, column_name, alias, aggregation_method)
@@ -182,8 +182,7 @@ VALUES
     ((SELECT table_id FROM statistics WHERE table_name = 'budget_expenses_data_detailed'), 'elections', 'volby', 'SUM'),
     ((SELECT table_id FROM statistics WHERE table_name = 'budget_expenses_data_detailed'), 'financial_costs', 'bankovní a finanční poplatky', 'SUM'),
 
-    ((SELECT table_id FROM statistics WHERE table_name = 'budget_expenses_data_detailed'), 'other_aggregated', 'nespecifikované výdaje', 'SUM'),
-    ((SELECT table_id FROM statistics WHERE table_name = 'budget_expenses_data_detailed'), 'total_spending', 'total', 'SUM')
+    ((SELECT table_id FROM statistics WHERE table_name = 'budget_expenses_data_detailed'), 'other_aggregated', 'nespecifikované výdaje', 'SUM')
 ON CONFLICT (table_id, column_name) DO NOTHING;
 
 
@@ -216,14 +215,12 @@ SELECT
                  THEN actual_spending ELSE 0 END) AS admin_safety,
 
     SUM(CASE WHEN category_name IN ('Lesní hospodářství', 'Zemědělství', 'Ostatní zemědělství', 'Ostatní (Nespecifikováno)')
-                 THEN actual_spending ELSE 0 END) AS other_economy,
-
-    SUM(actual_spending) AS total_spending
+                 THEN actual_spending ELSE 0 END) AS other_economy
 FROM budget_expenses_data
 GROUP BY municipality_id, date_recorded;
 
-INSERT INTO statistics (table_name, last_updated, periodicity_id, structure_level_id, source_domain)
-VALUES ('budget_expenses_data_summary', NOW(), (SELECT periodicity_id FROM periodicities WHERE periodicity_name = 'Měsíčně'), (SELECT structure_level_id FROM structure_levels WHERE structure_level_name = 'Obec'), 'https://monitor.statnipokladna.gov.cz')
+INSERT INTO statistics (table_id, table_name, last_updated, periodicity_id, structure_level_id, source_domain)
+VALUES (9, 'budget_expenses_data_summary', NOW(), (SELECT periodicity_id FROM periodicities WHERE periodicity_name = 'Měsíčně'), (SELECT structure_level_id FROM structure_levels WHERE structure_level_name = 'Obec'), 'https://monitor.statnipokladna.gov.cz')
 ON CONFLICT (table_name) DO NOTHING;
 
 INSERT INTO statistic_columns (table_id, column_name, alias, aggregation_method)
@@ -235,8 +232,7 @@ VALUES
     ((SELECT table_id FROM statistics WHERE table_name = 'budget_expenses_data_summary'), 'culture_sport', 'kultura a sport', 'SUM'),
     ((SELECT table_id FROM statistics WHERE table_name = 'budget_expenses_data_summary'), 'social_health', 'sociální věci a zdraví', 'SUM'),
     ((SELECT table_id FROM statistics WHERE table_name = 'budget_expenses_data_summary'), 'admin_safety', 'správa a bezpečnost', 'SUM'),
-    ((SELECT table_id FROM statistics WHERE table_name = 'budget_expenses_data_summary'), 'other_economy', 'ostatní hospodářství', 'SUM'),
-    ((SELECT table_id FROM statistics WHERE table_name = 'budget_expenses_data_summary'), 'total_spending', 'total', 'SUM')
+    ((SELECT table_id FROM statistics WHERE table_name = 'budget_expenses_data_summary'), 'other_economy', 'ostatní hospodářství', 'SUM')
 ON CONFLICT (table_id, column_name) DO NOTHING;
 
 
@@ -274,14 +270,12 @@ SELECT
     SUM(CASE WHEN category_name = 'Prodej majetku' THEN actual_income ELSE 0 END) AS capital_sales,
 
     SUM(CASE WHEN category_name = 'Provozní dotace' THEN actual_income ELSE 0 END) AS subsidies_operational,
-    SUM(CASE WHEN category_name = 'Investiční dotace' THEN actual_income ELSE 0 END) AS subsidies_investment,
-
-    SUM(actual_income) AS total_income
+    SUM(CASE WHEN category_name = 'Investiční dotace' THEN actual_income ELSE 0 END) AS subsidies_investment
 FROM budget_income_data
 GROUP BY municipality_id, date_recorded;
 
-INSERT INTO statistics (table_name, last_updated, periodicity_id, structure_level_id, source_domain)
-VALUES ('budget_income_data_summary', NOW(), (SELECT periodicity_id FROM periodicities WHERE periodicity_name = 'Měsíčně'), (SELECT structure_level_id FROM structure_levels WHERE structure_level_name = 'Obec'), 'https://monitor.statnipokladna.gov.cz')
+INSERT INTO statistics (table_id, table_name, last_updated, periodicity_id, structure_level_id, source_domain)
+VALUES (10, 'budget_income_data_summary', NOW(), (SELECT periodicity_id FROM periodicities WHERE periodicity_name = 'Měsíčně'), (SELECT structure_level_id FROM structure_levels WHERE structure_level_name = 'Obec'), 'https://monitor.statnipokladna.gov.cz')
 ON CONFLICT (table_name) DO NOTHING;
 
 INSERT INTO statistic_columns (table_id, column_name, alias, aggregation_method)
@@ -295,6 +289,5 @@ VALUES
     ((SELECT table_id FROM statistics WHERE table_name = 'budget_income_data_summary'), 'non_tax_other', 'ostatní nedaňové příjmy', 'SUM'),
     ((SELECT table_id FROM statistics WHERE table_name = 'budget_income_data_summary'), 'capital_sales', 'prodej majetku', 'SUM'),
     ((SELECT table_id FROM statistics WHERE table_name = 'budget_income_data_summary'), 'subsidies_operational', 'provozní dotace', 'SUM'),
-    ((SELECT table_id FROM statistics WHERE table_name = 'budget_income_data_summary'), 'subsidies_investment', 'investiční dotace', 'SUM'),
-    ((SELECT table_id FROM statistics WHERE table_name = 'budget_income_data_summary'), 'total_income', 'total', 'SUM')
-ON CONFLICT (table_id, column_name) DO NOTHING
+    ((SELECT table_id FROM statistics WHERE table_name = 'budget_income_data_summary'), 'subsidies_investment', 'investiční dotace', 'SUM')
+ON CONFLICT (table_id, column_name) DO NOTHING;

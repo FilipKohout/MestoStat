@@ -8,9 +8,10 @@ CREATE TABLE IF NOT EXISTS population_by_sex_data (
     UNIQUE (date_recorded, municipality_id)
 );
 
-INSERT INTO statistics (table_name, last_updated, periodicity_id, structure_level_id, source_domain)
+INSERT INTO statistics (table_id, table_name, last_updated, periodicity_id, structure_level_id, source_domain)
 VALUES
     (
+        1,
         'population_by_sex_data',
         NOW(),
         (SELECT p.periodicity_id FROM periodicities p WHERE periodicity_name = 'Půlročně'),
@@ -58,9 +59,10 @@ CREATE TABLE population_by_age_data (
     UNIQUE (municipality_id, date_recorded)
 );
 
-INSERT INTO statistics (table_name, last_updated, periodicity_id, structure_level_id, source_domain)
+INSERT INTO statistics (table_id, table_name, last_updated, periodicity_id, structure_level_id, source_domain)
 VALUES
     (
+        2,
         'population_by_age_data',
         NOW(),
         (SELECT p.periodicity_id FROM periodicities p WHERE periodicity_name = 'Půlročně'),
@@ -110,9 +112,10 @@ SELECT
     "85 - 89" + "90 - 94" + "95+" AS "85+"
 FROM population_by_age_data;
 
-INSERT INTO statistics (table_name, last_updated, periodicity_id, structure_level_id, source_domain)
+INSERT INTO statistics (table_id, table_name, last_updated, periodicity_id, structure_level_id, source_domain)
 VALUES
     (
+        3,
         'population_by_age_data_age_grouped',
         NOW(),
         (SELECT p.periodicity_id FROM periodicities p WHERE periodicity_name = 'Půlročně'),
@@ -147,9 +150,10 @@ CREATE TABLE population_movement_data (
     UNIQUE (municipality_id, date_recorded)
 );
 
-INSERT INTO statistics (table_name, last_updated, periodicity_id, structure_level_id, source_domain)
+INSERT INTO statistics (table_id, table_name, last_updated, periodicity_id, structure_level_id, source_domain)
 VALUES
     (
+        4,
         'population_movement_data',
         NOW(),
         (SELECT p.periodicity_id FROM periodicities p WHERE periodicity_name = 'Ročně'),
@@ -181,9 +185,10 @@ SELECT
     -emigrants as emigrants
 FROM population_movement_data;
 
-INSERT INTO statistics (table_name, last_updated, periodicity_id, structure_level_id, source_domain)
+INSERT INTO statistics (table_id, table_name, last_updated, periodicity_id, structure_level_id, source_domain)
 VALUES
     (
+        5,
         'population_movement_data_change',
         NOW(),
         (SELECT p.periodicity_id FROM periodicities p WHERE periodicity_name = 'Ročně'),

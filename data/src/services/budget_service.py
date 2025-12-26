@@ -21,12 +21,17 @@ def update_URLS_with_budget():
         if "FinM" in url:
             parts = url.split("/")
             filename = parts[-1]
+            fileparams = filename.split("_")
+
+            if len(fileparams) < 2 or fileparams[1] != "12":
+                continue
+
             url = BUDGET_URL.format(filename)
 
-            # URLS[filename] = (
-            #     url,
-            #     "zip",
-            #     read_budget_files,
-            #     "budget_data",
-            #     30 * 24 * 60 * 60,
-            # )
+            URLS[filename] = (
+                url,
+                "zip",
+                read_budget_files,
+                "budget_data",
+                30 * 24 * 60 * 60,
+            )

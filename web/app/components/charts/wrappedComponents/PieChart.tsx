@@ -2,18 +2,17 @@ import { ChartProps } from "@/app/components/charts/ChartWrapper";
 import useDataPercentage from "@/app/hooks/charts/useDataPercentage";
 import { CustomTooltipProps, DonutChart } from "@tremor/react";
 import { getCategoryColorName, percentValueFormatter, standardValueFormatter } from "@/app/lib/utils";
-import { useCallback } from "react";
 import { CustomTooltip } from "@/app/components/charts/ChartTooltip";
 import StatBox from "@/app/components/utils/StatBox";
 import { HEX_COLORS } from "@/app/lib/consts";
 
 type PieChartProps = {
     type: "pie" | "donut";
-    aggregation: "SUM" | "AVG";
+    aggregation: "SUM" | "AVG" | "ACT";
 } & ChartProps;
 
 export default function PieChart(props: PieChartProps) {
-    const { type, aggregation, data, allCategories, activeCategories, valueFormatter } = props;
+    const { type, aggregation = "AVG", data, allCategories, activeCategories, valueFormatter } = props;
 
     const { percentageData } = useDataPercentage(data, aggregation);
 

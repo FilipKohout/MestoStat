@@ -2,7 +2,7 @@ import { cnTailwind } from "@/app/lib/utils";
 import { LoadingSpinner } from "./LoadingSpinner";
 import { Frame } from "@/app/components/utils/Frame";
 
-type DashboardCardProps = React.ComponentProps<typeof Frame>
+export type DashboardCardProps = React.ComponentProps<typeof Frame>
 
 export function DashboardCard({ children, className, ...props }: DashboardCardProps) {
     return (

@@ -7,7 +7,7 @@ import { ChartWrapper } from "@/app/components/charts/ChartWrapper";
 import { percentValueFormatter, standardValueFormatter } from "@/app/lib/utils";
 import TimeChart from "@/app/components/charts/wrappedComponents/TimeChart";
 import PieChart from "@/app/components/charts/wrappedComponents/PieChart";
-import { Treemap } from "recharts";
+import TreeMapChart from "@/app/components/charts/wrappedComponents/TreeMapChart";
 
 export default function Overview() {
     const { startDate, endDate } = useDateRange();
@@ -19,22 +19,6 @@ export default function Overview() {
         endDate: new Date(endDate || 0),
         identifierId: Number(municipalityId),
         periodicityId: period
-    }
-
-    const data: Tree = {
-        type: 'node',
-        name: "boss",
-        value: 0,
-        children: [
-            {type: 'leaf', name:"Mark", value: 90},
-            {type: 'leaf', name:"Robert", value: 12},
-            {type: 'leaf', name:"Emily", value: 34},
-            {type: 'leaf', name:"Marion", value: 53},
-            {type: 'leaf', name:"Nicolas", value: 98},
-            {type: 'leaf', name:"Malki", value: 22},
-            {type: 'leaf', name:"Djé", value: 12},
-            {type: 'leaf', name:"Mélanie", value: 45},
-            {type: 'leaf', name:"Einstein", value: 76}]
     }
 
     return (
@@ -69,13 +53,13 @@ export default function Overview() {
                     {
                         tableId: 1,
                         label: "Pohlaví",
-                        component: props => <PieChart type="pie" aggregation="AVG" {...props} />,
+                        component: props => <PieChart type="pie" aggregation="ACT" {...props} />,
                         valueFormatter: value => percentValueFormatter(value, 2) + "%"
                     },
                     {
                         tableId: 3,
                         label: "Věku",
-                        component: props => <PieChart type="pie" aggregation="AVG" {...props} />,
+                        component: props => <PieChart type="pie" aggregation="ACT" {...props} />,
                         valueFormatter: value => percentValueFormatter(value, 2) + "%"
                     },
                 ]} {...filters} />
@@ -125,16 +109,16 @@ export default function Overview() {
                         valueFormatter: value => standardValueFormatter(value, 0, "")
                     },
                 ]} {...filters} />
-
-                <ChartWrapper title={"Rozdělení obyvatel podle"} variants={[
-                    {
-                        tableId: 3,
-                        label: "Věku",
-                        component: props => <Treemap aggregation="AVG" {...props} />,
-                        valueFormatter: value => percentValueFormatter(value, 2) + "%"
-                    },
-                ]} {...filters} />
             </div>
+
+            <ChartWrapper title={`Výdaje ${filters.endDate.getFullYear() - 1}`} className="row-span-2" variants={[
+                {
+                    tableId: 8,
+                    label: "",
+                    component: props => <TreeMapChart aggregation="AVG" {...props} />,
+                    valueFormatter: value => standardValueFormatter(value, 0, " Kč")
+                },
+            ]} {...filters} periodicityId={4} />
         </div>
     );
 }

@@ -75,60 +75,72 @@ SELECT
     municipality_id,
     date_recorded,
 
+    -- ZEMĚDĚLSTVÍ A LESY
     SUM(CASE WHEN category_name = 'Zemědělství' THEN actual_spending ELSE 0 END) AS agriculture,
     SUM(CASE WHEN category_name = 'Lesní hospodářství' THEN actual_spending ELSE 0 END) AS forestry,
 
+    -- DOPRAVA
     SUM(CASE WHEN category_name = 'Silnice' THEN actual_spending ELSE 0 END) AS roads,
     SUM(CASE WHEN category_name = 'Chodníky a cyklostezky' THEN actual_spending ELSE 0 END) AS sidewalks,
     SUM(CASE WHEN category_name = 'Veřejná doprava (MHD, Linky)' THEN actual_spending ELSE 0 END) AS public_transport,
     SUM(CASE WHEN category_name = 'Ostatní doprava' THEN actual_spending ELSE 0 END) AS transport_other,
 
+    -- VODA
     SUM(CASE WHEN category_name = 'Pitná voda' THEN actual_spending ELSE 0 END) AS water_supply,
     SUM(CASE WHEN category_name = 'Kanalizace a ČOV' THEN actual_spending ELSE 0 END) AS sewage,
     SUM(CASE WHEN category_name = 'Vodní toky a díla' THEN actual_spending ELSE 0 END) AS watercourses,
 
+    -- ŠKOLSTVÍ
     SUM(CASE WHEN category_name = 'Mateřské školy' THEN actual_spending ELSE 0 END) AS kindergarten,
     SUM(CASE WHEN category_name = 'Základní školy' THEN actual_spending ELSE 0 END) AS primary_school,
     SUM(CASE WHEN category_name = 'Školní stravování' THEN actual_spending ELSE 0 END) AS school_meals,
     SUM(CASE WHEN category_name = 'Základní umělecké školy' THEN actual_spending ELSE 0 END) AS art_school,
     SUM(CASE WHEN category_name IN ('Ostatní předškolní a základní', 'Střední a vyšší vzdělávání') THEN actual_spending ELSE 0 END) AS education_other,
 
+    -- KULTURA
     SUM(CASE WHEN category_name = 'Knihovny' THEN actual_spending ELSE 0 END) AS libraries,
     SUM(CASE WHEN category_name = 'Kulturní domy a slavnosti' THEN actual_spending ELSE 0 END) AS culture_houses,
     SUM(CASE WHEN category_name = 'Památky a kulturní dědictví' THEN actual_spending ELSE 0 END) AS monuments,
     SUM(CASE WHEN category_name = 'Rozhlas a zpravodajství' THEN actual_spending ELSE 0 END) AS media,
     SUM(CASE WHEN category_name IN ('Muzea a galerie', 'Divadla a hudební činnost', 'Ostatní kultura') THEN actual_spending ELSE 0 END) AS culture_other,
 
+    -- SPORT A VOLNÝ ČAS
     SUM(CASE WHEN category_name = 'Sportovní zařízení a činnost' THEN actual_spending ELSE 0 END) AS sport_facilities,
     SUM(CASE WHEN category_name = 'Dětská hřiště a parky' THEN actual_spending ELSE 0 END) AS playgrounds,
     SUM(CASE WHEN category_name = 'Střediska volného času (DDM)' THEN actual_spending ELSE 0 END) AS leisure_centers,
 
+    -- BYDLENÍ A KOMUNÁLNÍ SLUŽBY
     SUM(CASE WHEN category_name = 'Veřejné osvětlení' THEN actual_spending ELSE 0 END) AS public_lighting,
     SUM(CASE WHEN category_name = 'Svoz a likvidace odpadů' THEN actual_spending ELSE 0 END) AS waste,
     SUM(CASE WHEN category_name = 'Veřejná zeleň' THEN actual_spending ELSE 0 END) AS greenery,
     SUM(CASE WHEN category_name = 'Bytové hospodářství (Obecní byty)' THEN actual_spending ELSE 0 END) AS municipal_housing,
-    SUM(CASE WHEN category_name = 'Komunální služby a územní rozvoj' THEN actual_spending ELSE 0 END) AS communal_services,
+    SUM(CASE WHEN category_name IN ('Komunální služby a územní rozvoj', 'Územní plánování') THEN actual_spending ELSE 0 END) AS communal_services,
     SUM(CASE WHEN category_name = 'Pohřebnictví' THEN actual_spending ELSE 0 END) AS funerals,
 
+    -- SOCIÁLNÍ VĚCI (Opraveno rozdělení)
     SUM(CASE WHEN category_name = 'Domovy pro seniory' THEN actual_spending ELSE 0 END) AS senior_homes,
     SUM(CASE WHEN category_name = 'Pečovatelská služba' THEN actual_spending ELSE 0 END) AS care_service,
-    SUM(CASE WHEN category_name IN ('Služby pro rodiny a děti', 'Služby pro handicapované', 'Ostatní sociální služby') THEN actual_spending ELSE 0 END) AS social_other,
+    SUM(CASE WHEN category_name = 'Služby pro rodiny a děti' THEN actual_spending ELSE 0 END) AS social_family,
+    SUM(CASE WHEN category_name IN ('Služby pro handicapované', 'Ostatní sociální služby') THEN actual_spending ELSE 0 END) AS social_other,
 
+    -- BEZPEČNOST
     SUM(CASE WHEN category_name = 'Hasiči (Dobrovolní)' THEN actual_spending ELSE 0 END) AS firefighters,
     SUM(CASE WHEN category_name = 'Městská policie' THEN actual_spending ELSE 0 END) AS police,
     SUM(CASE WHEN category_name IN ('Krizové řízení', 'Ostatní požární ochrana') THEN actual_spending ELSE 0 END) AS security_other,
 
+    -- SPRÁVA A FINANCE
     SUM(CASE WHEN category_name = 'Platy zastupitelů' THEN actual_spending ELSE 0 END) AS council_salaries,
     SUM(CASE WHEN category_name = 'Provoz úřadu' THEN actual_spending ELSE 0 END) AS administration_office,
     SUM(CASE WHEN category_name = 'Volby' THEN actual_spending ELSE 0 END) AS elections,
     SUM(CASE WHEN category_name IN ('Bankovní poplatky a úroky', 'Pojištění majetku', 'Ostatní finanční operace') THEN actual_spending ELSE 0 END) AS financial_costs,
 
+    -- OSTATNÍ (Agregované)
     SUM(CASE WHEN category_name IN ('Ostatní (Nespecifikováno)', 'Ostatní zemědělství', 'Ostatní bydlení a sítě', 'Ochrana životního prostředí', 'Ostatní správa', 'Zdravotnictví') THEN actual_spending ELSE 0 END) AS other_aggregated
 FROM budget_expenses_data
 GROUP BY municipality_id, date_recorded;
 
 INSERT INTO statistics (table_id, table_name, last_updated, periodicity_id, structure_level_id, source_domain)
-VALUES (8, 'budget_expenses_data_detailed', NOW(), (SELECT periodicity_id FROM periodicities WHERE periodicity_name = 'Měsíčně'), (SELECT structure_level_id FROM structure_levels WHERE structure_level_name = 'Obec'), 'https://monitor.statnipokladna.gov.cz')
+VALUES (8, 'budget_expenses_data_detailed', NOW(), (SELECT periodicity_id FROM periodicities WHERE periodicity_name = 'Ročně'), (SELECT structure_level_id FROM structure_levels WHERE structure_level_name = 'Obec'), 'https://monitor.statnipokladna.gov.cz')
 ON CONFLICT (table_name) DO NOTHING;
 
 INSERT INTO statistic_columns (table_id, column_name, alias, aggregation_method)
@@ -220,7 +232,7 @@ FROM budget_expenses_data
 GROUP BY municipality_id, date_recorded;
 
 INSERT INTO statistics (table_id, table_name, last_updated, periodicity_id, structure_level_id, source_domain)
-VALUES (9, 'budget_expenses_data_summary', NOW(), (SELECT periodicity_id FROM periodicities WHERE periodicity_name = 'Měsíčně'), (SELECT structure_level_id FROM structure_levels WHERE structure_level_name = 'Obec'), 'https://monitor.statnipokladna.gov.cz')
+VALUES (9, 'budget_expenses_data_summary', NOW(), (SELECT periodicity_id FROM periodicities WHERE periodicity_name = 'Ročně'), (SELECT structure_level_id FROM structure_levels WHERE structure_level_name = 'Obec'), 'https://monitor.statnipokladna.gov.cz')
 ON CONFLICT (table_name) DO NOTHING;
 
 INSERT INTO statistic_columns (table_id, column_name, alias, aggregation_method)
@@ -275,7 +287,7 @@ FROM budget_income_data
 GROUP BY municipality_id, date_recorded;
 
 INSERT INTO statistics (table_id, table_name, last_updated, periodicity_id, structure_level_id, source_domain)
-VALUES (10, 'budget_income_data_summary', NOW(), (SELECT periodicity_id FROM periodicities WHERE periodicity_name = 'Měsíčně'), (SELECT structure_level_id FROM structure_levels WHERE structure_level_name = 'Obec'), 'https://monitor.statnipokladna.gov.cz')
+VALUES (10, 'budget_income_data_summary', NOW(), (SELECT periodicity_id FROM periodicities WHERE periodicity_name = 'Ročně'), (SELECT structure_level_id FROM structure_levels WHERE structure_level_name = 'Obec'), 'https://monitor.statnipokladna.gov.cz')
 ON CONFLICT (table_name) DO NOTHING;
 
 INSERT INTO statistic_columns (table_id, column_name, alias, aggregation_method)

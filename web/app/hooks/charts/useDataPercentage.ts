@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { ChartDataItem } from "@/app/components/charts/ChartWrapper";
 
-export default function useDataPercentage(data: ChartDataItem[], aggregationMethod: "SUM" | "AVG") {
+export default function useDataPercentage(data: ChartDataItem[], aggregationMethod: "SUM" | "AVG" | "ACT") {
     const filteredData = useMemo<{ name: string, value: number }[]>(() => {
         if (!data || data.length === 0) return [];
 
@@ -15,6 +15,8 @@ export default function useDataPercentage(data: ChartDataItem[], aggregationMeth
                 val = sum;
             else if (aggregationMethod === "AVG")
                 val = sum / data.length;
+            else if (aggregationMethod === "ACT")
+                val = data.length > 0 ? (data[data.length - 1][key] as number ?? 0) : 0;
 
             return {
                 name: key,

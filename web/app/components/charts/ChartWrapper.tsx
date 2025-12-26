@@ -1,4 +1,4 @@
-import { DashboardCard } from "@/app/components/utils/DashboardCard";
+import { DashboardCard, DashboardCardProps } from "@/app/components/utils/DashboardCard";
 import Dropdown from "@/app/components/utils/Dropdown";
 import Button from "@/app/components/utils/Button";
 import DatabaseIcon from "@/app/components/icons/DatabaseIcon";
@@ -9,6 +9,7 @@ import { TableDataParams } from "@/app/services/charts/tableData";
 import { getCategoryColorHex } from "@/app/lib/utils";
 import { CHART_INDEX_KEY as INDEX_KEY } from "@/app/lib/consts";
 import useTableMetadata from "@/app/hooks/charts/query/useTableMetadata";
+import { JSXElement } from "@babel/types";
 
 export type ChartDataItem = {
     [INDEX_KEY]: string;
@@ -39,7 +40,7 @@ type ChartWrapperProps = {
     endDate: Date,
     identifierId: number;
     periodicityId: number;
-};
+} & DashboardCardProps;
 
 export function ChartWrapper(props: ChartWrapperProps) {
     const { title, variants } = props;
@@ -86,7 +87,7 @@ export function ChartWrapper(props: ChartWrapperProps) {
     
 
     return (
-        <DashboardCard variant="default">
+        <DashboardCard variant="default" {...props}>
             <DashboardCard.Header
                 title={title}
                 action={

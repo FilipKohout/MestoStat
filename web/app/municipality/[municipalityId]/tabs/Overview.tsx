@@ -5,9 +5,10 @@ import usePeriod from "@/app/hooks/charts/query/usePeriod";
 import { useParams } from "next/navigation";
 import { ChartWrapper } from "@/app/components/charts/ChartWrapper";
 import { percentValueFormatter, standardValueFormatter } from "@/app/lib/utils";
-import TimeChart from "@/app/components/charts/wrappedComponents/TimeChart";
 import PieChart from "@/app/components/charts/wrappedComponents/PieChart";
 import TreeMapChart from "@/app/components/charts/wrappedComponents/TreeMapChart";
+import TimeChart from "@/app/components/charts/wrappedComponents/TimeChart";
+import TableChart from "@/app/components/charts/wrappedComponents/TableChart";
 
 export default function Overview() {
     const { startDate, endDate } = useDateRange();
@@ -24,7 +25,7 @@ export default function Overview() {
     return (
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <ChartWrapper title={"Rozdělení obyvatel podle"} variants={[
+                <ChartWrapper title={"Rozdělení obyvatel podle"} showFilters variants={[
                     {
                         tableId: 1,
                         label: "Pohlaví",
@@ -49,7 +50,7 @@ export default function Overview() {
                     },
                 ]} {...filters} />
 
-                <ChartWrapper title={"Rozdělení obyvatel podle"} variants={[
+                <ChartWrapper title={"Rozdělení obyvatel podle"} showFilters variants={[
                     {
                         tableId: 1,
                         label: "Pohlaví",
@@ -64,7 +65,7 @@ export default function Overview() {
                     },
                 ]} {...filters} />
 
-                <ChartWrapper title={"Nezaměstnanost"} variants={[
+                <ChartWrapper title={"Nezaměstnanost"} showFilters variants={[
                     {
                         tableId: 6,
                         label: "Procento",
@@ -87,7 +88,7 @@ export default function Overview() {
                     },
                 ]} {...filters} />
 
-                <ChartWrapper title={"Obyvatelstvo Historicky"} variants={[
+                <ChartWrapper title={"Obyvatelstvo Historicky"} showFilters variants={[
                     {
                         tableId: 4,
                         label: "",
@@ -101,7 +102,7 @@ export default function Overview() {
                     },
                 ]} {...filters} />
 
-                <ChartWrapper title={"Změny Obyvatel"} variants={[
+                <ChartWrapper title={"Změny Obyvatel"} showFilters variants={[
                     {
                         tableId: 5,
                         label: "",
@@ -111,11 +112,20 @@ export default function Overview() {
                 ]} {...filters} />
             </div>
 
-            <ChartWrapper title={`Výdaje ${filters.endDate.getFullYear() - 1}`} className="row-span-2" variants={[
+            <ChartWrapper title={`Výdaje ${filters.endDate.getFullYear() - 1}`} showFilters className="row-span-2" variants={[
                 {
                     tableId: 8,
                     label: "",
                     component: props => <TreeMapChart aggregation="AVG" {...props} />,
+                    valueFormatter: value => standardValueFormatter(value, 0, " Kč")
+                },
+            ]} {...filters} periodicityId={4} />
+
+            <ChartWrapper title={`Výdaje ${filters.endDate.getFullYear() - 1}`} showFilters={false} className="row-span-2" variants={[
+                {
+                    tableId: 8,
+                    label: "",
+                    component: props => <TableChart {...props} />,
                     valueFormatter: value => standardValueFormatter(value, 0, " Kč")
                 },
             ]} {...filters} periodicityId={4} />

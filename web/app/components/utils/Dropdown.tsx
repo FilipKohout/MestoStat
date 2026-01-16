@@ -51,7 +51,7 @@ export default function Dropdown({ options, value, onChange, placeholder = "Vybr
                 onClick={() => setIsOpen(!isOpen)}
                 icon={icon}
                 className={cnTailwind(
-                    "gap-2 bg-slate-900/50 border-slate-800 text-slate-300 min-w-[100px]",
+                    "gap-2 bg-slate-900/50 border-slate-800 text-slate-300 min-w-[50px]",
                     isOpen
                         ? "bg-slate-800 border-slate-600 text-white ring-2 ring-blue-500/20"
                         : "hover:bg-slate-800 hover:text-white hover:border-slate-700"
@@ -71,7 +71,7 @@ export default function Dropdown({ options, value, onChange, placeholder = "Vybr
                     variant="popup"
                     noPadding
                     className={cnTailwind(
-                        "absolute top-full mt-2 min-w-[100px] z-50",
+                        "absolute top-full mt-2 min-w-[50px] z-50",
                         "animate-in fade-in zoom-in-95 duration-100",
                         align === "end" ? "right-0 origin-top-right" : "left-0 origin-top-left"
                     )}

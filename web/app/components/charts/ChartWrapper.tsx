@@ -2,14 +2,12 @@ import { DashboardCard, DashboardCardProps } from "@/app/components/utils/Dashbo
 import Dropdown from "@/app/components/utils/Dropdown";
 import Button from "@/app/components/utils/Button";
 import DatabaseIcon from "@/app/components/icons/DatabaseIcon";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import useAllTablesMetadata from "@/app/hooks/charts/query/useAllTablesMetadata";
+import { useEffect, useMemo, useState } from "react";
 import useTableData from "@/app/hooks/charts/query/useTableData";
 import { TableDataParams } from "@/app/services/charts/tableData";
 import { getCategoryColorHex } from "@/app/lib/utils";
 import { CHART_INDEX_KEY as INDEX_KEY } from "@/app/lib/consts";
 import useTableMetadata from "@/app/hooks/charts/query/useTableMetadata";
-import { JSXElement } from "@babel/types";
 
 export type ChartDataItem = {
     [INDEX_KEY]: string;
@@ -35,6 +33,7 @@ type ChartVariant = {
 type ChartWrapperProps = {
     title: string;
     variants: ChartVariant[];
+    showFilters: boolean;
     
     startDate: Date,
     endDate: Date,
@@ -43,7 +42,7 @@ type ChartWrapperProps = {
 } & DashboardCardProps;
 
 export function ChartWrapper(props: ChartWrapperProps) {
-    const { title, variants } = props;
+    const { title, variants, showFilters } = props;
 
     const [selectedTableId, setSelectedTableId] = useState(variants[0].tableId);
     const [activeCategories, setActiveCategories] = useState<string[]>([]);
@@ -87,7 +86,7 @@ export function ChartWrapper(props: ChartWrapperProps) {
     
 
     return (
-        <DashboardCard variant="default" {...props}>
+        <DashboardCard variant="default" {...props} className="overflow-visible">
             <DashboardCard.Header
                 title={title}
                 action={
@@ -115,18 +114,19 @@ export function ChartWrapper(props: ChartWrapperProps) {
                 <selectedVariant.component data={data as never[]} activeCategories={activeCategories} allCategories={categories} {...selectedVariant}  />
             </DashboardCard.Content>
 
-            <DashboardCard.Footer>
-                {categories.map((category) => {
-                    const isActive = activeCategories.includes(category);
-                    const hexColor = getCategoryColorHex(categories, category);
+            {showFilters &&
+                <DashboardCard.Footer>
+                    {categories.map((category) => {
+                        const isActive = activeCategories.includes(category);
+                        const hexColor = getCategoryColorHex(categories, category);
 
-                    return (
-                        <Button
-                            key={category}
-                            onClick={() => toggleCategory(category)}
-                            variant={isActive ? "active" : "ghost"}
-                            size="xs"
-                        >
+                        return (
+                            <Button
+                                key={category}
+                                onClick={() => toggleCategory(category)}
+                                variant={isActive ? "active" : "ghost"}
+                                size="xs"
+                            >
                             <span
                                 className="h-2 w-2 rounded-full transition-all duration-300"
                                 style={{
@@ -134,11 +134,12 @@ export function ChartWrapper(props: ChartWrapperProps) {
                                     boxShadow: isActive ? `0 0 8px ${hexColor}80` : 'none'
                                 }}
                             />
-                            {category === "total" ? "celkem" : category}
-                        </Button>
-                    );
-                })}
-            </DashboardCard.Footer>
+                                {category === "total" ? "celkem" : category}
+                            </Button>
+                        );
+                    })}
+                </DashboardCard.Footer>
+            }
         </DashboardCard>
     );
 }

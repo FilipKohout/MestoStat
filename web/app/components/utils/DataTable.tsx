@@ -6,6 +6,8 @@ import Button from "@/app/components/utils/Button";
 import Dropdown from "@/app/components/utils/Dropdown"; // Předpokládám cestu k vašemu Dropdownu
 import { cnTailwind } from "@/app/lib/utils";
 import ChevronDownIcon from "@/app/components/icons/ChevronDownIcon";
+import ChevronLeftIcon from "@/app/components/icons/ChevronLeftIcon";
+import ChevronRightIcon from "@/app/components/icons/ChevronRightIcon";
 
 export interface Column<T> {
     key: keyof T | string;
@@ -133,21 +135,19 @@ export default function DataTable<T>({ data, columns, defaultSort, itemsPerPageO
                         Strana {currentPage} z {totalPages || 1}
                     </span>
                     <Button
-                        variant="outline"
+                        variant="ghost"
                         size="xs"
                         disabled={currentPage === 1}
                         onClick={() => setCurrentPage(prev => prev - 1)}
-                    >
-                        Předchozí
-                    </Button>
+                        icon={<ChevronLeftIcon />}
+                    />
                     <Button
-                        variant="outline"
+                        variant="ghost"
                         size="xs"
                         disabled={currentPage >= totalPages}
                         onClick={() => setCurrentPage(prev => prev + 1)}
-                    >
-                        Další
-                    </Button>
+                        icon={<ChevronRightIcon />}
+                    />
                 </div>
             </div>
         </div>

@@ -3,12 +3,14 @@ import useDataPercentage, { DataPercentageItem } from "@/app/hooks/charts/useDat
 import { percentValueFormatter } from "@/app/lib/utils";
 import DataTable, { Column } from "@/app/components/utils/DataTable";
 
-type TableChartProps = ChartProps;
+type TableChartProps = ChartProps & {
+    lastPeriod?: boolean;
+};
 
 export default function TableChart(props: TableChartProps) {
-    const { data, activeCategories, valueFormatter } = props;
-
-    const { percentageData } = useDataPercentage(data, "SUM");
+    const { data, activeCategories, valueFormatter, lastPeriod } = props;
+    const limitedData = (lastPeriod && data) ? data.slice(-1) : data;
+    const { percentageData } = useDataPercentage(limitedData, "SUM");
 
     const columns: Column<DataPercentageItem>[] = [
         { key: "name", label: "Kategorie", sortable: true },

@@ -112,19 +112,61 @@ export default function Overview() {
                 ]} {...filters} />
             </div>
 
-            <ChartWrapper title={`Výdaje ${filters.endDate.getFullYear() - 1}`} showFilters className="row-span-2" variants={[
+            <ChartWrapper title={`Výdaje`} showFilters className="row-span-2" variants={[
                 {
-                    tableId: 8,
-                    label: "",
+                    tableId: 9,
+                    label: "Rok %year",
+                    component: props => <TreeMapChart lastPeriod aggregation="AVG" {...props} />,
+                    valueFormatter: value => standardValueFormatter(value, 0, " Kč")
+                },
+                {
+                    tableId: 9,
+                    label: "Celé vybrané období",
                     component: props => <TreeMapChart aggregation="AVG" {...props} />,
                     valueFormatter: value => standardValueFormatter(value, 0, " Kč")
                 },
             ]} {...filters} periodicityId={4} />
 
-            <ChartWrapper title={`Výdaje ${filters.endDate.getFullYear() - 1}`} showFilters={false} className="row-span-2" variants={[
+            <ChartWrapper title={`Výdaje`} showFilters={false} className="row-span-2" variants={[
                 {
                     tableId: 8,
-                    label: "",
+                    label: "Rok %year",
+                    component: props => <TableChart lastPeriod {...props} />,
+                    valueFormatter: value => standardValueFormatter(value, 0, " Kč")
+                },
+                {
+                    tableId: 8,
+                    label: "Celé vybrané období",
+                    component: props => <TableChart {...props} />,
+                    valueFormatter: value => standardValueFormatter(value, 0, " Kč")
+                },
+            ]} {...filters} periodicityId={4} />
+
+            <ChartWrapper title={`Příjmy`} showFilters className="row-span-2" variants={[
+                {
+                    tableId: 10,
+                    label: "Rok %year",
+                    component: props => <TreeMapChart lastPeriod aggregation="AVG" {...props} />,
+                    valueFormatter: value => standardValueFormatter(value, 0, " Kč")
+                },
+                {
+                    tableId: 10,
+                    label: "Celé vybrané období",
+                    component: props => <TreeMapChart aggregation="AVG" {...props} />,
+                    valueFormatter: value => standardValueFormatter(value, 0, " Kč")
+                },
+            ]} {...filters} periodicityId={4} />
+
+            <ChartWrapper title={`Příjmy`} showFilters={false} className="row-span-2" variants={[
+                {
+                    tableId: 10,
+                    label: "Rok %year",
+                    component: props => <TableChart lastPeriod {...props} />,
+                    valueFormatter: value => standardValueFormatter(value, 0, " Kč")
+                },
+                {
+                    tableId: 10,
+                    label: "Celé vybrané období",
                     component: props => <TableChart {...props} />,
                     valueFormatter: value => standardValueFormatter(value, 0, " Kč")
                 },

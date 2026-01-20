@@ -20,10 +20,12 @@ type TreeNode = {
 
 type TreeMapChartProps = {
     aggregation?: "SUM" | "AVG" | "ACT";
+    lastPeriod?: boolean;
 } & ChartProps;
 
 export default function TreeMapChart(props: TreeMapChartProps) {
-    const { data, activeCategories, allCategories, valueFormatter, aggregation = "AVG" } = props;
+    const { data: rawData, activeCategories, allCategories, valueFormatter, aggregation = "AVG", lastPeriod } = props;
+    const data = (lastPeriod && rawData) ? rawData.slice(-1) : rawData;
 
     const containerRef = useRef<HTMLDivElement>(null);
     const [dimensions, setDimensions] = useState({ width: 0, height: 0 });

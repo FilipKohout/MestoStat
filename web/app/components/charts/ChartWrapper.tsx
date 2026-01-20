@@ -44,8 +44,11 @@ type ChartWrapperProps = {
 export function ChartWrapper(props: ChartWrapperProps) {
     const { title, variants, showFilters } = props;
 
-    const [selectedTableId, setSelectedTableId] = useState(variants[0].tableId);
     const [activeCategories, setActiveCategories] = useState<string[]>([]);
+    const [variantId, setVariantId] = useState(0);
+
+    const selectedVariant = variants[variantId];
+    const selectedTableId = selectedVariant.tableId;
 
     const { metadata } = useTableMetadata(selectedTableId);
     const { data, isLoading, isError } = useTableData({
@@ -55,8 +58,6 @@ export function ChartWrapper(props: ChartWrapperProps) {
         identifierId: props.identifierId,
         periodicityId: props.periodicityId,
     } as TableDataParams);
-
-    const selectedVariant = variants.find(v => v.tableId === selectedTableId) || variants[0];
 
     const categories = useMemo(() => {
         if (!data || data.length === 0) return [];
@@ -70,7 +71,7 @@ export function ChartWrapper(props: ChartWrapperProps) {
     }, [data, selectedVariant.addTotalCategory]);
 
     const onVariantChange = (value: number | string) => {
-        setSelectedTableId(value as number);
+        setVariantId(value as number);
     };
 
     const toggleCategory = (category: string) =>
@@ -83,7 +84,10 @@ export function ChartWrapper(props: ChartWrapperProps) {
     useEffect(() => {
         setActiveCategories(categories);
     }, [categories]);
-    
+
+    const lastYear = data && data.length > 0
+        ? new Date(data[data.length - 1][INDEX_KEY]).getFullYear()
+        : new Date().getFullYear();
 
     return (
         <DashboardCard variant="default" {...props} className="overflow-visible">
@@ -103,8 +107,8 @@ export function ChartWrapper(props: ChartWrapperProps) {
             >
                 {variants.length > 1 && (
                     <Dropdown
-                        options={variants.map(v => ({ label: v.label, value: v.tableId }))}
-                        value={selectedTableId}
+                        options={variants.map((v, i) => ({ label: v.label.replace("%year", lastYear.toString()), value: i }))}
+                        value={variantId}
                         onChange={onVariantChange}
                     />
                 )}

@@ -117,31 +117,66 @@ public class StatsQueryService
     public async Task<GetMunicipalityDataResponse> GetMunicipalityDataAsync(int municipalityId)
     {
         await using var conn = await _dbConnection.GetOpenConnectionAsync();
-        var cmd = conn.CreateCommand();
-        cmd.CommandText = @"
-            SELECT 
-                date_recorded,
-                males + females AS total_population
-            FROM population_by_sex_data
-            WHERE municipality_id = @municipalityId
-            ORDER BY date_recorded ASC
-        ";
         
-        cmd.Parameters.AddWithValue("municipalityId", municipalityId);
-        
-        await using var reader = await cmd.ExecuteReaderAsync();
         var population = new List<Dictionary<string, object>>();
-        
-        while (await reader.ReadAsync())
+        var budget = new List<Dictionary<string, object>>();
+
+        async Task getPopulation()
         {
-            var row = new Dictionary<string, object>();
-            row["dateRecorded"] = reader.GetDateTime(0);
-            row["totalPopulation"] = reader.GetInt32(1);
-            population.Add(row);
+            var cmd = conn.CreateCommand();
+            cmd.CommandText = @"
+                SELECT 
+                    date_recorded,
+                    males + females AS total_population
+                FROM population_by_sex_data
+                WHERE municipality_id = @municipalityId
+                ORDER BY date_recorded DESC
+            ";
+        
+            cmd.Parameters.AddWithValue("municipalityId", municipalityId);
+        
+            await using var reader = await cmd.ExecuteReaderAsync();
+        
+            while (await reader.ReadAsync())
+            {
+                var row = new Dictionary<string, object>();
+                row["dateRecorded"] = reader.GetDateTime(0);
+                row["totalPopulation"] = reader.GetInt32(1);
+                population.Add(row);
+            } 
         }
 
+        async Task getBudget()
+        {
+            var cmd = conn.CreateCommand();
+            cmd.CommandText = @"
+                SELECT
+                    date_recorded,
+                    transport + education + infrastructure_housing + environment + culture_sport + social_health + admin_safety + other_economy AS total_budget
+                FROM budget_expenses_data_summary
+                WHERE municipality_id = @municipalityId
+                ORDER BY date_recorded DESC
+            ";
+            
+            cmd.Parameters.AddWithValue("municipalityId", municipalityId);
+            
+            await using var reader = await cmd.ExecuteReaderAsync();
+
+            while (await reader.ReadAsync())
+            {
+                var row = new Dictionary<string, object>();
+                row["dateRecorded"] = reader.GetDateTime(0);
+                row["totalBudget"] = reader.GetDecimal(1);
+                budget.Add(row);
+            }
+        }
+        
+        await getPopulation();
+        await getBudget();
+
         return new GetMunicipalityDataResponse(
-            population
+            population,
+            budget
         );
     }
     

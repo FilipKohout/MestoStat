@@ -8,6 +8,7 @@ import { prefetchAllTablesMetadata } from "@/app/services/charts/tableMetadata";
 import Badge from "@/app/components/utils/Badge";
 import MunicipalityPageClient from "@/app/municipality/[municipalityId]/MunicipalityPageClient";
 import { prefetchTablePeriodicities } from "@/app/services/charts/tableDefinitions";
+import { standardValueFormatter } from "@/app/lib/utils";
 
 export default async function MunicipalityPage({ params }: { params: Promise<{ municipalityId: number }> }) {
     const { municipalityId } = await params;
@@ -32,20 +33,37 @@ export default async function MunicipalityPage({ params }: { params: Promise<{ m
         return `${change >= 0 ? "+" : ""}${change.toFixed(1)}%`;
     }
 
-    const populationChange = quickData?.population?.[0]?.totalPopulation ? getStatsChangePer(quickData.population[0].totalPopulation, quickData.population[1].totalPopulation) : "N/A";
+    const getSeriesChange = (series: never[] | undefined, key: string) => {
+        if (!series || series.length === 0) return "N/A";
+
+        const current = series[0]?.[key];
+        const previous = series[series.length - 1]?.[key];
+
+        if (current == null || previous == null || previous === 0) return "N/A";
+
+        return getStatsChangePer(current, previous);
+    }
+
+    const populationChange = getSeriesChange(quickData.population as never[], "totalPopulation");
+    const budgetChange = getSeriesChange(quickData.budget as never[], "totalBudget");
 
     const stats = [
         {
             label: "Obyvatelé",
-            val: quickData?.population?.[0]?.totalPopulation.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") || "-",
+            val: standardValueFormatter(quickData?.population?.[0]?.totalPopulation) || "-",
             change: populationChange,
             color: populationChange.includes("+") ? "text-blue-300" : "text-rose-300",
             chartColor: "blue",
-            data: quickData.population.map(item => ({ date: item.startPeriod, val: item.totalPopulation })).slice(0, 20 ),
+            data: quickData.population.map(item => ({ date: item.startPeriod, val: item.totalPopulation })).reverse().slice(0, 10),
         },
-        { label: "Rozpočet", val: "3.4 M", change: "+5.2%", color: "text-cyan-300", chartColor: "cyan", data: [{ date: "1", val: 10 }, { date: "5", val: 40 }] },
-        { label: "Výdaje", val: "2.1 M", change: "-1.2%", color: "text-rose-300", chartColor: "rose", data: [{ date: "1", val: 80 }, { date: "5", val: 30 }] },
-        { label: "Projekty", val: "12", change: "Aktivní", color: "text-emerald-300", chartColor: "emerald", data: [{ date: "1", val: 10 }, { date: "5", val: 90 }] },
+        {
+            label: "Rozpočet",
+            val: standardValueFormatter(quickData?.budget?.[0]?.totalBudget) || "-",
+            change: budgetChange,
+            color: budgetChange.includes("+") ? "text-blue-300" : "text-rose-300",
+            chartColor: "cyan",
+            data: quickData.budget.map(item => ({ date: item.startPeriod, val: item.totalBudget })).reverse().slice(0, 10),
+        },
     ]
 
     return (

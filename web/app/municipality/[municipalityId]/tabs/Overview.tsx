@@ -110,6 +110,24 @@ export default function Overview() {
                         valueFormatter: value => standardValueFormatter(value, 0, "")
                     },
                 ]} {...filters} />
+
+                <ChartWrapper title={`Výdaje`} showFilters variants={[
+                    {
+                        tableId: 9,
+                        label: "",
+                        component: props => <TimeChart type="bar" stacked={true} {...props} />,
+                        valueFormatter: value => standardValueFormatter(value, 0, " Kč")
+                    },
+                ]} {...filters} />
+
+                <ChartWrapper title={`Příjmy`} showFilters  variants={[
+                    {
+                        tableId: 10,
+                        label: "",
+                        component: props => <TimeChart type="bar" stacked={true} {...props} />,
+                        valueFormatter: value => standardValueFormatter(value, 0, " Kč")
+                    },
+                ]} {...filters} />
             </div>
 
             <ChartWrapper title={`Výdaje`} showFilters className="row-span-2" variants={[
@@ -122,7 +140,7 @@ export default function Overview() {
                 {
                     tableId: 9,
                     label: "Celé vybrané období",
-                    component: props => <TreeMapChart aggregation="AVG" {...props} />,
+                    component: props => <TreeMapChart aggregation="SUM" {...props} />,
                     valueFormatter: value => standardValueFormatter(value, 0, " Kč")
                 },
             ]} {...filters} periodicityId={4} />
@@ -152,7 +170,7 @@ export default function Overview() {
                 {
                     tableId: 10,
                     label: "Celé vybrané období",
-                    component: props => <TreeMapChart aggregation="AVG" {...props} />,
+                    component: props => <TreeMapChart aggregation="SUM" {...props} />,
                     valueFormatter: value => standardValueFormatter(value, 0, " Kč")
                 },
             ]} {...filters} periodicityId={4} />

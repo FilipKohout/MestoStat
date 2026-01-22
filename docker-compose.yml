@@ -6,9 +6,9 @@ services:
     container_name: mestostat_db
     restart: always
     environment:
-      POSTGRES_USER: filip
-      POSTGRES_PASSWORD: filip123
-      POSTGRES_DB: mestostat
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     ports:
       - "5432:5432"
     volumes:
@@ -23,11 +23,11 @@ services:
     depends_on:
       - db
     environment:
-      - DB_HOST=db
-      - DB_PORT=5432
-      - DB_NAME=mestostat
-      - DB_USER=filip
-      - DB_PASS=filip123
+      - DB_HOST = ${DB_HOST}
+      - DB_PORT = ${DB_PORT}
+      - DB_NAME = ${DB_NAME}
+      - DB_USER = ${DB_USER}
+      - DB_PASS = ${DB_PASS}
     volumes:
       - ./data:/app
     networks:
@@ -39,31 +39,31 @@ services:
     depends_on:
       - db
     environment:
-      - DB_HOST=db
-      - DB_PORT=5432
-      - DB_NAME=mestostat
-      - DB_USER=filip
-      - DB_PASS=filip123
-      - ASPNETCORE_ENVIRONMENT=Development
-      - FRONTEND_URL=http://localhost:3000
+      - DB_HOST = ${DB_HOST}
+      - DB_PORT = ${DB_PORT}
+      - DB_NAME = ${DB_NAME}
+      - DB_USER = ${DB_USER}
+      - DB_PASS = ${DB_PASS}
+      - ASPNETCORE_ENVIRONMENT = ${ASPNETCORE_ENVIRONMENT}
+      - FRONTEND_URL = ${FRONTEND_URL}
     ports:
       - "8080:8080"
     networks:
       - backend
       - frontend
   
-#  web:
-#    build: ./web
-#    container_name: mestostat_web
-#    depends_on:
-#      - api
-#    environment:
-#      - INTERNAL_API_URL=http://localhost:8080
-#      - NEXT_PUBLIC_API_URL=http://localhost:8080
-#    ports:
-#      - "3000:3000"
-#    networks:
-#      - frontend
+  web:
+    build: ./web
+    container_name: mestostat_web
+    depends_on:
+      - api
+    environment:
+      - INTERNAL_API_URL = ${INTERNAL_API_URL}
+      - NEXT_PUBLIC_API_URL = ${NEXT_PUBLIC_API_URL}
+    ports:
+      - "3000:3000"
+    networks:
+      - frontend
 
 networks:
   backend:

@@ -13,6 +13,9 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+    console.log("INTERNAL_API_URL:", process.env.INTERNAL_API_URL);
+    console.log("NEXT_PUBLIC_API_URL:", process.env.NEXT_PUBLIC_API_URL);
+
     return (
         <html lang="cs" className="dark">
             <body className={`${inter.className} bg-slate-950 text-slate-50 min-h-screen flex flex-col`}>

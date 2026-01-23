@@ -49,7 +49,11 @@ services:
       - frontend
   
   web:
-    build: ./web
+    build:
+        context: ./web
+        args:
+          NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+          INTERNAL_API_URL: http://api:8080
     container_name: mestostat_web
     depends_on:
       - api

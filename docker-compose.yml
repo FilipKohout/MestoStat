@@ -16,16 +16,17 @@ services:
       - backend
 
   data:
-    build: ./data
+    build:
+      context: ./data
+      args:
+        DB_HOST: db
+        DB_PORT: 5432
+        DB_NAME: mestostat
+        DB_USER: ${DB_USER}
+        DB_PASS: ${DB_PASS}
     container_name: mestostat_data
     depends_on:
       - db
-    environment:
-      DB_HOST: ${DB_HOST}
-      DB_PORT: ${DB_PORT}
-      DB_NAME: ${DB_NAME}
-      DB_USER: ${DB_USER}
-      DB_PASS: ${DB_PASS}
     networks:
       - backend
   
@@ -57,9 +58,6 @@ services:
     container_name: mestostat_web
     depends_on:
       - api
-    environment:
-      INTERNAL_API_URL: http://api:8080
-      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
     ports:
       - "3000:3000"
     networks:

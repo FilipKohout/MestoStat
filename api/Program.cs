@@ -11,6 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 var frontendUrl = Environment.GetEnvironmentVariable("FRONTEND_URL");
 
 if (!string.IsNullOrEmpty(frontendUrl))
+{
     builder.Services.AddCors(options =>
     {
         options.AddPolicy("AllowFrontend",
@@ -21,6 +22,9 @@ if (!string.IsNullOrEmpty(frontendUrl))
                     .AllowAnyMethod();
             });
     });
+
+    Console.WriteLine($"Frontend URL set to: {frontendUrl}");
+}
 else
     throw new Exception("Frontend URL ENV is not provided");
 
@@ -49,6 +53,10 @@ using (var scope = app.Services.CreateScope())
     {
         Console.WriteLine($"Cannot connect to DB: {ex.Message}");
         return;
+    }
+    finally
+    {
+        Console.WriteLine("Database connected");
     }
 }
 

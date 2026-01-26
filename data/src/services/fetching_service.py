@@ -43,21 +43,21 @@ def fetch_all_data():
             file_path.write_bytes(response.content)
             logging.info(f"Saved raw file for {name}")
 
-        data = None
+            data = None
 
-        try:
-            logging.info(f"Converting {name} from {ext} format")
-            data = FORMATS[ext](file_path)
-        except Exception as e:
-            logging.error(f"Failed to decode {file_path}: {e}")
-
-        if data is not None:
             try:
-                logging.info(f"Processing data from {name}")
-                read(data)
+                logging.info(f"Converting {name} from {ext} format")
+                data = FORMATS[ext](file_path)
             except Exception as e:
-                logging.error(f"Failed to process {name}: {e}")
-        else:
-            logging.error(f"Couldn't get any data from file {file_path}")
+                logging.error(f"Failed to decode {file_path}: {e}")
+
+            if data is not None:
+                try:
+                    logging.info(f"Processing data from {name}")
+                    read(data)
+                except Exception as e:
+                    logging.error(f"Failed to process {name}: {e}")
+            else:
+                logging.error(f"Couldn't get any data from file {file_path}")
 
     logging.info("Synced all data, database is up to date")

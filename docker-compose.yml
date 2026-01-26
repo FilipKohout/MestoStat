@@ -5,6 +5,12 @@ services:
     build: ./db
     container_name: mestostat_db
     restart: always
+    deploy:
+      resources:
+        limits:
+          memory: 1024M
+        reservations:
+          memory: 256M
     environment:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASS}
@@ -26,6 +32,12 @@ services:
         DB_PASS: ${DB_PASS}
     container_name: mestostat_data
     restart: on-failure
+    volumes:
+      - ./data/raw:/app/data/raw
+    deploy:
+      resources:
+        limits:
+          memory: 1500M
     depends_on:
       - db
     networks:
@@ -35,6 +47,12 @@ services:
     build: ./api
     container_name: mestostat_api
     restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 1024M
+        reservations:
+          memory: 256M
     depends_on:
       - db
     environment:
@@ -59,6 +77,10 @@ services:
           INTERNAL_API_URL: "http://api:8080"
     container_name: mestostat_web
     restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 512M
     depends_on:
       - api
     ports:

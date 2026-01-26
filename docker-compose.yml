@@ -25,6 +25,7 @@ services:
         DB_USER: ${DB_USER}
         DB_PASS: ${DB_PASS}
     container_name: mestostat_data
+    restart: on-failure
     depends_on:
       - db
     networks:
@@ -33,6 +34,7 @@ services:
   api:
     build: ./api
     container_name: mestostat_api
+    restart: unless-stopped
     depends_on:
       - db
     environment:
@@ -56,6 +58,7 @@ services:
           NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
           INTERNAL_API_URL: "http://api:8080"
     container_name: mestostat_web
+    restart: unless-stopped
     depends_on:
       - api
     ports:

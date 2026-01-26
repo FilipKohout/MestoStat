@@ -3,7 +3,7 @@ import { twMerge } from "tailwind-merge"
 import { CHART_COLOR_PALETTE as COLOR_PALETTE, HEX_COLORS } from "@/app/lib/consts";
 
 export function getAPIUrl(route: string): string {
-    if (process.env.INTERNAL_API_URL)
+    if (process.env.INTERNAL_API_URL && typeof window === "undefined")
         return `${process.env.INTERNAL_API_URL}/${route}`;
 
     return `${process.env.NEXT_PUBLIC_API_URL}/${route}`;

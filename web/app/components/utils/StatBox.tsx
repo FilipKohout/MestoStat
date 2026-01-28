@@ -22,7 +22,7 @@ export default function StatBox({ label, value, trend, className, style }: StatB
             variant="glass"
             noPadding
             className={cnTailwind(
-                "flex flex-col items-center justify-center",
+                "flex flex-col items-center justify-center text-nowrap w-fit min-w-max",
                 "rounded-lg px-4 py-2",
                 className
             )}
@@ -33,7 +33,7 @@ export default function StatBox({ label, value, trend, className, style }: StatB
             </p>
 
             <div className="flex items-center gap-2">
-                <span className="text-xl font-semibold text-slate-100 tabular-nums">
+                <span className="text-sm font-semibold text-slate-100 tabular-nums">
                     {value}
                 </span>
 

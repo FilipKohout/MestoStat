@@ -82,14 +82,22 @@ export default async function MunicipalityPage({ params }: { params: Promise<{ m
                     <div className="mx-auto max-w-7xl px-4 sm:px-6 pb-8">
                         <div className="flex flex-col gap-6">
                             <div className="space-y-2">
+                                <h1 className="text-5xl md:text-6xl font-bold text-white tracking-tight drop-shadow-xl">
+                                    {municipality.name}
+                                </h1>
                                 <div className="flex items-center gap-3">
                                     <Badge variant="primary" size="md">
                                         {municipality.status}
                                     </Badge>
+                                    {municipality.districtName &&
+                                        <Badge variant="glass" size="md">
+                                            Okres {municipality.districtName}
+                                        </Badge>
+                                    }
+                                    <Badge variant="glass" size="md">
+                                        {municipality.regionName}
+                                    </Badge>
                                 </div>
-                                <h1 className="text-5xl md:text-6xl font-bold text-white tracking-tight drop-shadow-xl">
-                                    {municipality.name}
-                                </h1>
                             </div>
 
                             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-2">

@@ -15,7 +15,7 @@ export default function useSummaries(data: ChartDataItem[], valueFormatter: (val
     ) => {
         if (totalsOnly.length === 0) return defaultValue;
         const result = summaryFunction(totalsOnly);
-        return valueFormatter(result);
+        return [valueFormatter(result), result];
     }, [totalsOnly, valueFormatter]);
 
     const currentSummary = useMemo(() => {
@@ -53,9 +53,10 @@ export default function useSummaries(data: ChartDataItem[], valueFormatter: (val
     ), [calculateSummary]);
 
     return {
-        averageValue,
-        totalValue,
+        averageValue: averageValue[0],
+        totalValue: totalValue[0],
         currentSummary,
-        maxValue
+        maxValue: maxValue[0],
+        maxValueNumber: maxValue[1]
     };
 }

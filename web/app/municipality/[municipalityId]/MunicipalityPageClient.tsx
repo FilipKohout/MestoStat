@@ -8,11 +8,13 @@ import IntervalIcon from "@/app/components/icons/IntervalIcon";
 import useTablePeriodicities from "@/app/hooks/charts/query/useTablePeriodicities";
 import { DEFAULT_DATE_RANGE_PRESET_INDEX } from "@/app/lib/consts";
 import usePeriod from "@/app/hooks/charts/query/usePeriod";
+import Finances from "@/app/municipality/[municipalityId]/tabs/Finances";
+import Demographics from "@/app/municipality/[municipalityId]/tabs/Demographics";
 
 const tabs = [
     {"label": "Přehled", "component": <Overview />},
-    // {"label": "Finance", "component": <Finances />},
-    // {"label": "Demografie", "component": <Demographics />},
+    {"label": "Finance", "component": <Finances />},
+    {"label": "Demografie", "component": <Demographics />},
     // {"label": "Školství", "component": <Education />},
 ];
 

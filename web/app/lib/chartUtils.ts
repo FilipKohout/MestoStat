@@ -1,5 +1,7 @@
 // Tremor Raw chartColors [v0.1.0]
 
+import { compactValueFormatter } from "@/app/lib/utils";
+
 export type ColorUtility = "bg" | "stroke" | "fill" | "text"
 
 export const chartColors = {
@@ -79,6 +81,11 @@ export const constructCategoryColors = (
     })
     return categoryColors
 }
+
+export const calculateYAxisWidth = (maxValue: number) => {
+    const length = compactValueFormatter(maxValue);
+    return Math.max(40, length.length * 11);
+};
 
 export const getColorClassName = (
     color: AvailableChartColorsKeys,

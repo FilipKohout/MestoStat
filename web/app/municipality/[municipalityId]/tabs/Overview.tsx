@@ -1,29 +1,17 @@
 "use client";
 
-import useDateRange from "@/app/hooks/charts/useDateRange";
-import usePeriod from "@/app/hooks/charts/query/usePeriod";
-import { useParams } from "next/navigation";
 import { ChartWrapper } from "@/app/components/charts/ChartWrapper";
 import { percentValueFormatter, standardValueFormatter } from "@/app/lib/utils";
 import PieChart from "@/app/components/charts/wrappedComponents/PieChart";
 import TreeMapChart from "@/app/components/charts/wrappedComponents/TreeMapChart";
 import TimeChart from "@/app/components/charts/wrappedComponents/TimeChart";
-import TableChart from "@/app/components/charts/wrappedComponents/TableChart";
+import useChartFilters from "@/app/hooks/charts/useChartFilters";
 
 export default function Overview() {
-    const { startDate, endDate } = useDateRange();
-    const { period } = usePeriod();
-    const { municipalityId } = useParams<{ municipalityId: string }>();
-
-    const filters = {
-        startDate: new Date(startDate || 0),
-        endDate: new Date(endDate || 0),
-        identifierId: Number(municipalityId),
-        periodicityId: period
-    }
+    const filters = useChartFilters();
 
     return (
-        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <ChartWrapper title={"Rozdělení obyvatel podle"} showFilters variants={[
                     {
@@ -50,18 +38,16 @@ export default function Overview() {
                     },
                 ]} {...filters} />
 
-                <ChartWrapper title={"Rozdělení obyvatel podle"} showFilters variants={[
+                <ChartWrapper title={`Výdaje`} showFilters variants={[
                     {
-                        tableId: 1,
-                        label: "Pohlaví",
-                        component: props => <PieChart type="pie" aggregation="ACT" {...props} />,
-                        valueFormatter: value => percentValueFormatter(value, 2) + "%"
-                    },
-                    {
-                        tableId: 3,
-                        label: "Věku",
-                        component: props => <PieChart type="pie" aggregation="ACT" {...props} />,
-                        valueFormatter: value => percentValueFormatter(value, 2) + "%"
+                        tableId: 9,
+                        label: "",
+                        component: props => <TimeChart type="bar" stacked={true} {...props} summaries={{
+                            max: true,
+                            average: true,
+                            current: true,
+                        }} />,
+                        valueFormatter: value => standardValueFormatter(value, 0, " Kč")
                     },
                 ]} {...filters} />
 
@@ -88,6 +74,35 @@ export default function Overview() {
                     },
                 ]} {...filters} />
 
+                <ChartWrapper title={`Příjmy`} showFilters variants={[
+                    {
+                        tableId: 10,
+                        label: "",
+                        component: props => <TimeChart type="bar" stacked={true} {...props} summaries={{
+                            max: true,
+                            average: true,
+                            current: true,
+                        }} />,
+                        valueFormatter: value => standardValueFormatter(value, 0, " Kč")
+                    },
+                ]} {...filters} />
+
+
+                <ChartWrapper title={"Rozdělení obyvatel podle"} showFilters variants={[
+                    {
+                        tableId: 1,
+                        label: "Pohlaví",
+                        component: props => <PieChart type="pie" aggregation="ACT" {...props} />,
+                        valueFormatter: value => percentValueFormatter(value, 2) + "%"
+                    },
+                    {
+                        tableId: 3,
+                        label: "Věku",
+                        component: props => <PieChart type="pie" aggregation="ACT" {...props} />,
+                        valueFormatter: value => percentValueFormatter(value, 2) + "%"
+                    },
+                ]} {...filters} />
+
                 <ChartWrapper title={"Obyvatelstvo Historicky"} showFilters variants={[
                     {
                         tableId: 4,
@@ -110,24 +125,6 @@ export default function Overview() {
                         valueFormatter: value => standardValueFormatter(value, 0, "")
                     },
                 ]} {...filters} />
-
-                <ChartWrapper title={`Výdaje`} showFilters variants={[
-                    {
-                        tableId: 9,
-                        label: "",
-                        component: props => <TimeChart type="bar" stacked={true} {...props} />,
-                        valueFormatter: value => standardValueFormatter(value, 0, " Kč")
-                    },
-                ]} {...filters} />
-
-                <ChartWrapper title={`Příjmy`} showFilters  variants={[
-                    {
-                        tableId: 10,
-                        label: "",
-                        component: props => <TimeChart type="bar" stacked={true} {...props} />,
-                        valueFormatter: value => standardValueFormatter(value, 0, " Kč")
-                    },
-                ]} {...filters} />
             </div>
 
             <ChartWrapper title={`Výdaje`} showFilters className="row-span-2" variants={[
@@ -141,21 +138,6 @@ export default function Overview() {
                     tableId: 9,
                     label: "Celé vybrané období",
                     component: props => <TreeMapChart aggregation="SUM" {...props} />,
-                    valueFormatter: value => standardValueFormatter(value, 0, " Kč")
-                },
-            ]} {...filters} periodicityId={4} />
-
-            <ChartWrapper title={`Výdaje`} showFilters={false} className="row-span-2" variants={[
-                {
-                    tableId: 8,
-                    label: "Rok %year",
-                    component: props => <TableChart lastPeriod {...props} />,
-                    valueFormatter: value => standardValueFormatter(value, 0, " Kč")
-                },
-                {
-                    tableId: 8,
-                    label: "Celé vybrané období",
-                    component: props => <TableChart {...props} />,
                     valueFormatter: value => standardValueFormatter(value, 0, " Kč")
                 },
             ]} {...filters} periodicityId={4} />
@@ -174,21 +156,6 @@ export default function Overview() {
                     valueFormatter: value => standardValueFormatter(value, 0, " Kč")
                 },
             ]} {...filters} periodicityId={4} />
-
-            <ChartWrapper title={`Příjmy`} showFilters={false} className="row-span-2" variants={[
-                {
-                    tableId: 10,
-                    label: "Rok %year",
-                    component: props => <TableChart lastPeriod {...props} />,
-                    valueFormatter: value => standardValueFormatter(value, 0, " Kč")
-                },
-                {
-                    tableId: 10,
-                    label: "Celé vybrané období",
-                    component: props => <TableChart {...props} />,
-                    valueFormatter: value => standardValueFormatter(value, 0, " Kč")
-                },
-            ]} {...filters} periodicityId={4} />
-        </div>
+        </>
     );
 }

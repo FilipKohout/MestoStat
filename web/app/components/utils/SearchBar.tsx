@@ -9,6 +9,7 @@ export type SearchItem = {
     id: number;
     name: string;
     type: string;
+    location?: string;
 };
 
 interface SearchBarProps {
@@ -93,9 +94,15 @@ export default function SearchBar({ data, placeholder = "Hledat..." }: SearchBar
                                     >
                                         <span className="truncate">{item.name}</span>
 
-                                        <Badge variant="glass" size="sm" className="ml-2 shrink-0 opacity-70">
+                                        <Badge variant="primary" size="sm" className="ml-0.5 shrink-0 opacity-70">
                                             {item.type}
                                         </Badge>
+
+                                        {item.location &&
+                                            <Badge variant="neutral" size="sm" className="ml-0.5 shrink-0 opacity-70">
+                                                {item.location}
+                                            </Badge>
+                                        }
                                     </Button>
                                 ))}
                             </div>

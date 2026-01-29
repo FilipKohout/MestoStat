@@ -17,10 +17,11 @@ type TimeChartProps = {
         max?: boolean;
     };
     stacked?: boolean;
+    compact?: boolean;
 } & ChartProps;
 
 export default function TimeChart(props: TimeChartProps) {
-    const { type, data, activeCategories, allCategories, addTotalCategory, valueFormatter, stacked, summaries = {} } = props;
+    const { type, data, activeCategories, allCategories, addTotalCategory, valueFormatter, stacked, compact, summaries = {} } = props;
     const { formattedData, dataWithoutTotal } = useFormattedData(data);
     const { averageValue, totalValue, currentSummary, maxValue, maxValueNumber } = useSummaries(formattedData, valueFormatter);
 
@@ -39,7 +40,9 @@ export default function TimeChart(props: TimeChartProps) {
         <>
             <div className="w-full flex flex-row flex-nowrap items-center justify-start gap-3 overflow-x-auto py-2 mb-2 px-1 scrollbar-hide">
                 {summaries.current && currentSummary.trend !== null && (
-                    <StatBox label="Aktuální Hodnota" value={currentSummary.value} trend={currentSummary.trend} />
+                    compact
+                        ? <p className="text-2xl font-bold -mt-3">{currentSummary.value}</p>
+                        : <StatBox label="Aktuální Hodnota" value={currentSummary.value} trend={currentSummary.trend} />
                 )}
                 {summaries.average && <StatBox label="Průměr" value={averageValue} />}
                 {summaries.total && <StatBox label="Celkem" value={totalValue} />}

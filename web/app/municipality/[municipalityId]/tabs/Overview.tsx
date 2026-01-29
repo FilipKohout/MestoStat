@@ -11,7 +11,7 @@ export default function Overview() {
     const filters = useChartFilters();
 
     return (
-        <>
+        <div className="grid grid-cols-1 gap-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <ChartWrapper title={"Rozdělení obyvatel podle"} showFilters variants={[
                     {
@@ -156,6 +156,6 @@ export default function Overview() {
                     valueFormatter: value => standardValueFormatter(value, 0, " Kč")
                 },
             ]} {...filters} periodicityId={4} />
-        </>
+        </div>
     );
 }

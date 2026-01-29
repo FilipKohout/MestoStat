@@ -4,6 +4,7 @@ import "./globals.css";
 import "./styles/charts.css";
 import Navbar from "@/app/components/utils/NavBar";
 import QueryProvider from "@/app/providers/QueryProvider";
+import Footer from "@/app/components/utils/Footer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -25,6 +26,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     <div className="w-full flex-1">
                         {children}
                     </div>
+
+                    <Footer />
                 </QueryProvider>
             </body>
         </html>

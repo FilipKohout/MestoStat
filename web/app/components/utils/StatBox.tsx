@@ -3,8 +3,8 @@ import { Frame } from "@/app/components/utils/Frame";
 import Badge from "@/app/components/utils/Badge";
 
 interface StatBoxProps {
-    label: string;
     value: string | number;
+    label?: string;
     trend?: number | null;
     className?: string;
     style?: React.CSSProperties;
@@ -28,9 +28,11 @@ export default function StatBox({ label, value, trend, className, style }: StatB
             )}
             style={style}
         >
-            <p className="mb-1 text-xs font-medium text-slate-400 uppercase tracking-wide text-nowrap">
-                {label}
-            </p>
+            {label &&
+                <p className="mb-1 text-xs font-medium text-slate-400 uppercase tracking-wide text-nowrap">
+                    {label}
+                </p>
+            }
 
             <div className="flex items-center gap-2">
                 <span className="text-sm font-semibold text-slate-100 tabular-nums">

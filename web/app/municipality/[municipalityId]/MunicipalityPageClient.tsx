@@ -12,10 +12,10 @@ import Finances from "@/app/municipality/[municipalityId]/tabs/Finances";
 import Demographics from "@/app/municipality/[municipalityId]/tabs/Demographics";
 
 const tabs = [
-    {"label": "Přehled", "component": <Overview />},
-    {"label": "Finance", "component": <Finances />},
-    {"label": "Demografie", "component": <Demographics />},
-    // {"label": "Školství", "component": <Education />},
+    {label: "Přehled", component: <Overview />},
+    {label: "Finance", component: <Finances />},
+    {label: "Demografie", component: <Demographics />},
+    // {label: "Školství", component: <Education />},
 ];
 
 export default function MunicipalityPageClient() {

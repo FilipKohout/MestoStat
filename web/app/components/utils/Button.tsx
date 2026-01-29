@@ -2,12 +2,13 @@ import React, { ButtonHTMLAttributes } from "react";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     variant?: "primary" | "secondary" | "outline" | "ghost" | "active" | "menu-item" | "menu-item-active";
-    size?: "xs" | "sm" | "md";
+    size?: "xs" | "sm" | "md" | "lg";
     className?: string;
     icon?: React.ReactNode;
+    iconPosition?: "left" | "right";
 }
 
-export default function Button({ children, variant = "secondary", size = "xs", className = "", icon, ...props }: ButtonProps) {
+export default function Button({ children, variant = "secondary", size = "xs", className = "", icon, iconPosition = "right", ...props }: ButtonProps) {
     const baseStyles = "inline-flex items-center justify-center font-medium transition-all rounded-md border disabled:opacity-50 disabled:pointer-events-none";
 
     const variants = {
@@ -30,6 +31,7 @@ export default function Button({ children, variant = "secondary", size = "xs", c
         xs: "text-xs px-2 py-0.5 gap-1.5",
         sm: "text-sm px-3 py-1 gap-2",
         md: "text-sm px-4 py-1.5 gap-2",
+        lg: "text-xl px-5 py-1.5 gap-2.5",
     };
 
     const classes = `
@@ -41,8 +43,9 @@ export default function Button({ children, variant = "secondary", size = "xs", c
 
     return (
         <button className={classes} {...props}>
-            {icon && <span className="shrink-0">{icon}</span>}
+            {icon && iconPosition == "right" && <span className="shrink-0">{icon}</span>}
             {children}
+            {icon && iconPosition == "left" && <span className="shrink-0">{icon}</span>}
         </button>
     );
 }

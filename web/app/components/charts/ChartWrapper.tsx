@@ -1,3 +1,5 @@
+"use client";
+
 import { DashboardCard, DashboardCardProps } from "@/app/components/utils/DashboardCard";
 import Dropdown from "@/app/components/utils/Dropdown";
 import Button from "@/app/components/utils/Button";
@@ -34,6 +36,7 @@ type ChartWrapperProps = {
     title: string;
     variants: ChartVariant[];
     showFilters: boolean;
+    className?: string;
     
     startDate: Date,
     endDate: Date,
@@ -42,7 +45,7 @@ type ChartWrapperProps = {
 } & DashboardCardProps;
 
 export function ChartWrapper(props: ChartWrapperProps) {
-    const { title, variants, showFilters } = props;
+    const { title, variants, showFilters, className = "" } = props;
 
     const [activeCategories, setActiveCategories] = useState<string[]>([]);
     const [variantId, setVariantId] = useState(0);
@@ -90,7 +93,7 @@ export function ChartWrapper(props: ChartWrapperProps) {
         : new Date().getFullYear();
 
     return (
-        <DashboardCard variant="default" {...props} className="overflow-visible">
+        <DashboardCard variant="default" {...props} className={"overflow-visible " + className}>
             <DashboardCard.Header
                 title={title}
                 action={

@@ -1,9 +1,13 @@
+"use client";
+
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import SearchIcon from "@/app/components/icons/SearchIcon";
 import Button from "@/app/components/utils/Button";
 import { Frame } from "@/app/components/utils/Frame";
 import Badge from "@/app/components/utils/Badge";
+import { switchCase } from "@babel/types";
+import { cnTailwind } from "@/app/lib/utils";
 
 export type SearchItem = {
     id: number;
@@ -15,9 +19,10 @@ export type SearchItem = {
 interface SearchBarProps {
     data: SearchItem[];
     placeholder?: string;
+    size?: "sm" | "md" | "lg";
 }
 
-export default function SearchBar({ data, placeholder = "Hledat..." }: SearchBarProps) {
+export default function SearchBar({ data, placeholder = "Hledat...", size = "sm" }: SearchBarProps) {
     const [query, setQuery] = useState("");
     const [isOpen, setIsOpen] = useState(false);
     const [filteredData, setFilteredData] = useState<SearchItem[]>([]);
@@ -63,6 +68,12 @@ export default function SearchBar({ data, placeholder = "Hledat..." }: SearchBar
         }
     };
 
+    const inputSizes = {
+        sm: "py-1.5 text-sm",
+        md: "py-2 text-base",
+        lg: "py-2.5 text-lg",
+    };
+
     return (
         <div ref={containerRef} className="relative w-full group z-50">
             <div className="relative">
@@ -71,7 +82,10 @@ export default function SearchBar({ data, placeholder = "Hledat..." }: SearchBar
                 </div>
                 <input
                     type="text"
-                    className="block w-full rounded-full border border-slate-800 bg-slate-900/50 py-1.5 pl-10 pr-3 text-sm text-slate-200 placeholder:text-slate-600 focus:border-blue-500/50 focus:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 sm:text-sm sm:leading-6 transition-all"
+                    className={cnTailwind(
+                    "block w-full rounded-full border border-slate-800 bg-slate-900/50 pl-10 pr-3 text-slate-200 placeholder:text-slate-600 focus:border-blue-500/50 focus:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 sm:leading-6 transition-all",
+                        inputSizes[size]
+                    )}
                     placeholder={placeholder}
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
@@ -117,4 +131,43 @@ export default function SearchBar({ data, placeholder = "Hledat..." }: SearchBar
             )}
         </div>
     );
+}
+
+export function AutofillAnimationSearchBar(props: SearchBarProps & { phrases: string[], typingDelay?: number, phraseDelay?: number }) {
+    const { phrases, typingDelay = 100, phraseDelay = 1000 } = props;
+    
+    const [currentPhraseIndex, setCurrentPhraseIndex] = useState(0);
+    const [query, setQuery] = useState("");
+    const [isDeleting, setIsDeleting] = useState(false);
+    
+    const currentPhrase = phrases[currentPhraseIndex];
+
+    const delayWriting = () => new Promise(resolve => setTimeout(resolve, phraseDelay));
+
+    useEffect(() => {
+        const timer = setInterval(async () => {
+            if (isDeleting)
+                setQuery(prev => prev.slice(0, -1));
+            else
+                setQuery(prev => currentPhrase.slice(0, prev.length + 1));
+            
+            if (!isDeleting && query === currentPhrase) {
+                clearInterval(timer);
+                await delayWriting();
+
+                setIsDeleting(true);    
+            }
+            else if (isDeleting && query === "") {
+                clearInterval(timer);
+                await delayWriting();
+
+                setIsDeleting(false);
+                setCurrentPhraseIndex((prev) => (prev + 1) % phrases.length);
+            }
+        }, typingDelay);
+        
+        return () => clearInterval(timer);
+    }, [currentPhrase, delayWriting, isDeleting, phrases.length, query, typingDelay]);
+    
+    return (<SearchBar {...props} placeholder={query} />);
 }

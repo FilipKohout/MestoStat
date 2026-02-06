@@ -19,9 +19,9 @@ VALUES
     )
 ON CONFLICT (table_name) DO NOTHING;
 
-INSERT INTO statistic_columns (table_id, column_name, alias, aggregation_method)
+INSERT INTO statistic_columns (table_id, column_name, alias, time_aggregation_method, structure_aggregation_method)
 VALUES
-    ((SELECT table_id FROM statistics WHERE table_name = 'unemployment_data'), 'unemployed_percent', 'procento nezaměstnanosti', 'AVG')
+    ((SELECT table_id FROM statistics WHERE table_name = 'unemployment_data'), 'unemployed_percent', 'procento nezaměstnanosti', 'AVG', 'AVG')
 ON CONFLICT (table_id, column_name) DO NOTHING;
 
 
@@ -48,9 +48,9 @@ VALUES
     )
 ON CONFLICT (table_name) DO NOTHING;
 
-INSERT INTO statistic_columns (table_id, column_name, alias, aggregation_method)
+INSERT INTO statistic_columns (table_id, column_name, alias, time_aggregation_method, structure_aggregation_method)
 VALUES
-    ((SELECT table_id FROM statistics WHERE table_name = 'unemployment_data_estimated_count'), 'estimated_unemployed_count', 'nezaměstnaní (odhad)', 'AVG')
+    ((SELECT table_id FROM statistics WHERE table_name = 'unemployment_data_estimated_count'), 'estimated_unemployed_count', 'nezaměstnaní (odhad)', 'AVG', 'AVG')
 ON CONFLICT (table_id, column_name) DO NOTHING;
 
 
@@ -143,7 +143,7 @@ INSERT INTO statistics (table_id, table_name, last_updated, periodicity_id, stru
 VALUES (8, 'budget_expenses_data_detailed', NOW(), (SELECT periodicity_id FROM periodicities WHERE periodicity_name = 'Ročně'), (SELECT structure_level_id FROM structure_levels WHERE structure_level_name = 'Obec'), 'https://monitor.statnipokladna.gov.cz')
 ON CONFLICT (table_name) DO NOTHING;
 
-INSERT INTO statistic_columns (table_id, column_name, alias, aggregation_method)
+INSERT INTO statistic_columns (table_id, column_name, alias, time_aggregation_method)
 VALUES
     ((SELECT table_id FROM statistics WHERE table_name = 'budget_expenses_data_detailed'), 'agriculture', 'zemědělství', 'SUM'),
     ((SELECT table_id FROM statistics WHERE table_name = 'budget_expenses_data_detailed'), 'forestry', 'lesnictví', 'SUM'),
@@ -235,7 +235,7 @@ INSERT INTO statistics (table_id, table_name, last_updated, periodicity_id, stru
 VALUES (9, 'budget_expenses_data_summary', NOW(), (SELECT periodicity_id FROM periodicities WHERE periodicity_name = 'Ročně'), (SELECT structure_level_id FROM structure_levels WHERE structure_level_name = 'Obec'), 'https://monitor.statnipokladna.gov.cz')
 ON CONFLICT (table_name) DO NOTHING;
 
-INSERT INTO statistic_columns (table_id, column_name, alias, aggregation_method)
+INSERT INTO statistic_columns (table_id, column_name, alias, time_aggregation_method)
 VALUES
     ((SELECT table_id FROM statistics WHERE table_name = 'budget_expenses_data_summary'), 'transport', 'doprava', 'SUM'),
     ((SELECT table_id FROM statistics WHERE table_name = 'budget_expenses_data_summary'), 'education', 'školství', 'SUM'),
@@ -290,7 +290,7 @@ INSERT INTO statistics (table_id, table_name, last_updated, periodicity_id, stru
 VALUES (10, 'budget_income_data_summary', NOW(), (SELECT periodicity_id FROM periodicities WHERE periodicity_name = 'Ročně'), (SELECT structure_level_id FROM structure_levels WHERE structure_level_name = 'Obec'), 'https://monitor.statnipokladna.gov.cz')
 ON CONFLICT (table_name) DO NOTHING;
 
-INSERT INTO statistic_columns (table_id, column_name, alias, aggregation_method)
+INSERT INTO statistic_columns (table_id, column_name, alias, time_aggregation_method)
 VALUES
     ((SELECT table_id FROM statistics WHERE table_name = 'budget_income_data_summary'), 'tax_shared', 'sdílené daně (DPH, DPPO)', 'SUM'),
     ((SELECT table_id FROM statistics WHERE table_name = 'budget_income_data_summary'), 'tax_property', 'daň z nemovitosti', 'SUM'),

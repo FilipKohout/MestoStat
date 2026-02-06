@@ -24,7 +24,7 @@ export default function MunicipalityAdvertisement() {
                     component: props => <TimeChart type="bar" stacked compact summaries={{ current: true }} {...props} />,
                     valueFormatter: value => standardValueFormatter(value, 0, " Kč")
                 },
-            ]} identifierId={municipalities?.find(m => m.name == "Praha")?.id ?? 0} periodicityId={4} startDate={new Date(2000, 1, 1)} endDate={new Date()} />
+            ]} structureLevelId={4} identifierId={municipalities?.find(m => m.name == "Praha")?.id ?? 0} periodicityId={4} startDate={new Date(2000, 1, 1)} endDate={new Date()} />
 
             <Link href={`municipality/${municipalities?.find(m => m.name == "Praha")?.id ?? 0}`} className="mt-2">
                 <Button variant="primary" size="lg" icon={<ChevronRightIcon />} iconPosition="left">
@@ -44,7 +44,7 @@ export default function MunicipalityAdvertisement() {
                     component: props => <TimeChart addTotalCategory type="area" stacked={false} compact summaries={{ current: true }} {...props} allCategories={["total"]} activeCategories={["total"]} />,
                     valueFormatter: value => standardValueFormatter(value, 0)
                 },
-            ]} identifierId={municipalities?.find(m => m.name == "Brno")?.id ?? 0} periodicityId={4} startDate={new Date(2000, 1, 1)} endDate={new Date()} />
+            ]} structureLevelId={4} identifierId={municipalities?.find(m => m.name == "Brno")?.id ?? 0} periodicityId={4} startDate={new Date(2000, 1, 1)} endDate={new Date()} />
 
             <Link href={`municipality/${municipalities?.find(m => m.name == "Brno")?.id ?? 0}`} className="mt-2">
                 <Button variant="primary" size="lg" icon={<ChevronRightIcon />} iconPosition="left">
@@ -64,7 +64,7 @@ export default function MunicipalityAdvertisement() {
                     component: props => <TimeChart addTotalCategory type="area" stacked={false} compact summaries={{ current: true }} {...props} allCategories={["total"]} activeCategories={["total"]} />,
                     valueFormatter: value => percentValueFormatter(value, 2) + "%"
                 },
-            ]} identifierId={municipalities?.find(m => m.name == "Ostrava")?.id ?? 0} periodicityId={4} startDate={new Date(2000, 1, 1)} endDate={new Date()} />
+            ]} structureLevelId={4} identifierId={municipalities?.find(m => m.name == "Ostrava")?.id ?? 0} periodicityId={4} startDate={new Date(2000, 1, 1)} endDate={new Date()} />
 
             <Link href={`municipality/${municipalities?.find(m => m.name == "Ostrava")?.id ?? 0}`} className="mt-2">
                 <Button variant="primary" size="lg" icon={<ChevronRightIcon />} iconPosition="left">

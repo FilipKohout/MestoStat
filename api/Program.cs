@@ -1,6 +1,7 @@
 using System;
 using API.db;
 using API.db.Stats;
+using API.DB.Stats;
 using API.db.Structure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
@@ -34,6 +35,7 @@ builder.Services.AddScoped<DistrictService>();
 builder.Services.AddScoped<RegionService>();
 builder.Services.AddScoped<StatsQueryService>();
 builder.Services.AddScoped<StatsDefinitionsService>();
+builder.Services.AddScoped<DataAggregationService>();
 
 builder.Services.AddAuthorization();
 builder.Services.AddEndpointsApiExplorer();

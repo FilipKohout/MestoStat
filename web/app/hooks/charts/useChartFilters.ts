@@ -11,6 +11,7 @@ export default function useChartFilters() {
         startDate: new Date(startDate || 0),
         endDate: new Date(endDate || 0),
         identifierId: Number(municipalityId),
-        periodicityId: period
+        periodicityId: period,
+        structureLevelId: 4,
     };
 }

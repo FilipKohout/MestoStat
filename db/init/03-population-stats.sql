@@ -20,10 +20,10 @@ VALUES
     )
 ON CONFLICT (table_name) DO NOTHING;
 
-INSERT INTO statistic_columns (table_id, column_name, alias, aggregation_method)
+INSERT INTO statistic_columns (table_id, column_name, alias)
 VALUES
-    ((SELECT table_id FROM statistics WHERE table_name = 'population_by_sex_data'), 'males', 'muži', 'AVG'),
-    ((SELECT table_id FROM statistics WHERE table_name = 'population_by_sex_data'), 'females', 'ženy', 'AVG')
+    ((SELECT table_id FROM statistics WHERE table_name = 'population_by_sex_data'), 'males', 'muži'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'population_by_sex_data'), 'females', 'ženy')
 ON CONFLICT (table_id, column_name) DO NOTHING;
 
 
@@ -71,29 +71,29 @@ VALUES
     )
 ON CONFLICT (table_name) DO NOTHING;
 
-INSERT INTO statistic_columns (table_id, column_name, alias, aggregation_method)
+INSERT INTO statistic_columns (table_id, column_name, alias)
 VALUES
-    ((SELECT table_id FROM statistics WHERE table_name = 'population_by_age_data'), '0', '0', 'AVG'),
-    ((SELECT table_id FROM statistics WHERE table_name = 'population_by_age_data'), '1 - 4', '1 - 4', 'AVG'),
-    ((SELECT table_id FROM statistics WHERE table_name = 'population_by_age_data'), '5 - 9', '5 - 9', 'AVG'),
-    ((SELECT table_id FROM statistics WHERE table_name = 'population_by_age_data'), '10 - 14', '10 - 14', 'AVG'),
-    ((SELECT table_id FROM statistics WHERE table_name = 'population_by_age_data'), '15 - 19', '15 - 19', 'AVG'),
-    ((SELECT table_id FROM statistics WHERE table_name = 'population_by_age_data'), '20 - 24', '20 - 24', 'AVG'),
-    ((SELECT table_id FROM statistics WHERE table_name = 'population_by_age_data'), '25 - 29', '25 - 29', 'AVG'),
-    ((SELECT table_id FROM statistics WHERE table_name = 'population_by_age_data'), '30 - 34', '30 - 34', 'AVG'),
-    ((SELECT table_id FROM statistics WHERE table_name = 'population_by_age_data'), '35 - 39', '35 - 39', 'AVG'),
-    ((SELECT table_id FROM statistics WHERE table_name = 'population_by_age_data'), '40 - 44', '40 - 44', 'AVG'),
-    ((SELECT table_id FROM statistics WHERE table_name = 'population_by_age_data'), '45 - 49', '45 - 49', 'AVG'),
-    ((SELECT table_id FROM statistics WHERE table_name = 'population_by_age_data'), '50 - 54', '50 - 54', 'AVG'),
-    ((SELECT table_id FROM statistics WHERE table_name = 'population_by_age_data'), '55 - 59', '55 - 59', 'AVG'),
-    ((SELECT table_id FROM statistics WHERE table_name = 'population_by_age_data'), '60 - 64', '60 - 64', 'AVG'),
-    ((SELECT table_id FROM statistics WHERE table_name = 'population_by_age_data'), '65 - 69', '65 - 69', 'AVG'),
-    ((SELECT table_id FROM statistics WHERE table_name = 'population_by_age_data'), '70 - 74', '70 - 74', 'AVG'),
-    ((SELECT table_id FROM statistics WHERE table_name = 'population_by_age_data'), '75 - 79', '75 - 79', 'AVG'),
-    ((SELECT table_id FROM statistics WHERE table_name = 'population_by_age_data'), '80 - 84', '80 - 84', 'AVG'),
-    ((SELECT table_id FROM statistics WHERE table_name = 'population_by_age_data'), '85 - 89', '85 - 89', 'AVG'),
-    ((SELECT table_id FROM statistics WHERE table_name = 'population_by_age_data'), '90 - 94', '90 - 94', 'AVG'),
-    ((SELECT table_id FROM statistics WHERE table_name = 'population_by_age_data'), '95+', '95+', 'AVG')
+    ((SELECT table_id FROM statistics WHERE table_name = 'population_by_age_data'), '0', '0'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'population_by_age_data'), '1 - 4', '1 - 4'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'population_by_age_data'), '5 - 9', '5 - 9'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'population_by_age_data'), '10 - 14', '10 - 14'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'population_by_age_data'), '15 - 19', '15 - 19'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'population_by_age_data'), '20 - 24', '20 - 24'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'population_by_age_data'), '25 - 29', '25 - 29'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'population_by_age_data'), '30 - 34', '30 - 34'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'population_by_age_data'), '35 - 39', '35 - 39'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'population_by_age_data'), '40 - 44', '40 - 44'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'population_by_age_data'), '45 - 49', '45 - 49'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'population_by_age_data'), '50 - 54', '50 - 54'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'population_by_age_data'), '55 - 59', '55 - 59'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'population_by_age_data'), '60 - 64', '60 - 64'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'population_by_age_data'), '65 - 69', '65 - 69'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'population_by_age_data'), '70 - 74', '70 - 74'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'population_by_age_data'), '75 - 79', '75 - 79'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'population_by_age_data'), '80 - 84', '80 - 84'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'population_by_age_data'), '85 - 89', '85 - 89'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'population_by_age_data'), '90 - 94', '90 - 94'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'population_by_age_data'), '95+', '95+')
 ON CONFLICT (table_id, column_name) DO NOTHING;
 
 
@@ -124,14 +124,14 @@ VALUES
     )
     ON CONFLICT (table_name) DO NOTHING;
 
-INSERT INTO statistic_columns (table_id, column_name, alias, aggregation_method)
+INSERT INTO statistic_columns (table_id, column_name, alias)
 VALUES
-    ((SELECT table_id FROM statistics WHERE table_name = 'population_by_age_data_age_grouped'), '0 - 14', '0 - 14', 'AVG'),
-    ((SELECT table_id FROM statistics WHERE table_name = 'population_by_age_data_age_grouped'), '15 - 24', '15 - 24', 'AVG'),
-    ((SELECT table_id FROM statistics WHERE table_name = 'population_by_age_data_age_grouped'), '25 - 44', '25 - 44', 'AVG'),
-    ((SELECT table_id FROM statistics WHERE table_name = 'population_by_age_data_age_grouped'), '45 - 64', '45 - 64', 'AVG'),
-    ((SELECT table_id FROM statistics WHERE table_name = 'population_by_age_data_age_grouped'), '65 - 84', '65 - 84', 'AVG'),
-    ((SELECT table_id FROM statistics WHERE table_name = 'population_by_age_data_age_grouped'), '85+', '85+', 'AVG')
+    ((SELECT table_id FROM statistics WHERE table_name = 'population_by_age_data_age_grouped'), '0 - 14', '0 - 14'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'population_by_age_data_age_grouped'), '15 - 24', '15 - 24'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'population_by_age_data_age_grouped'), '25 - 44', '25 - 44'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'population_by_age_data_age_grouped'), '45 - 64', '45 - 64'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'population_by_age_data_age_grouped'), '65 - 84', '65 - 84'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'population_by_age_data_age_grouped'), '85+', '85+')
     ON CONFLICT (table_id, column_name) DO NOTHING;
 
 
@@ -162,13 +162,13 @@ VALUES
     )
 ON CONFLICT (table_name) DO NOTHING;
 
-INSERT INTO statistic_columns (table_id, column_name, alias, aggregation_method)
+INSERT INTO statistic_columns (table_id, column_name, alias)
 VALUES
-    ((SELECT table_id FROM statistics WHERE table_name = 'population_movement_data'), 'population_total', 'total', 'AVG'),
-    ((SELECT table_id FROM statistics WHERE table_name = 'population_movement_data'), 'births', 'narození', 'AVG'),
-    ((SELECT table_id FROM statistics WHERE table_name = 'population_movement_data'), 'deaths', 'zemřelí', 'AVG'),
-    ((SELECT table_id FROM statistics WHERE table_name = 'population_movement_data'), 'immigrants', 'přistěhovalí', 'AVG'),
-    ((SELECT table_id FROM statistics WHERE table_name = 'population_movement_data'), 'emigrants', 'odstěhovalí', 'AVG')
+    ((SELECT table_id FROM statistics WHERE table_name = 'population_movement_data'), 'population_total', 'total'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'population_movement_data'), 'births', 'narození'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'population_movement_data'), 'deaths', 'zemřelí'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'population_movement_data'), 'immigrants', 'přistěhovalí'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'population_movement_data'), 'emigrants', 'odstěhovalí')
 ON CONFLICT (table_id, column_name) DO NOTHING;
 
 
@@ -197,10 +197,10 @@ VALUES
     )
 ON CONFLICT (table_name) DO NOTHING;
 
-INSERT INTO statistic_columns (table_id, column_name, alias, aggregation_method)
+INSERT INTO statistic_columns (table_id, column_name, alias)
 VALUES
-    ((SELECT table_id FROM statistics WHERE table_name = 'population_movement_data_change'), 'births', 'narození', 'AVG'),
-    ((SELECT table_id FROM statistics WHERE table_name = 'population_movement_data_change'), 'deaths', 'zemřelí', 'AVG'),
-    ((SELECT table_id FROM statistics WHERE table_name = 'population_movement_data_change'), 'immigrants', 'přistěhovalí', 'AVG'),
-    ((SELECT table_id FROM statistics WHERE table_name = 'population_movement_data_change'), 'emigrants', 'odstěhovalí', 'AVG')
+    ((SELECT table_id FROM statistics WHERE table_name = 'population_movement_data_change'), 'births', 'narození'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'population_movement_data_change'), 'deaths', 'zemřelí'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'population_movement_data_change'), 'immigrants', 'přistěhovalí'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'population_movement_data_change'), 'emigrants', 'odstěhovalí')
 ON CONFLICT (table_id, column_name) DO NOTHING;

@@ -42,6 +42,7 @@ type ChartWrapperProps = {
     endDate: Date,
     identifierId: number;
     periodicityId: number;
+    structureLevelId: number;
 } & DashboardCardProps;
 
 export function ChartWrapper(props: ChartWrapperProps) {
@@ -60,6 +61,7 @@ export function ChartWrapper(props: ChartWrapperProps) {
         endDate: props.endDate,
         identifierId: props.identifierId,
         periodicityId: props.periodicityId,
+        structureLevelId: props.structureLevelId,
     } as TableDataParams);
 
     const categories = useMemo(() => {

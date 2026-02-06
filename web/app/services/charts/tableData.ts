@@ -6,6 +6,7 @@ export interface TableDataParams {
     startDate: Date,
     endDate: Date,
     identifierId: number;
+    structureLevelId: number;
     periodicityId: number;
 }
 

@@ -14,15 +14,16 @@ VALUES
 CREATE TABLE IF NOT EXISTS structure_levels (
     structure_level_id SERIAL PRIMARY KEY,
     identifier_column VARCHAR(50) UNIQUE NOT NULL,
-    structure_level_name VARCHAR(50) UNIQUE NOT NULL
+    structure_level_name VARCHAR(50) UNIQUE NOT NULL,
+    table_name VARCHAR(50) NOT NULL
 );
 
 INSERT INTO structure_levels (structure_level_name, identifier_column)
 VALUES
-    ('Národně', 'nation_id'),
-    ('Kraj', 'region_id'),
-    ('Okres', 'district_id'),
-    ('Obec', 'municipality_id');
+    ('Národně', 'nation_id', ''),
+    ('Kraj', 'region_id', 'regions'),
+    ('Okres', 'district_id', 'districts'),
+    ('Obec', 'municipality_id', 'municipalities');
 
 CREATE TABLE IF NOT EXISTS statistics (
     table_id INT PRIMARY KEY,
@@ -38,7 +39,8 @@ CREATE TABLE statistic_columns (
    table_id INT NOT NULL REFERENCES statistics(table_id),
    column_name VARCHAR(100) NOT NULL,
    alias VARCHAR(100),
-   aggregation_method VARCHAR(10) NOT NULL DEFAULT 'SUM', -- SUM, AVG, MAX, MIN, COUNT
+   time_aggregation_method VARCHAR(10) NOT NULL DEFAULT 'AVG', -- SUM, AVG, MAX, MIN, COUNT
+   structure_aggregation_method VARCHAR(10) NOT NULL DEFAULT 'SUM', -- SUM, AVG, MAX, MIN, COUNT
 
    UNIQUE (table_id, column_name)
 );

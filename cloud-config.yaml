@@ -1,4 +1,3 @@
-#cloud-config
 runcmd:
   - fallocate -l 4G /swapfile
   - chmod 600 /swapfile

@@ -1,6 +1,6 @@
 import Link from "next/link";
-import BackgroundGradient from "@/app/components/utils/BackgroundGradient";
-import Button from "@/app/components/utils/Button";
+import BackgroundGradient from "@/components/utils/BackgroundGradient";
+import Button from "@/components/utils/Button";
 
 export default function NotFound() {
     return (

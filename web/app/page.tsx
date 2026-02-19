@@ -1,10 +1,10 @@
 "use server";
 
-import { AutofillAnimationSearchBar, SearchItem } from "@/app/components/utils/SearchBar";
-import { fetchMunicipalitiesQuery } from "@/app/services/structure/municipalityStructure";
+import { AutofillAnimationSearchBar, SearchItem } from "@/components/utils/SearchBar";
+import { fetchMunicipalitiesQuery } from "@/services/structure/municipalityStructure";
 import { QueryClient } from "@tanstack/query-core";
-import MunicipalityAdvertisement from "@/app/components/landing/MunicipalityAdvertisement";
-import BackgroundGradient from "@/app/components/utils/BackgroundGradient";
+import BackgroundGradient from "@/components/utils/BackgroundGradient";
+import MunicipalityAdvertisement from "@/components/presets/MunicipalityAdvertisement";
 
 export default async function HomePage() {
     const client = new QueryClient();

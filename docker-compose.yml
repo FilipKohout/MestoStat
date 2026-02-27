@@ -5,8 +5,6 @@ services:
     build: ./db
     container_name: mestostat_db
     restart: always
-    ports:
-        - "5432:5432"
     deploy:
       resources:
         limits:

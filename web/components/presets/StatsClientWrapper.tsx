@@ -6,7 +6,7 @@ import Dropdown, { DropdownOption } from "@/components/utils/Dropdown";
 import IntervalIcon from "@/components/icons/IntervalIcon";
 import DateRangePicker from "@/components/utils/DateRange";
 import { DEFAULT_DATE_RANGE_PRESET_INDEX } from "@/lib/consts";
-import ClientTabsSection, { tab } from "@/components/utils/TabsSection";
+import TabSection, { tab } from "@/components/utils/TabsSection";
 
 export default function StatsClientWrapper({ tabs }: { tabs: tab[] }) {
     const { data: periodicities } = useTablePeriodicities();
@@ -19,7 +19,7 @@ export default function StatsClientWrapper({ tabs }: { tabs: tab[] }) {
                 <DateRangePicker defaultPreset={DEFAULT_DATE_RANGE_PRESET_INDEX}/>
             </div>
 
-            <ClientTabsSection tabs={tabs} />
+            <TabSection tabs={tabs} />
         </>
     );
 }

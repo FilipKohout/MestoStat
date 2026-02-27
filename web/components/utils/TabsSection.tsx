@@ -11,7 +11,7 @@ type tabSectionProps = {
     tabs: tab[];
 }
 
-export default function ClientTabsSection({ tabs }: tabSectionProps) {
+export default function TabSection({ tabs }: tabSectionProps) {
     const [activeTab, setActiveTab] = useState("Přehled");
 
     return (

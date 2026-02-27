@@ -1,15 +1,14 @@
 "use server";
 
-import { AutofillAnimationSearchBar, SearchItem } from "@/components/utils/SearchBar";
-import { fetchMunicipalitiesQuery } from "@/services/structure/municipalityStructure";
+import { AutofillAnimationSearchBar } from "@/components/utils/SearchBar";
 import { QueryClient } from "@tanstack/query-core";
 import BackgroundGradient from "@/components/utils/BackgroundGradient";
 import MunicipalityAdvertisement from "@/components/presets/MunicipalityAdvertisement";
+import getSearchData from "@/services/structure/searchData";
 
 export default async function HomePage() {
     const client = new QueryClient();
-
-    const municipalities = await fetchMunicipalitiesQuery(client);
+    const searchData = await getSearchData(client);
 
     return (
         <div className="min-h-screen bg-slate-950 text-white selection:bg-blue-500/30 relative overflow-hidden">
@@ -32,7 +31,7 @@ export default async function HomePage() {
                                 size="lg"
                                 phrases={["Praha", "Brno", "Ostrava", "Plzeň", "Liberec", "České Budějovice", "Hradec Králové"]}
                                 typingDelay={100}
-                                data={municipalities?.map(mun => ({ id: mun.id, name: mun.name, type: mun.status, location: "Okres " + mun.districtName } as SearchItem)) || []}
+                                data={searchData}
                                 placeholder="Hledat obec, okres, kraj..."
                             />
                         </div>

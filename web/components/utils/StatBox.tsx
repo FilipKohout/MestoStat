@@ -23,18 +23,18 @@ export default function StatBox({ label, value, trend, className, style }: StatB
             noPadding
             className={cnTailwind(
                 "flex flex-col items-center justify-center text-nowrap w-fit min-w-max",
-                "rounded-lg px-4 py-2",
+                "rounded-lg px-3 py-1.5",
                 className
             )}
             style={style}
         >
             {label &&
-                <p className="mb-1 text-xs font-medium text-slate-400 uppercase tracking-wide text-nowrap">
+                <p className="mb-0.5 text-xs font-medium text-slate-400 uppercase tracking-wide text-nowrap">
                     {label}
                 </p>
             }
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1">
                 <span className="text-sm font-semibold text-slate-100 tabular-nums">
                     {value}
                 </span>

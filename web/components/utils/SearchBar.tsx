@@ -13,6 +13,7 @@ export type SearchItem = {
     id: number;
     name: string;
     type: string;
+    path: string;
     location?: string;
 };
 
@@ -59,7 +60,7 @@ export default function SearchBar({ data, placeholder = "Hledat...", size = "sm"
     const handleSelect = (item: SearchItem) => {
         setQuery(item.name);
         setIsOpen(false);
-        router.push(`/municipality/${item.id}`);
+        router.push(item.path);
     };
 
     const handleKeyDown = (e: React.KeyboardEvent) => {

@@ -22,7 +22,7 @@ interface HeaderProps extends React.HTMLAttributes<HTMLDivElement> {
 
 function Header({ children, className, title, action, ...props }: HeaderProps) {
     return (
-        <div className={cnTailwind("flex items-center justify-between gap-2 min-h-[28px]", className)} {...props}>
+        <div className={cnTailwind("flex items-center justify-between gap-2 pt-2 px-2 min-h-[28px]", className)} {...props}>
             <div className="flex items-center gap-4">
                 {title && <h2 className="text-base font-semibold text-white shrink-0">{title}</h2>}
                 {children}
@@ -62,8 +62,8 @@ function Content({ children, className, isLoading, isError, errorMessage = "Chyb
 
 function Footer({ children, className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
     return (
-        <div className={cnTailwind("w-full overflow-x-auto scrollbar-hide py-1 mt-auto border-t border-slate-800/50 pt-3", className)} {...props}>
-            <div className="flex min-w-full w-max justify-center gap-2 px-2">
+        <div className={cnTailwind("w-full flex flex-col flex-grow justify-center overflow-x-auto scrollbar-hide py-1 mt-auto border-t border-slate-800/50 pt-3", className)} {...props}>
+            <div className="flex min-w-full my-auto flex-wrap flex-wrap justify-center gap-2 px-2">
                 {children}
             </div>
         </div>

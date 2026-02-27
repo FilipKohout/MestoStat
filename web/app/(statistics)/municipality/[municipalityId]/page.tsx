@@ -7,13 +7,13 @@ import { dehydrate, QueryClient } from "@tanstack/query-core";
 import Badge from "@/components/utils/Badge";
 import { standardValueFormatter } from "@/lib/utils";
 import { getSeriesChange } from "@/lib/statUtils";
-import Overview from "@/app/(statistics)/municipality/[municipalityId]/tabs/Overview";
-import Finances from "@/app/(statistics)/municipality/[municipalityId]/tabs/Finances";
-import Demographics from "@/app/(statistics)/municipality/[municipalityId]/tabs/Demographics";
 import StatsClientWrapper from "@/components/presets/StatsClientWrapper";
 import { prefetchAllTablesMetadata } from "@/services/charts/tableMetadata";
-import { prefetchTablePeriodicities } from "@/services/charts/tableDefinitions";
+import { prefetchTablePeriodicities, prefetchTableStructureLevels } from "@/services/charts/tableDefinitions";
 import StatsServerTemplate from "@/components/presets/StatsServerTemplate";
+import Overview from "@/components/statisticTabs/Overview";
+import Finances from "@/components/statisticTabs/Finances";
+import Demographics from "@/components/statisticTabs/Demographics";
 
 const tabs = [
     {label: "Přehled", component: <Overview />},
@@ -38,6 +38,7 @@ export default async function MunicipalityPage({ params }: { params: Promise<{ m
 
     await prefetchAllTablesMetadata(client);
     await prefetchTablePeriodicities(client);
+    await prefetchTableStructureLevels(client);
 
     const populationChange = getSeriesChange(quickData.population as never[], "totalPopulation");
     const budgetChange = getSeriesChange(quickData.budget as never[], "totalBudget");

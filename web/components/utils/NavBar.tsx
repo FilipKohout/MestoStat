@@ -1,11 +1,12 @@
 'use client';
 
 import Link from "next/link";
-import SearchBar, { SearchItem } from "@/components/utils/SearchBar";
+import SearchBar from "@/components/utils/SearchBar";
 import useMunicipalities from "@/hooks/structure/useMunicipalities";
+import useSearchData from "@/hooks/ui/useSearchData";
 
 export default function Navbar() {
-    const { data: municipalities } = useMunicipalities();
+    const { searchData } = useSearchData();
 
     return (
         <nav className="sticky top-0 z-50 w-full border-b border-slate-800 bg-slate-950/80 backdrop-blur-md">
@@ -17,7 +18,7 @@ export default function Navbar() {
 
                 <div className="hidden sm:flex flex-1 max-w-md mx-auto">
                     <SearchBar
-                        data={municipalities?.map(mun => ({ id: mun.id, name: mun.name, type: mun.status, location: "Okres " + mun.districtName } as SearchItem)) || []}
+                        data={searchData}
                         placeholder="Hledat obec, okres, kraj..."
                     />
                 </div>

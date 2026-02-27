@@ -10,7 +10,7 @@ interface FrameProps extends React.HTMLAttributes<HTMLDivElement> {
 
 export function Frame({ children, className, variant = "default", noPadding = false, ...props }: FrameProps) {
     const variants: Record<FrameVariant, string> = {
-        default: "bg-slate-900 border-slate-800 shadow-sm",
+        default: "bg-slate-900/50 border-slate-800 shadow-sm",
 
         glass: "bg-slate-900/80 backdrop-blur-xl border-slate-700 shadow-xl",
 
@@ -26,7 +26,7 @@ export function Frame({ children, className, variant = "default", noPadding = fa
             className={cnTailwind(
                 "relative rounded-xl border overflow-hidden",
                 variants[variant],
-                !noPadding && "p-4",
+                !noPadding && "p-2",
                 className
             )}
             {...props}

@@ -10,6 +10,7 @@ import { fetchDistrictQuery } from "@/services/structure/districtStructure";
 import Overview from "@/components/statisticTabs/Overview";
 import Finances from "@/components/statisticTabs/Finances";
 import Demographics from "@/components/statisticTabs/Demographics";
+import { fetchRegionQuery } from "@/services/structure/regionStructure";
 
 const tabs = [
     {label: "Přehled", component: <Overview />},
@@ -18,13 +19,13 @@ const tabs = [
     //{label: "Školství", component: <Education />},
 ];
 
-export default async function DistrictPage({ params }: { params: Promise<{ districtId: number }> }) {
-    const { districtId } = await params;
+export default async function RegionPage({ params }: { params: Promise<{ regionId: number }> }) {
+    const { regionId } = await params;
     const client = new QueryClient();
 
-    const district = await fetchDistrictQuery(client, districtId);
+    const region = await fetchRegionQuery(client, regionId);
 
-    if (!district)
+    if (!region)
         notFound();
 
     // const quickData = await fetchQuickMunicipalityDataQuery(client, municipalityId);
@@ -37,13 +38,10 @@ export default async function DistrictPage({ params }: { params: Promise<{ distr
     await prefetchTableStructureLevels(client);
 
     return (
-        <StatsServerTemplate title={district.name} badges={
+        <StatsServerTemplate title={region.name} badges={
             <>
                 <Badge variant="primary" size="md">
-                    Okres
-                </Badge>
-                <Badge variant="glass" size="md">
-                    {district.regionName}
+                    Kraj
                 </Badge>
             </>
             }

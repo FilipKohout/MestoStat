@@ -4,6 +4,8 @@ import { ChartProps } from "@/components/charts/ChartWrapper";
 import { getCategoryColorHex, getCategoryColorName, percentValueFormatter } from "@/lib/utils";
 import { CustomTooltip } from "@/components/charts/ChartTooltip";
 import { HierarchyNode } from "d3";
+import StatBox from "@/components/utils/StatBox";
+import useSummaries from "@/hooks/charts/useSummaries";
 
 type TreeLeaf = {
     type: 'leaf';
@@ -51,6 +53,15 @@ export default function TreeMapChart(props: TreeMapChartProps) {
         window.addEventListener("resize", handleResize);
         return () => window.removeEventListener("resize", handleResize);
     }, []);
+
+    const totalValue = useMemo(() => {
+        if (!data || data.length === 0 || activeCategories.length === 0) return 0;
+        
+        return activeCategories.reduce((acc, category) => {
+            const categorySum = data.reduce((catAcc, item) => catAcc + (Number(item[category]) || 0), 0);
+            return acc + categorySum;
+        }, 0);
+    }, [activeCategories, data]);
 
     const hierarchyData = useMemo<TreeNode | null>(() => {
         if (!data || data.length === 0 || activeCategories.length === 0) return null;
@@ -124,7 +135,10 @@ export default function TreeMapChart(props: TreeMapChartProps) {
         );
 
     return (
-        <div ref={containerRef} className="h-80 w-full relative group">
+        <div ref={containerRef} className="w-full relative group">
+            <div className="w-full flex flex-row flex-nowrap items-center justify-start gap-3 overflow-x-auto py-2 mb-2 px-1 scrollbar-hide">
+                <StatBox label="Celkem" value={valueFormatter(totalValue)} />
+            </div>
             <svg width={dimensions.width} height={dimensions.height} className="shape-rendering-crispEdges font-sans">
                 {root.leaves().map((leaf, i) => {
                     const categoryName = (leaf.data as TreeLeaf).name;

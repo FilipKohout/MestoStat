@@ -38,6 +38,19 @@ export default function Finances() {
                         valueFormatter: value => standardValueFormatter(value, 0, " Kč")
                     },
                 ]} {...filters} />
+
+                <ChartWrapper title={`Výsledek Hospodaření`} showFilters variants={[
+                    {
+                        tableId: 11,
+                        label: "",
+                        component: props => <TimeChart type="bar" stacked={true} {...props} summaries={{
+                            max: true,
+                            average: true,
+                            current: true,
+                        }} />,
+                        valueFormatter: value => standardValueFormatter(value, 0, " Kč")
+                    },
+                ]} {...filters} />
             </div>
 
             <ChartWrapper title={`Výdaje`} showFilters className="row-span-2" variants={[

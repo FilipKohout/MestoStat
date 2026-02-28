@@ -5,7 +5,7 @@ import NumberChartCard from "@/components/charts/NumberChartCard";
 import { HydrationBoundary } from "@tanstack/react-query";
 import { dehydrate, QueryClient } from "@tanstack/query-core";
 import Badge from "@/components/utils/Badge";
-import { standardValueFormatter } from "@/lib/utils";
+import { compactValueFormatter, standardValueFormatter } from "@/lib/utils";
 import { getSeriesChange } from "@/lib/statUtils";
 import StatsClientWrapper from "@/components/presets/StatsClientWrapper";
 import { prefetchAllTablesMetadata } from "@/services/charts/tableMetadata";
@@ -54,7 +54,7 @@ export default async function MunicipalityPage({ params }: { params: Promise<{ m
         },
         {
             label: "Rozpočet",
-            val: standardValueFormatter(quickData?.budget?.[0]?.totalBudget) || "-",
+            val: compactValueFormatter(quickData?.budget?.[0]?.totalBudget, 2) || "-",
             change: budgetChange,
             color: budgetChange.includes("+") ? "text-blue-300" : "text-rose-300",
             chartColor: "cyan",

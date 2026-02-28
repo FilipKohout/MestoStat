@@ -28,13 +28,13 @@ ON CONFLICT (table_id, column_name) DO NOTHING;
 
 
 CREATE OR REPLACE VIEW unemployment_data_estimated_count AS
-SELECT pbsd.data_id,
-       pbsd.date_recorded,
+SELECT pbad.data_id,
+       pbad.date_recorded,
        ud.municipality_id,
-       (ud.unemployed_percent / 100) * (pbsd.males + pbsd.females) AS estimated_unemployed_count
+       (ud.unemployed_percent / 100) * (pbad."15 - 19" + pbad."20 - 24" + pbad."25 - 29" + pbad."30 - 34" + pbad."35 - 39" + pbad."40 - 44" + pbad."45 - 49" + pbad."50 - 54" + pbad."55 - 59" + pbad."60 - 64") AS estimated_unemployed_count
 FROM unemployment_data ud
-JOIN population_by_sex_data pbsd on ud.municipality_id = pbsd.municipality_id
-    AND extract(year from ud.date_recorded) = extract(year from pbsd.date_recorded);
+JOIN population_by_age_data pbad on ud.municipality_id = pbad.municipality_id
+    AND extract(year from ud.date_recorded) = extract(year from pbad.date_recorded);
 
 INSERT INTO statistics (table_id, table_name, last_updated, periodicity_id, structure_level_id, source_domain)
 VALUES
@@ -50,7 +50,7 @@ ON CONFLICT (table_name) DO NOTHING;
 
 INSERT INTO statistic_columns (table_id, column_name, alias, time_aggregation_method, structure_aggregation_method)
 VALUES
-    ((SELECT table_id FROM statistics WHERE table_name = 'unemployment_data_estimated_count'), 'estimated_unemployed_count', 'nezaměstnaní (odhad)', 'AVG', 'AVG')
+    ((SELECT table_id FROM statistics WHERE table_name = 'unemployment_data_estimated_count'), 'estimated_unemployed_count', 'nezaměstnaní (odhad)', 'AVG', 'SUM')
 ON CONFLICT (table_id, column_name) DO NOTHING;
 
 
@@ -302,4 +302,29 @@ VALUES
     ((SELECT table_id FROM statistics WHERE table_name = 'budget_income_data_summary'), 'capital_sales', 'prodej majetku', 'SUM'),
     ((SELECT table_id FROM statistics WHERE table_name = 'budget_income_data_summary'), 'subsidies_operational', 'provozní dotace', 'SUM'),
     ((SELECT table_id FROM statistics WHERE table_name = 'budget_income_data_summary'), 'subsidies_investment', 'investiční dotace', 'SUM')
+ON CONFLICT (table_id, column_name) DO NOTHING;
+
+CREATE OR REPLACE VIEW balance_data AS
+SELECT bid.date_recorded,
+       bid.municipality_id,
+       bid.tax_shared + bid.tax_property + bid.tax_local_fees + bid.tax_other + bid.non_tax_rent + bid.non_tax_services + bid.non_tax_other + bid.capital_sales + bid.subsidies_operational + bid.subsidies_investment - (bed.transport + bed.education + bed.infrastructure_housing + bed.environment + bed.culture_sport + bed.social_health + bed.admin_safety + bed.other_economy) AS balance
+FROM budget_income_data_summary bid
+JOIN budget_expenses_data_summary bed on bed.municipality_id = bid.municipality_id
+    AND extract(year from bed.date_recorded) = extract(year from bid.date_recorded);
+
+INSERT INTO statistics (table_id, table_name, last_updated, periodicity_id, structure_level_id, source_domain)
+VALUES
+    (
+        11,
+        'balance_data',
+        NOW(),
+        (SELECT p.periodicity_id FROM periodicities p WHERE periodicity_name = 'Ročně'),
+        (SELECT s.structure_level_id FROM structure_levels s WHERE structure_level_name = 'Obec'),
+        'https://monitor.statnipokladna.gov.cz'
+    )
+ON CONFLICT (table_name) DO NOTHING;
+
+INSERT INTO statistic_columns (table_id, column_name, alias, time_aggregation_method)
+VALUES
+    ((SELECT table_id FROM statistics WHERE table_name = 'balance_data'), 'balance', 'saldo', 'SUM')
 ON CONFLICT (table_id, column_name) DO NOTHING;

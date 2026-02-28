@@ -59,10 +59,10 @@ def read_budget_data(rows: list[dict]):
     income_data = {}
 
     for entry in rows:
-        ico = str(entry.get("ZC_ICO:ZC_ICO")).strip()[2:]
+        ico = str(entry.get("ZC_ICO:ZC_ICO")).strip()[-8:].zfill(8)
         date = str(entry.get("0FISCPER:0FISCPER")).strip()
-        state = str(entry.get("ZCMMT_ITM:ZCMMT_ITM")).strip()
-        paragraph = str(entry.get("0FUNC_AREA:0FUNC_AREA")).strip()
+        state = str(entry.get("ZCMMT_ITM:ZCMMT_ITM")).strip().lstrip("0")
+        paragraph = str(entry.get("0FUNC_AREA:0FUNC_AREA")).strip().lstrip("0")
         actual = _parse_money(entry.get("ZU_ROZKZ:ZU_ROZKZ"))
         adjusted = _parse_money(entry.get("ZU_ROZPZM:ZU_ROZPZM"))
 

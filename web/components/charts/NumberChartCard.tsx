@@ -38,7 +38,7 @@ export default function NumberChartCard({ label, change, color, data, chartColor
                 </div>
 
                 <div className="flex items-baseline">
-                    <span className="text-2xl font-bold text-white tracking-tight tabular-nums">
+                    <span className="text-[20px] max-w-36 font-bold text-white tracking-tight tabular-nums">
                         {val}
                     </span>
                 </div>

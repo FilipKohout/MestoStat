@@ -114,9 +114,9 @@ export default function SearchBar({ data, placeholder = "Hledat...", size = "sm"
                                         </Badge>
 
                                         {item.location &&
-                                            <Badge variant="neutral" size="sm" className="ml-0.5 shrink-0 opacity-70">
-                                                {item.location}
-                                            </Badge>
+                                            <p className="ml-0.5 text-xs shrink-0 opacity-70">
+                                                Nachází se v {item.location}
+                                            </p>
                                         }
                                     </Button>
                                 ))}

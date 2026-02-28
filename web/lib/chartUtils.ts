@@ -79,12 +79,12 @@ export const constructCategoryColors = (
     categories.forEach((category, index) => {
         categoryColors.set(category, colors[index % colors.length])
     })
-    return categoryColors
+    return categoryColors;
 }
 
 export const calculateYAxisWidth = (maxValue: number) => {
     const length = compactValueFormatter(maxValue);
-    return Math.max(40, length.length * 11);
+    return Math.max(30, length.length * 10);
 };
 
 export const getColorClassName = (

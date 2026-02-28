@@ -7,6 +7,7 @@ import { CHART_INDEX_KEY as INDEX_KEY } from "@/lib/consts";
 import StatBox from "@/components/utils/StatBox";
 import useSummaries from "@/hooks/charts/useSummaries";
 import { calculateYAxisWidth } from "@/lib/chartUtils";
+import { Tooltip } from "recharts";
 
 type TimeChartProps = {
     type: "area" | "bar";

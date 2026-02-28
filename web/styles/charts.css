@@ -1,12 +1,13 @@
 .recharts-cartesian-grid-horizontal line,
 .recharts-cartesian-grid-vertical line {
-    stroke: #1e293b !important;
-    stroke-opacity: 0.5;
+    stroke: #29384c !important;
+    stroke-opacity: 0.8;
+    stroke-dasharray: 4 4;
 }
 
 .recharts-text.recharts-cartesian-axis-tick-value {
-    fill: #64748b !important;
-    font-size: 12px;
+    fill: #889bb1 !important;
+    font-size: 11px;
 }
 
 .recharts-cartesian-axis-line {
@@ -14,7 +15,7 @@
 }
 
 .recharts-tooltip-cursor {
-    stroke: #475569 !important;
+    stroke: #ffffff !important;
     stroke-dasharray: 4 4;
 }
 

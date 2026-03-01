@@ -54,7 +54,7 @@ export default async function MunicipalityPage({ params }: { params: Promise<{ m
         },
         {
             label: "Rozpočet",
-            val: compactValueFormatter(quickData?.budget?.[0]?.totalBudget, 2) || "-",
+            val: compactValueFormatter(quickData?.budget?.[0]?.totalBudget, 2) + " Kč" || "-",
             change: budgetChange,
             color: budgetChange.includes("+") ? "text-blue-300" : "text-rose-300",
             chartColor: "cyan",

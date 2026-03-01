@@ -204,3 +204,11 @@ VALUES
     ((SELECT table_id FROM statistics WHERE table_name = 'population_movement_data_change'), 'immigrants', 'přistěhovalí'),
     ((SELECT table_id FROM statistics WHERE table_name = 'population_movement_data_change'), 'emigrants', 'odstěhovalí')
 ON CONFLICT (table_id, column_name) DO NOTHING;
+
+CREATE OR REPLACE VIEW population_data AS
+SELECT
+    pbsd.data_id,
+    pbsd.date_recorded,
+    pbsd.municipality_id,
+    pbsd.males + pbsd.females AS total_population
+FROM population_by_sex_data pbsd

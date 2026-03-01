@@ -51,18 +51,56 @@ export default function Finances() {
                         valueFormatter: value => standardValueFormatter(value, 0, " Kč")
                     },
                 ]} {...filters} />
+
+                <ChartWrapper title={`Výdaje Na Obyvatele`} showFilters variants={[
+                    {
+                        tableId: 12,
+                        label: "",
+                        component: props => <TimeChart type="bar" addTotalCategory={false} stacked={true} {...props} summaries={{
+                            max: true,
+                            average: true,
+                            current: true,
+                        }} />,
+                        valueFormatter: value => standardValueFormatter(value, 0, " Kč")
+                    },
+                ]} {...filters} />
+
+                <ChartWrapper title={`Příjmy Na Obyvatele`} showFilters variants={[
+                    {
+                        tableId: 13,
+                        label: "",
+                        component: props => <TimeChart type="bar" addTotalCategory={false} stacked={true} {...props} summaries={{
+                            max: true,
+                            average: true,
+                            current: true,
+                        }} />,
+                        valueFormatter: value => standardValueFormatter(value, 0, " Kč")
+                    },
+                ]} {...filters} />
             </div>
 
             <ChartWrapper title={`Výdaje`} showFilters className="row-span-2" variants={[
                 {
                     tableId: 9,
-                    label: "Rok %year",
+                    label: "Rok %year - Shrnutí",
                     component: props => <TreeMapChart lastPeriod aggregation="AVG" {...props} />,
                     valueFormatter: value => standardValueFormatter(value, 0, " Kč")
                 },
                 {
                     tableId: 9,
-                    label: "Celé vybrané období",
+                    label: "Celé vybrané období - Shrnutí",
+                    component: props => <TreeMapChart aggregation="SUM" {...props} />,
+                    valueFormatter: value => standardValueFormatter(value, 0, " Kč")
+                },
+                {
+                    tableId: 8,
+                    label: "Rok %year - Detailní",
+                    component: props => <TreeMapChart lastPeriod aggregation="AVG" {...props} />,
+                    valueFormatter: value => standardValueFormatter(value, 0, " Kč")
+                },
+                {
+                    tableId: 8,
+                    label: "Celé vybrané období - Detailní",
                     component: props => <TreeMapChart aggregation="SUM" {...props} />,
                     valueFormatter: value => standardValueFormatter(value, 0, " Kč")
                 },

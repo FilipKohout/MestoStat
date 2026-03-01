@@ -135,7 +135,8 @@ SELECT
     SUM(CASE WHEN category_name IN ('Bankovní poplatky a úroky', 'Pojištění majetku', 'Ostatní finanční operace') THEN actual_spending ELSE 0 END) AS financial_costs,
 
     -- OSTATNÍ (Agregované)
-    SUM(CASE WHEN category_name IN ('Ostatní (Nespecifikováno)', 'Ostatní zemědělství', 'Ostatní bydlení a sítě', 'Ochrana životního prostředí', 'Ostatní správa', 'Zdravotnictví') THEN actual_spending ELSE 0 END) AS other_aggregated
+    SUM(CASE WHEN category_name IN ('Ostatní (Nespecifikováno)', 'Ostatní zemědělství', 'Ostatní bydlení a sítě', 'Ochrana životního prostředí', 'Ostatní správa', 'Zdravotnictví') THEN actual_spending ELSE 0 END) AS other_aggregated,
+    SUM(actual_spending) AS total_expenses
 FROM budget_expenses_data
 GROUP BY municipality_id, date_recorded;
 
@@ -227,7 +228,9 @@ SELECT
                  THEN actual_spending ELSE 0 END) AS admin_safety,
 
     SUM(CASE WHEN category_name IN ('Lesní hospodářství', 'Zemědělství', 'Ostatní zemědělství', 'Ostatní (Nespecifikováno)')
-                 THEN actual_spending ELSE 0 END) AS other_economy
+                 THEN actual_spending ELSE 0 END) AS other_economy,
+
+    SUM(actual_spending) AS total_expenses
 FROM budget_expenses_data
 GROUP BY municipality_id, date_recorded;
 
@@ -282,7 +285,9 @@ SELECT
     SUM(CASE WHEN category_name = 'Prodej majetku' THEN actual_income ELSE 0 END) AS capital_sales,
 
     SUM(CASE WHEN category_name = 'Provozní dotace' THEN actual_income ELSE 0 END) AS subsidies_operational,
-    SUM(CASE WHEN category_name = 'Investiční dotace' THEN actual_income ELSE 0 END) AS subsidies_investment
+    SUM(CASE WHEN category_name = 'Investiční dotace' THEN actual_income ELSE 0 END) AS subsidies_investment,
+
+    SUM(actual_income) AS total_income
 FROM budget_income_data
 GROUP BY municipality_id, date_recorded;
 
@@ -327,4 +332,213 @@ ON CONFLICT (table_name) DO NOTHING;
 INSERT INTO statistic_columns (table_id, column_name, alias, time_aggregation_method)
 VALUES
     ((SELECT table_id FROM statistics WHERE table_name = 'balance_data'), 'balance', 'saldo', 'SUM')
+ON CONFLICT (table_id, column_name) DO NOTHING;
+
+
+
+CREATE OR REPLACE VIEW budget_expenses_summary_per_capita AS
+SELECT
+    beds.municipality_id,
+    beds.date_recorded,
+    beds.transport / NULLIF(pd.total_population, 0) AS transport,
+    beds.education / NULLIF(pd.total_population, 0) AS education,
+    beds.infrastructure_housing / NULLIF(pd.total_population, 0) AS infrastructure_housing,
+    beds.environment / NULLIF(pd.total_population, 0) AS environment,
+    beds.culture_sport / NULLIF(pd.total_population, 0) AS culture_sport,
+    beds.social_health / NULLIF(pd.total_population, 0) AS social_health,
+    beds.admin_safety / NULLIF(pd.total_population, 0) AS admin_safety,
+    beds.other_economy / NULLIF(pd.total_population, 0) AS other_economy,
+    beds.total_expenses / NULLIF(pd.total_population, 0) AS total_expenses
+FROM budget_expenses_data_summary beds
+         JOIN population_data pd ON beds.municipality_id = pd.municipality_id
+    AND extract(year from beds.date_recorded) = extract(year from pd.date_recorded);
+
+INSERT INTO statistics (table_id, table_name, last_updated, periodicity_id, structure_level_id, source_domain)
+VALUES (
+           12,
+           'budget_expenses_summary_per_capita',
+           NOW(),
+           (SELECT periodicity_id FROM periodicities WHERE periodicity_name = 'Ročně'),
+           (SELECT structure_level_id FROM structure_levels WHERE structure_level_name = 'Obec'),
+           'https://monitor.statnipokladna.gov.cz'
+       )
+ON CONFLICT (table_name) DO NOTHING;
+
+INSERT INTO statistic_columns (table_id, column_name, alias, time_aggregation_method)
+VALUES
+    ((SELECT table_id FROM statistics WHERE table_name = 'budget_expenses_summary_per_capita'), 'transport', 'doprava na obyvatele', 'AVG'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'budget_expenses_summary_per_capita'), 'education', 'školství na obyvatele', 'AVG'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'budget_expenses_summary_per_capita'), 'infrastructure_housing', 'bydlení a infrastruktura na obyvatele', 'AVG'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'budget_expenses_summary_per_capita'), 'environment', 'životní prostředí na obyvatele', 'AVG'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'budget_expenses_summary_per_capita'), 'culture_sport', 'kultura a sport na obyvatele', 'AVG'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'budget_expenses_summary_per_capita'), 'social_health', 'sociální věci a zdraví na obyvatele', 'AVG'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'budget_expenses_summary_per_capita'), 'admin_safety', 'správa a bezpečnost na obyvatele', 'AVG'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'budget_expenses_summary_per_capita'), 'other_economy', 'ostatní hospodářství na obyvatele', 'AVG'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'budget_expenses_summary_per_capita'), 'total_expenses', 'total', 'AVG')
+ON CONFLICT (table_id, column_name) DO NOTHING;
+
+
+
+CREATE OR REPLACE VIEW budget_income_summary_per_capita AS
+SELECT
+    bids.municipality_id,
+    bids.date_recorded,
+    bids.tax_shared / NULLIF(pd.total_population, 0) AS tax_shared,
+    bids.tax_property / NULLIF(pd.total_population, 0) AS tax_property,
+    bids.tax_local_fees / NULLIF(pd.total_population, 0) AS tax_local_fees,
+    bids.tax_other / NULLIF(pd.total_population, 0) AS tax_other,
+    bids.non_tax_rent / NULLIF(pd.total_population, 0) AS non_tax_rent,
+    bids.non_tax_services / NULLIF(pd.total_population, 0) AS non_tax_services,
+    bids.non_tax_other / NULLIF(pd.total_population, 0) AS non_tax_other,
+    bids.capital_sales / NULLIF(pd.total_population, 0) AS capital_sales,
+    bids.subsidies_operational / NULLIF(pd.total_population, 0) AS subsidies_operational,
+    bids.subsidies_investment / NULLIF(pd.total_population, 0) AS subsidies_investment,
+    bids.total_income / NULLIF(pd.total_population, 0) AS total_income
+FROM budget_income_data_summary bids
+         JOIN population_data pd ON bids.municipality_id = pd.municipality_id
+    AND extract(year from bids.date_recorded) = extract(year from pd.date_recorded);
+
+INSERT INTO statistics (table_id, table_name, last_updated, periodicity_id, structure_level_id, source_domain)
+VALUES (
+           13,
+           'budget_income_summary_per_capita',
+           NOW(),
+           (SELECT periodicity_id FROM periodicities WHERE periodicity_name = 'Ročně'),
+           (SELECT structure_level_id FROM structure_levels WHERE structure_level_name = 'Obec'),
+           'https://monitor.statnipokladna.gov.cz'
+       )
+ON CONFLICT (table_name) DO NOTHING;
+
+INSERT INTO statistic_columns (table_id, column_name, alias, time_aggregation_method)
+VALUES
+    ((SELECT table_id FROM statistics WHERE table_name = 'budget_income_summary_per_capita'), 'tax_shared', 'sdílené daně na obyvatele (DPH, DPPO)', 'AVG'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'budget_income_summary_per_capita'), 'tax_property', 'daň z nemovitosti na obyvatele', 'AVG'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'budget_income_summary_per_capita'), 'tax_local_fees', 'místní poplatky na obyvatele', 'AVG'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'budget_income_summary_per_capita'), 'tax_other', 'ostatní daně na obyvatele', 'AVG'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'budget_income_summary_per_capita'), 'non_tax_rent', 'příjmy z pronájmu na obyvatele', 'AVG'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'budget_income_summary_per_capita'), 'non_tax_services', 'příjmy ze služeb na obyvatele', 'AVG'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'budget_income_summary_per_capita'), 'non_tax_other', 'ostatní nedaňové příjmy na obyvatele', 'AVG'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'budget_income_summary_per_capita'), 'capital_sales', 'prodej majetku na obyvatele', 'AVG'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'budget_income_summary_per_capita'), 'subsidies_operational', 'provozní dotace na obyvatele', 'AVG'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'budget_income_summary_per_capita'), 'subsidies_investment', 'investiční dotace na obyvatele', 'AVG'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'budget_income_summary_per_capita'), 'total_income', 'total', 'AVG')
+ON CONFLICT (table_id, column_name) DO NOTHING;
+
+
+
+CREATE OR REPLACE VIEW budget_expenses_detailed_per_capita AS
+SELECT
+    bed.municipality_id,
+    bed.date_recorded,
+
+    bed.agriculture / NULLIF(pd.total_population, 0) AS agriculture,
+    bed.forestry / NULLIF(pd.total_population, 0) AS forestry,
+
+    bed.roads / NULLIF(pd.total_population, 0) AS roads,
+    bed.sidewalks / NULLIF(pd.total_population, 0) AS sidewalks,
+    bed.public_transport / NULLIF(pd.total_population, 0) AS public_transport,
+    bed.transport_other / NULLIF(pd.total_population, 0) AS transport_other,
+
+    bed.water_supply / NULLIF(pd.total_population, 0) AS water_supply,
+    bed.sewage / NULLIF(pd.total_population, 0) AS sewage,
+    bed.watercourses / NULLIF(pd.total_population, 0) AS watercourses,
+
+    bed.kindergarten / NULLIF(pd.total_population, 0) AS kindergarten,
+    bed.primary_school / NULLIF(pd.total_population, 0) AS primary_school,
+    bed.school_meals / NULLIF(pd.total_population, 0) AS school_meals,
+    bed.art_school / NULLIF(pd.total_population, 0) AS art_school,
+    bed.education_other / NULLIF(pd.total_population, 0) AS education_other,
+
+    bed.libraries / NULLIF(pd.total_population, 0) AS libraries,
+    bed.culture_houses / NULLIF(pd.total_population, 0) AS culture_houses,
+    bed.monuments / NULLIF(pd.total_population, 0) AS monuments,
+    bed.media / NULLIF(pd.total_population, 0) AS media,
+    bed.culture_other / NULLIF(pd.total_population, 0) AS culture_other,
+
+    bed.sport_facilities / NULLIF(pd.total_population, 0) AS sport_facilities,
+    bed.playgrounds / NULLIF(pd.total_population, 0) AS playgrounds,
+    bed.leisure_centers / NULLIF(pd.total_population, 0) AS leisure_centers,
+
+    bed.public_lighting / NULLIF(pd.total_population, 0) AS public_lighting,
+    bed.waste / NULLIF(pd.total_population, 0) AS waste,
+    bed.greenery / NULLIF(pd.total_population, 0) AS greenery,
+    bed.municipal_housing / NULLIF(pd.total_population, 0) AS municipal_housing,
+    bed.communal_services / NULLIF(pd.total_population, 0) AS communal_services,
+    bed.funerals / NULLIF(pd.total_population, 0) AS funerals,
+
+    bed.senior_homes / NULLIF(pd.total_population, 0) AS senior_homes,
+    bed.care_service / NULLIF(pd.total_population, 0) AS care_service,
+    bed.social_family / NULLIF(pd.total_population, 0) AS social_family,
+    bed.social_other / NULLIF(pd.total_population, 0) AS social_other,
+
+    bed.firefighters / NULLIF(pd.total_population, 0) AS firefighters,
+    bed.police / NULLIF(pd.total_population, 0) AS police,
+    bed.security_other / NULLIF(pd.total_population, 0) AS security_other,
+
+    bed.council_salaries / NULLIF(pd.total_population, 0) AS council_salaries,
+    bed.administration_office / NULLIF(pd.total_population, 0) AS administration_office,
+    bed.elections / NULLIF(pd.total_population, 0) AS elections,
+    bed.financial_costs / NULLIF(pd.total_population, 0) AS financial_costs,
+
+    bed.other_aggregated / NULLIF(pd.total_population, 0) AS other_aggregated,
+    bed.total_expenses / NULLIF(pd.total_population, 0) AS total_expenses
+
+FROM budget_expenses_data_detailed bed
+         JOIN population_data pd ON bed.municipality_id = pd.municipality_id
+    AND extract(year from bed.date_recorded) = extract(year from pd.date_recorded);
+
+INSERT INTO statistics (table_id, table_name, last_updated, periodicity_id, structure_level_id, source_domain)
+VALUES (
+           14,
+           'budget_expenses_detailed_per_capita',
+           NOW(),
+           (SELECT periodicity_id FROM periodicities WHERE periodicity_name = 'Ročně'),
+           (SELECT structure_level_id FROM structure_levels WHERE structure_level_name = 'Obec'),
+           'https://monitor.statnipokladna.gov.cz'
+       )
+ON CONFLICT (table_name) DO NOTHING;
+
+INSERT INTO statistic_columns (table_id, column_name, alias, time_aggregation_method)
+VALUES
+    ((SELECT table_id FROM statistics WHERE table_name = 'budget_expenses_detailed_per_capita'), 'agriculture', 'zemědělství na obyvatele', 'AVG'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'budget_expenses_detailed_per_capita'), 'forestry', 'lesnictví na obyvatele', 'AVG'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'budget_expenses_detailed_per_capita'), 'roads', 'silnice na obyvatele', 'AVG'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'budget_expenses_detailed_per_capita'), 'sidewalks', 'chodníky a cyklostezky na obyvatele', 'AVG'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'budget_expenses_detailed_per_capita'), 'public_transport', 'veřejná doprava na obyvatele', 'AVG'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'budget_expenses_detailed_per_capita'), 'transport_other', 'ostatní doprava na obyvatele', 'AVG'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'budget_expenses_detailed_per_capita'), 'water_supply', 'pitná voda na obyvatele', 'AVG'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'budget_expenses_detailed_per_capita'), 'sewage', 'kanalizace a ČOV na obyvatele', 'AVG'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'budget_expenses_detailed_per_capita'), 'watercourses', 'vodní toky na obyvatele', 'AVG'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'budget_expenses_detailed_per_capita'), 'kindergarten', 'mateřské školy na obyvatele', 'AVG'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'budget_expenses_detailed_per_capita'), 'primary_school', 'základní školy na obyvatele', 'AVG'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'budget_expenses_detailed_per_capita'), 'school_meals', 'školní stravování na obyvatele', 'AVG'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'budget_expenses_detailed_per_capita'), 'art_school', 'ZUŠ a umělecké školy na obyvatele', 'AVG'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'budget_expenses_detailed_per_capita'), 'education_other', 'ostatní vzdělávání na obyvatele', 'AVG'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'budget_expenses_detailed_per_capita'), 'libraries', 'knihovny na obyvatele', 'AVG'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'budget_expenses_detailed_per_capita'), 'culture_houses', 'kulturní domy na obyvatele', 'AVG'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'budget_expenses_detailed_per_capita'), 'monuments', 'památky na obyvatele', 'AVG'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'budget_expenses_detailed_per_capita'), 'media', 'rozhlas a zpravodaj na obyvatele', 'AVG'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'budget_expenses_detailed_per_capita'), 'culture_other', 'ostatní kultura na obyvatele', 'AVG'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'budget_expenses_detailed_per_capita'), 'sport_facilities', 'sportoviště na obyvatele', 'AVG'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'budget_expenses_detailed_per_capita'), 'playgrounds', 'dětská hřiště na obyvatele', 'AVG'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'budget_expenses_detailed_per_capita'), 'leisure_centers', 'střediska volného času na obyvatele', 'AVG'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'budget_expenses_detailed_per_capita'), 'public_lighting', 'veřejné osvětlení na obyvatele', 'AVG'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'budget_expenses_detailed_per_capita'), 'waste', 'svoz odpadu na obyvatele', 'AVG'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'budget_expenses_detailed_per_capita'), 'greenery', 'veřejná zeleň na obyvatele', 'AVG'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'budget_expenses_detailed_per_capita'), 'municipal_housing', 'obecní byty na obyvatele', 'AVG'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'budget_expenses_detailed_per_capita'), 'communal_services', 'komunální služby na obyvatele', 'AVG'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'budget_expenses_detailed_per_capita'), 'funerals', 'pohřebnictví na obyvatele', 'AVG'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'budget_expenses_detailed_per_capita'), 'senior_homes', 'domovy pro seniory na obyvatele', 'AVG'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'budget_expenses_detailed_per_capita'), 'care_service', 'pečovatelská služba na obyvatele', 'AVG'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'budget_expenses_detailed_per_capita'), 'social_family', 'rodina a děti na obyvatele', 'AVG'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'budget_expenses_detailed_per_capita'), 'social_other', 'ostatní sociální služby na obyvatele', 'AVG'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'budget_expenses_detailed_per_capita'), 'firefighters', 'hasiči na obyvatele', 'AVG'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'budget_expenses_detailed_per_capita'), 'police', 'městská policie na obyvatele', 'AVG'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'budget_expenses_detailed_per_capita'), 'security_other', 'krizové řízení na obyvatele', 'AVG'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'budget_expenses_detailed_per_capita'), 'council_salaries', 'platy zastupitelů na obyvatele', 'AVG'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'budget_expenses_detailed_per_capita'), 'administration_office', 'provoz úřadu na obyvatele', 'AVG'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'budget_expenses_detailed_per_capita'), 'elections', 'volby na obyvatele', 'AVG'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'budget_expenses_detailed_per_capita'), 'financial_costs', 'bankovní a finanční poplatky na obyvatele', 'AVG'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'budget_expenses_detailed_per_capita'), 'other_aggregated', 'nespecifikované výdaje na obyvatele', 'AVG'),
+    ((SELECT table_id FROM statistics WHERE table_name = 'budget_expenses_detailed_per_capita'), 'total_expenses', 'total', 'AVG')
 ON CONFLICT (table_id, column_name) DO NOTHING;

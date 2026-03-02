@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS structure_levels (
     table_name VARCHAR(50) NOT NULL
 );
 
-INSERT INTO structure_levels (structure_level_name, identifier_column)
+INSERT INTO structure_levels (structure_level_name, identifier_column, table_name)
 VALUES
     ('Národně', 'nation_id', ''),
     ('Kraj', 'region_id', 'regions'),

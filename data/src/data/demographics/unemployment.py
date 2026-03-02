@@ -9,7 +9,7 @@ from services.csu_service import get_general_data
 def read_unemployment(data: list[dict]):
     cursor = db_conn.connection.cursor()
 
-    raw_data = get_general_data(data, "12-31", "", "Kraje a obce-Obec", "Roky")
+    raw_data = get_general_data(data, "12-31", "", "UZ25.OBEC", "Roky")
     grouped_data: Dict[tuple, float] = {}
 
     for record in raw_data:

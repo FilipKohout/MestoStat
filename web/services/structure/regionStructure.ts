@@ -34,10 +34,10 @@ export async function getRegion(regionId: number) {
 
     const data = await res.json();
 
-    if (!data || !data.regions)
-        throw new Error("No regions found");
+    if (!data || !data.region)
+        throw new Error("No region found");
 
-    return data.regions as Region;
+    return data.region as Region;
 }
 
 export async function fetchRegionQuery(queryClient: QueryClient, regionId: number) {

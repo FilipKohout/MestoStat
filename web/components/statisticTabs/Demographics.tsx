@@ -5,6 +5,7 @@ import { ChartWrapper } from "@/components/charts/ChartWrapper";
 import TimeChart from "@/components/charts/wrappedComponents/TimeChart";
 import { percentValueFormatter, standardValueFormatter } from "@/lib/utils";
 import PieChart from "@/components/charts/wrappedComponents/PieChart";
+import TreeMapChart from "@/components/charts/wrappedComponents/TreeMapChart";
 
 export default function Demographics() {
     const filters = useChartFilters();
@@ -97,6 +98,15 @@ export default function Demographics() {
                         valueFormatter: value => standardValueFormatter(value, 0, "")
                     },
                 ]} {...filters} />
+
+                <ChartWrapper title={`Věkové Rozdělení Obyvatel`} showFilters className="row-span-2" variants={[
+                    {
+                        tableId: 3,
+                        label: "Rok %year",
+                        component: props => <TreeMapChart lastPeriod aggregation="AVG" {...props} />,
+                        valueFormatter: value => standardValueFormatter(value, 0, )
+                    }
+                ]} {...filters} periodicityId={4} />
             </div>
         </div>
     );

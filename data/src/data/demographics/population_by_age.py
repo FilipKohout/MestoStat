@@ -9,7 +9,7 @@ from services.csu_service import get_general_data
 def read_by_age(data: list[dict], semester: int):
     cursor = db_conn.connection.cursor()
 
-    raw_data = get_general_data(data, "01-01" if semester == 1 else "07-01", "Věkové skupiny (pětileté)", "Všechna území", "Rok")
+    raw_data = get_general_data(data, "01-01" if semester == 1 else "07-01", "Věkové skupiny (pětileté)", "UZ01234596B", "Rok")
 
     db_columns = [
         "0", "1 - 4", "5 - 9", "10 - 14", "15 - 19", "20 - 24",
@@ -39,7 +39,7 @@ def read_by_age(data: list[dict], semester: int):
             grouped_data[key][db_col_name] = int(record['value'])
         except (ValueError, TypeError):
             logging.warning(
-                f"Invalid value '{record['value']}' for {db_col_name} in muni {record['municipality_name']}")
+                f"Invalid value '{record['value']}' for {db_col_name} in muni {record['municipality_zuj']}")
             continue
 
     cols_sql = ", ".join([f'"{c}"' for c in db_columns])

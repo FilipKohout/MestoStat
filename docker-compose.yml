@@ -6,7 +6,7 @@ services:
     container_name: mestostat_db
     restart: always
     ports:
-      - 5432:5432
+      - "127.0.0.1:5432:5432"
     deploy:
       resources:
         limits:
@@ -36,6 +36,8 @@ services:
     restart: on-failure
     volumes:
       - ./data/raw:/app/data/raw
+      - ./data:/app
+      - /app/venv
     deploy:
       resources:
         limits:

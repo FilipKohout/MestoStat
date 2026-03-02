@@ -7,6 +7,7 @@ from utils.utils import normalize_name
 
 municipality_map_by_name = {}
 municipality_map_by_ico = {}
+municipality_map_by_zuj = {}
 
 def find_municipality_by_name(municipality_name: str) -> int | None:
     cursor = db_conn.connection.cursor()
@@ -38,13 +39,32 @@ def find_municipality_by_ico(municipality_ico: str) -> int | None:
         cursor.execute("SELECT municipality_id, ico FROM municipalities")
         results = cursor.fetchall()
 
-        for (id, ico) in results:
-            municipality_map_by_ico[ico] = id
+        for (mun_id, ico) in results:
+            municipality_map_by_ico[ico] = mun_id
 
     municipality_id = municipality_map_by_ico.get(municipality_ico)
 
     if municipality_id is None:
         logging.warning("Municipality ICO not found DB: %s", municipality_ico)
+        return None
+
+    return municipality_id
+
+def find_municipality_by_zuj(municipality_zuj: str) -> int | None:
+    cursor = db_conn.connection.cursor()
+
+    if municipality_map_by_zuj == {}:
+        logging.info("Loading municipalities cache...")
+        cursor.execute("SELECT municipality_id, zuj FROM municipalities")
+        results = cursor.fetchall()
+
+        for (mun_id, zuj) in results:
+            municipality_map_by_zuj[str(zuj)] = mun_id
+
+    municipality_id = municipality_map_by_zuj.get(str(municipality_zuj))
+
+    if municipality_id is None:
+        logging.warning("Municipality ZUJ not found DB: %s", municipality_zuj)
         return None
 
     return municipality_id

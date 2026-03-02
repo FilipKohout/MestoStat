@@ -2,7 +2,7 @@ import db.connection as db_conn
 import services.table_service as table_service
 import logging
 
-from services.structure_service import find_municipality_by_name
+from services.structure_service import find_municipality_by_name, find_municipality_by_zuj
 from utils.utils import clean_key, parse_int
 
 
@@ -48,16 +48,16 @@ def read_population_movement_historic(rows: list[dict]):
                 continue
             date_recorded = f"{year_val}-01-01"
 
-            muni_name = None
+            muni_zuj = None
             for k, v in clean_row.items():
-                if 'název' in k and 'obce' in k:
-                    muni_name = v
+                if 'číslo' in k and 'obce' in k:
+                    muni_zuj = v
                     break
 
-            if not muni_name:
+            if not muni_zuj:
                 continue
 
-            municipality_id = find_municipality_by_name(muni_name)
+            municipality_id = find_municipality_by_zuj(muni_zuj)
 
             if municipality_id is None:
                 continue

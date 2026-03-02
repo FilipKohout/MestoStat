@@ -9,7 +9,7 @@ from services.csu_service import get_general_data
 def read_by_sex(data: list[dict], semester: int):
     cursor = db_conn.connection.cursor()
 
-    raw_data = get_general_data(data, "01-01" if semester == 1 else "07-01", "Pohlaví", "Kraje a obce-Obec", "Roky")
+    raw_data = get_general_data(data, "01-01" if semester == 1 else "07-01", "Pohlaví", "UZ25.OBEC", "Roky")
     grouped_data: Dict[tuple, Dict[str, int]] = {}
 
     for record in raw_data:

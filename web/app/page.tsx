@@ -23,7 +23,7 @@ export default async function HomePage() {
                         </h1>
 
                         <p className="text-lg text-slate-400 max-w-lg leading-relaxed">
-                            Sledujte hospodaření, demografii, rozpočet a investice všech samospráv v české republice na jednom místě.
+                            Hospodaření, demografie, rozpočet a investice všech samospráv v české republice na jednom místě.
                         </p>
 
                         <div className="max-w-sm">
@@ -44,7 +44,7 @@ export default async function HomePage() {
 
                 <div className="mt-4 pt-12 border-t border-slate-900">
                     <p className="text-center text-sm font-medium text-slate-500 uppercase tracking-widest mb-8">
-                        Data čerpáme z otevřených zdrojů
+                        Data z otevřených zdrojů
                     </p>
                     <div className="flex justify-center gap-12 grayscale">
                         <a className="font-bold text-xl opacity-40 hover:opacity-100 transition-opacity" href="https://monitor.statnipokladna.gov.cz/">MFČR</a>

@@ -24,8 +24,7 @@ export default function Navbar() {
                 </div>
 
                 <div className="flex items-center gap-6 text-sm text-slate-400 font-medium shrink-0">
-                    <Link href="/rankings" className="hover:text-white transition-colors">Seřazení Měst</Link>
-                    <Link href="/about" className="hover:text-white transition-colors">O Nás</Link>
+                    <Link href="/rankings" className="hover:text-white transition-colors">Všechna Města</Link>
                 </div>
             </div>
         </nav>

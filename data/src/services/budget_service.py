@@ -28,10 +28,10 @@ def update_URLS_with_budget():
 
             url = BUDGET_URL.format(filename)
 
-            # URLS[filename] = (
-            #     url,
-            #     "zip",
-            #     read_budget_files,
-            #     "budget_data",
-            #     30 * 24 * 60 * 60,
-            # )
+            URLS[filename] = (
+                url,
+                "zip",
+                read_budget_files,
+                "budget_data",
+                30 * 24 * 60 * 60,
+            )

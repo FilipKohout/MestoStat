@@ -1,13 +1,15 @@
-"use server";
-
 import { AutofillAnimationSearchBar } from "@/components/utils/SearchBar";
 import { QueryClient } from "@tanstack/query-core";
 import BackgroundGradient from "@/components/utils/BackgroundGradient";
 import MunicipalityAdvertisement from "@/components/presets/MunicipalityAdvertisement";
 import getSearchData from "@/services/structure/searchData";
 
+export const dynamic = 'force-dynamic';
+
 export default async function HomePage() {
-    const client = new QueryClient();
+    "use server";
+
+    const client = new QueryClient ();
     const searchData = await getSearchData(client);
 
     return (

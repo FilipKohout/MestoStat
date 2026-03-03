@@ -62,6 +62,8 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
+app.UseExceptionHandler("/error");
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -71,8 +73,6 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.UseCors("AllowFrontend");
-
-app.UseExceptionHandler("/error");
 
 app.MapControllers();
 

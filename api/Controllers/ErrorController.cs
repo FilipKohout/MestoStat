@@ -5,11 +5,10 @@ using Npgsql;
 namespace API.Controllers;
 
 [ApiController]
-[ApiExplorerSettings(IgnoreApi = true)] 
+[Route("/error")]
+[ApiExplorerSettings(IgnoreApi = true)]
 public class ErrorController : ControllerBase
 {
-    [Route("/error")]
-    [HttpGet]
     public IActionResult HandleError()
     {
         var exception = HttpContext.Features.Get<IExceptionHandlerFeature>()?.Error;

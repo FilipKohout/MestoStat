@@ -5,6 +5,7 @@ import "@/styles/charts.css";
 import Navbar from "@/components/utils/NavBar";
 import QueryProvider from "@/providers/QueryProvider";
 import Footer from "@/components/utils/Footer";
+import { GoogleAnalytics } from "@next/third-parties/google";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -30,6 +31,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     <Footer />
                 </QueryProvider>
             </body>
+            <GoogleAnalytics gaId="G-CX1L40FFVP" />
         </html>
     );
 }

@@ -27,7 +27,7 @@ function Header({ children, className, title, action, ...props }: HeaderProps) {
                 {title && <h2 className="text-base font-semibold text-white shrink-0">{title}</h2>}
                 {children}
             </div>
-            {action && <div className="shrink-0">{action}</div>}
+            {action && <div className="shrink-0 h-full">{action}</div>}
         </div>
     );
 }

@@ -83,7 +83,7 @@ export default async function MunicipalityPage({ params }: { params: Promise<{ m
             )}
         >
             <HydrationBoundary state={dehydrate(client)}>
-                <StatsClientWrapper tabs={tabs} />
+                <StatsClientWrapper tabs={tabs} identifierId={municipalityId} structureLevelId={4} />
             </HydrationBoundary>
         </StatsServerTemplate>
     );

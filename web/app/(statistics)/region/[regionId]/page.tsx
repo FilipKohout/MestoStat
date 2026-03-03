@@ -48,7 +48,7 @@ export default async function RegionPage({ params }: { params: Promise<{ regionI
             stats={<></>}
         >
             <HydrationBoundary state={dehydrate(client)}>
-                <StatsClientWrapper tabs={tabs} />
+                <StatsClientWrapper tabs={tabs} identifierId={regionId} structureLevelId={2} />
             </HydrationBoundary>
         </StatsServerTemplate>
     );

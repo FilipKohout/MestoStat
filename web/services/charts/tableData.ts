@@ -31,3 +31,7 @@ export async function getTableData(params: TableDataParams) {
 
     return Array.from(data.data) as UniversalTableData[];
 }
+
+export function getExportUrl(params: TableDataParams) {
+    return getAPIUrl(`stats/data/export/${params.tableId}?startDate=${params.startDate.toISOString()}&endDate=${params.endDate.toISOString()}&identifierId=${params.identifierId}&structureLevelId=${params.structureLevelId}&periodicityId=${params.periodicityId}`);
+}

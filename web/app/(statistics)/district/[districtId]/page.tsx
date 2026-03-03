@@ -50,7 +50,7 @@ export default async function DistrictPage({ params }: { params: Promise<{ distr
             stats={<></>}
         >
             <HydrationBoundary state={dehydrate(client)}>
-                <StatsClientWrapper tabs={tabs} />
+                <StatsClientWrapper tabs={tabs} identifierId={districtId} structureLevelId={3} />
             </HydrationBoundary>
         </StatsServerTemplate>
     );

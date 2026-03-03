@@ -6,10 +6,11 @@ import Button from "@/components/utils/Button";
 import DatabaseIcon from "@/components/icons/DatabaseIcon";
 import { useEffect, useMemo, useState } from "react";
 import useTableData from "@/hooks/charts/query/useTableData";
-import { TableDataParams } from "@/services/charts/tableData";
-import { getCategoryColorHex } from "@/lib/utils";
+import { getExportUrl, TableDataParams } from "@/services/charts/tableData";
+import { getAPIUrl, getCategoryColorHex } from "@/lib/utils";
 import { CHART_INDEX_KEY as INDEX_KEY } from "@/lib/consts";
 import useTableMetadata from "@/hooks/charts/query/useTableMetadata";
+import DownloadIcon from "@/components/icons/DownloadIcon";
 
 export type ChartDataItem = {
     [INDEX_KEY]: string;
@@ -53,16 +54,17 @@ export function ChartWrapper(props: ChartWrapperProps) {
 
     const selectedVariant = variants[variantId];
     const selectedTableId = selectedVariant.tableId;
-
-    const { metadata } = useTableMetadata(selectedTableId);
-    const { data, isLoading, isError } = useTableData({
+    const tableDataParams: TableDataParams = {
         tableId: selectedTableId,
         startDate: props.startDate,
         endDate: props.endDate,
         identifierId: props.identifierId,
         periodicityId: props.periodicityId,
         structureLevelId: props.structureLevelId,
-    } as TableDataParams);
+    };
+
+    const { metadata } = useTableMetadata(selectedTableId);
+    const { data, isLoading, isError } = useTableData(tableDataParams);
 
     const categories = useMemo(() => {
         if (!data || data.length === 0) return [];
@@ -99,15 +101,26 @@ export function ChartWrapper(props: ChartWrapperProps) {
             <DashboardCard.Header
                 title={title}
                 action={
-                    <Button
-                        variant="ghost"
-                        size="xs"
-                        className="text-slate-500 hover:text-slate-300 px-1.5"
-                        title={`Zdroj dat: ${metadata?.sourceDomain || 'N/A'}`}
-                        onClick={() => window.open(metadata?.sourceDomain, "_blank")}
-                    >
-                        <DatabaseIcon className="w-3.5 h-3.5" />
-                    </Button>
+                    <div className="flex flex-row gap-1 h-full">
+                        <Button
+                            variant="ghost"
+                            size="xs"
+                            className="text-slate-500 hover:text-slate-300 px-1.5"
+                            title={`Zdroj dat: ${metadata?.sourceDomain || 'N/A'}`}
+                            onClick={() => window.open(metadata?.sourceDomain, "_blank")}
+                        >
+                            <DatabaseIcon className="w-3.5 h-3.5" />
+                        </Button>
+                        <Button
+                            variant="ghost"
+                            size="xs"
+                            className="text-slate-500 hover:text-slate-300 px-1.5"
+                            title={`Stáhnout JSON data`}
+                            onClick={() => window.open(getExportUrl(tableDataParams), "_blank")}
+                        >
+                            <DownloadIcon className="w-3.5 h-3.5" />
+                        </Button>
+                    </div>
                 }
             >
                 {variants.length > 1 && (

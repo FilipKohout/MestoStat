@@ -2,14 +2,8 @@
 
 namespace API.Models.Stats.Requests;
 
-public class RunStatsQueryRequest
+public class DownloadStructureRequest
 {
-    [Required]
-    public DateTime StartDate { get; set; }
-    [Required]
-    public DateTime EndDate { get; set; }
-    [Required]
-    public int IdentifierId { get; set; }
     [Required]
     public int StructureLevelId { get; set; }
     [Required] 

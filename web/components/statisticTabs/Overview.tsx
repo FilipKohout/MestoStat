@@ -26,7 +26,7 @@ export default function Overview() {
                         valueFormatter: value => standardValueFormatter(value, 0, "")
                     },
                     {
-                        tableId: 3,
+                        tableId: 2,
                         label: "Věku",
                         addTotalCategory: true,
                         component: props => <TimeChart type="area" summaries={{
@@ -96,7 +96,7 @@ export default function Overview() {
                         valueFormatter: value => percentValueFormatter(value, 2) + "%"
                     },
                     {
-                        tableId: 3,
+                        tableId: 2,
                         label: "Věku",
                         component: props => <PieChart type="pie" aggregation="ACT" {...props} />,
                         valueFormatter: value => percentValueFormatter(value, 2) + "%"
@@ -130,13 +130,25 @@ export default function Overview() {
             <ChartWrapper title={`Výdaje`} showFilters className="row-span-2" variants={[
                 {
                     tableId: 9,
-                    label: "Rok %year",
+                    label: "Rok %year - Shrnutí",
                     component: props => <TreeMapChart lastPeriod aggregation="AVG" {...props} />,
                     valueFormatter: value => standardValueFormatter(value, 0, " Kč")
                 },
                 {
                     tableId: 9,
-                    label: "Celé vybrané období",
+                    label: "Celé vybrané období - Shrnutí",
+                    component: props => <TreeMapChart aggregation="SUM" {...props} />,
+                    valueFormatter: value => standardValueFormatter(value, 0, " Kč")
+                },
+                {
+                    tableId: 8,
+                    label: "Rok %year - Detailní",
+                    component: props => <TreeMapChart lastPeriod aggregation="AVG" {...props} />,
+                    valueFormatter: value => standardValueFormatter(value, 0, " Kč")
+                },
+                {
+                    tableId: 8,
+                    label: "Celé vybrané období - Detailní",
                     component: props => <TreeMapChart aggregation="SUM" {...props} />,
                     valueFormatter: value => standardValueFormatter(value, 0, " Kč")
                 },

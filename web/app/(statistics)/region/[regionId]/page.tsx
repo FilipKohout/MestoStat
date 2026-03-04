@@ -23,12 +23,12 @@ export default async function RegionPage({ params }: { params: Promise<{ regionI
     const { regionId } = await params;
     const client = new QueryClient();
 
-    const region = await fetchRegionQuery(client, regionId);
+    const region = await fetchRegionQuery(client, regionId).catch(() => null);
 
     if (!region)
         notFound();
 
-    // const quickData = await fetchQuickMunicipalityDataQuery(client, municipalityId);
+    // const quickData = await fetchQuickMunicipalityDataQuery(client, municipalityId).catch(() => null);
     //
     // if (!quickData)
     //     notFound();

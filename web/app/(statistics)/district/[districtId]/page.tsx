@@ -22,12 +22,12 @@ export default async function DistrictPage({ params }: { params: Promise<{ distr
     const { districtId } = await params;
     const client = new QueryClient();
 
-    const district = await fetchDistrictQuery(client, districtId);
+    const district = await fetchDistrictQuery(client, districtId).catch(() => null);
 
     if (!district)
         notFound();
 
-    // const quickData = await fetchQuickMunicipalityDataQuery(client, municipalityId);
+    // const quickData = await fetchQuickMunicipalityDataQuery(client, municipalityId).catch(() => null);
     //
     // if (!quickData)
     //     notFound();

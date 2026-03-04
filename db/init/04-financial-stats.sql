@@ -31,7 +31,7 @@ CREATE OR REPLACE VIEW unemployment_data_estimated_count AS
 SELECT pbad.data_id,
        pbad.date_recorded,
        ud.municipality_id,
-       (ud.unemployed_percent / 100) * (pbad."15 - 19" + pbad."20 - 24" + pbad."25 - 29" + pbad."30 - 34" + pbad."35 - 39" + pbad."40 - 44" + pbad."45 - 49" + pbad."50 - 54" + pbad."55 - 59" + pbad."60 - 64") AS estimated_unemployed_count
+       (ud.unemployed_percent / 100) * pbad."15 - 64" AS estimated_unemployed_count
 FROM unemployment_data ud
 JOIN population_by_age_data pbad on ud.municipality_id = pbad.municipality_id
     AND extract(year from ud.date_recorded) = extract(year from pbad.date_recorded);

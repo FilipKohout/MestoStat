@@ -26,7 +26,7 @@ export default function Demographics() {
                         valueFormatter: value => standardValueFormatter(value, 0, "")
                     },
                     {
-                        tableId: 3,
+                        tableId: 2,
                         label: "Věku",
                         addTotalCategory: true,
                         component: props => <TimeChart type="area" summaries={{
@@ -46,7 +46,7 @@ export default function Demographics() {
                         valueFormatter: value => percentValueFormatter(value, 2) + "%"
                     },
                     {
-                        tableId: 3,
+                        tableId: 2,
                         label: "Věku",
                         component: props => <PieChart type="pie" aggregation="ACT" {...props} />,
                         valueFormatter: value => percentValueFormatter(value, 2) + "%"
@@ -101,7 +101,7 @@ export default function Demographics() {
 
                 <ChartWrapper title={`Věkové Rozdělení Obyvatel`} showFilters className="row-span-2" variants={[
                     {
-                        tableId: 3,
+                        tableId: 2,
                         label: "Rok %year",
                         component: props => <TreeMapChart lastPeriod aggregation="AVG" {...props} />,
                         valueFormatter: value => standardValueFormatter(value, 0, )

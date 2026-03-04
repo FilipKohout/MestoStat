@@ -26,12 +26,12 @@ export default async function MunicipalityPage({ params }: { params: Promise<{ m
     const { municipalityId } = await params;
     const client = new QueryClient();
 
-    const municipality = await fetchMunicipalityQuery(client, municipalityId);
+    const municipality = await fetchMunicipalityQuery(client, municipalityId).catch(() => null);
 
     if (!municipality)
         notFound();
 
-    const quickData = await fetchQuickMunicipalityDataQuery(client, municipalityId);
+    const quickData = await fetchQuickMunicipalityDataQuery(client, municipalityId).catch(() => null);
 
     if (!quickData)
         notFound();

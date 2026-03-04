@@ -6,31 +6,27 @@ from typing import List, Dict
 from services.csu_service import get_general_data
 
 
-def read_by_age(data: list[dict], semester: int):
+def read_by_age(data: list[dict]):
     cursor = db_conn.connection.cursor()
 
-    raw_data = get_general_data(data, "01-01" if semester == 1 else "07-01", "Věkové skupiny (pětileté)", "UZ01234596B", "Rok")
+    raw_data = get_general_data(data, "01-01", "Věkové skupiny (základní)", "UZ01234596C", "Rok")
 
-    db_columns = [
-        "0", "1 - 4", "5 - 9", "10 - 14", "15 - 19", "20 - 24",
-        "25 - 29", "30 - 34", "35 - 39", "40 - 44", "45 - 49",
-        "50 - 54", "55 - 59", "60 - 64", "65 - 69", "70 - 74",
-        "75 - 79", "80 - 84", "85 - 89", "90 - 94", "95+"
-    ]
-
+    category_mapping = {
+        "0 - 14 let": "0 - 14",
+        "15 - 64 let": "15 - 64",
+        "65 a více let": "65+"
+    }
+    db_columns = ["0 - 14", "15 - 64", "65+"]
     grouped_data: Dict[tuple, Dict[str, int]] = {}
 
     for record in raw_data:
         key = (record['municipality_id'], record['date_recorded'])
         api_category = record['identifier'].strip() if record['identifier'] else ""
 
-        if api_category == "95 a více":
-            db_col_name = "95+"
-        else:
-            db_col_name = api_category
-
-        if db_col_name not in db_columns:
+        if api_category not in category_mapping:
             continue
+
+        db_col_name = category_mapping[api_category]
 
         if key not in grouped_data:
             grouped_data[key] = {}

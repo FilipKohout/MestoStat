@@ -84,7 +84,7 @@ export const constructCategoryColors = (
 
 export const calculateYAxisWidth = (maxValue: number) => {
     const length = compactValueFormatter(maxValue);
-    return Math.max(30, length.length * 10);
+    return Math.max(30, length.length * 11);
 };
 
 export const getColorClassName = (

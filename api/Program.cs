@@ -36,6 +36,7 @@ builder.Services.AddScoped<RegionService>();
 builder.Services.AddScoped<StatsQueryService>();
 builder.Services.AddScoped<StatsDefinitionsService>();
 builder.Services.AddScoped<DataAggregationService>();
+builder.Services.AddScoped<StatsExportService>();
 
 builder.Services.AddAuthorization();
 builder.Services.AddEndpointsApiExplorer();

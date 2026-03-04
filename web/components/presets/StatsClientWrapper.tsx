@@ -11,6 +11,8 @@ import Button from "@/components/utils/Button";
 import { getAPIUrl } from "@/lib/utils";
 import DownloadIcon from "@/components/icons/DownloadIcon";
 import DownloadStructureButton from "@/components/presets/DownloadStructureButton";
+import PowerBIExportStructureButton from "@/components/presets/PowerBIExportStructureButton";
+import ExcelExportStructureButton from "@/components/presets/ExcelExportStructureButton";
 
 type props = { tabs: tab[], identifierId: number, structureLevelId: number }
 
@@ -22,6 +24,8 @@ export default function StatsClientWrapper({ tabs, identifierId, structureLevelI
         <>
             <div className="flex justify-end mb-1 gap-2">
                 <DownloadStructureButton identifierId={identifierId} structureLevelId={structureLevelId} />
+                <ExcelExportStructureButton identifierId={identifierId} structureLevelId={structureLevelId} />
+                <PowerBIExportStructureButton identifierId={identifierId} structureLevelId={structureLevelId} />
                 <Dropdown icon={<IntervalIcon className="w-4 h-4 text-slate-400" />} options={periodicities?.sort((a, b) => b.id - a.id).map(p => ({ value: p.id, label: p.name } as DropdownOption)) || []} value={period} onChange={value => setPeriod(Number(value))}/>
                 <DateRangePicker defaultPreset={DEFAULT_DATE_RANGE_PRESET_INDEX}/>
             </div>

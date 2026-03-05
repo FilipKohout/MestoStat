@@ -11,6 +11,8 @@ import Overview from "@/components/statisticTabs/Overview";
 import Finances from "@/components/statisticTabs/Finances";
 import Demographics from "@/components/statisticTabs/Demographics";
 import { fetchRegionQuery } from "@/services/structure/regionStructure";
+import { fetchMunicipalityQuery } from "@/services/structure/municipalityStructure";
+import { fetchQuickMunicipalityDataQuery } from "@/services/charts/quickMunicipalityData";
 
 const tabs = [
     {label: "Přehled", component: <Overview />},
@@ -23,19 +25,18 @@ export default async function RegionPage({ params }: { params: Promise<{ regionI
     const { regionId } = await params;
     const client = new QueryClient();
 
-    const region = await fetchRegionQuery(client, regionId).catch(() => null);
+    const [region] = await Promise.all([
+        fetchRegionQuery(client, regionId).catch(() => null),
+    ]);
 
     if (!region)
         notFound();
 
-    // const quickData = await fetchQuickMunicipalityDataQuery(client, municipalityId).catch(() => null);
-    //
-    // if (!quickData)
-    //     notFound();
-
-    await prefetchAllTablesMetadata(client);
-    await prefetchTablePeriodicities(client);
-    await prefetchTableStructureLevels(client);
+    await Promise.all([
+        prefetchAllTablesMetadata(client),
+        prefetchTablePeriodicities(client),
+        prefetchTableStructureLevels(client)
+    ]);
 
     return (
         <StatsServerTemplate title={region.name} badges={

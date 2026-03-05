@@ -10,15 +10,15 @@ interface FrameProps extends React.HTMLAttributes<HTMLDivElement> {
 
 export function Frame({ children, className, variant = "default", noPadding = false, ...props }: FrameProps) {
     const variants: Record<FrameVariant, string> = {
-        default: "bg-slate-900/50 border-slate-800 shadow-sm",
+        default: "bg-slate-900/50 border-transparent shadow-sm",
 
-        glass: "bg-slate-900/80 backdrop-blur-xl border-slate-700 shadow-xl",
+        glass: "bg-slate-900/80 backdrop-blur-xl border-transparent shadow-xl",
 
-        popup: "bg-slate-900 border-slate-700 shadow-2xl shadow-black/50",
+        popup: "bg-slate-900 border-transparent shadow-2xl shadow-black/50",
 
-        deep: "bg-slate-950 border-slate-800",
+        deep: "bg-slate-950 border-transparent",
 
-        "black-glass": "bg-black/40 backdrop-blur-md border-white/10",
+        "black-glass": "bg-black/40 backdrop-blur-md border-transparent",
     };
 
     return (

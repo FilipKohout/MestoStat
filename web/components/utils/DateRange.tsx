@@ -63,13 +63,13 @@ export default function DateRangePicker({ defaultPreset }: DateRangePickerProps)
     return (
         <div className="relative" ref={containerRef}>
             <Button
-                variant="outline"
+                variant="secondary"
                 size="md"
                 onClick={() => setIsOpen(!isOpen)}
                 icon={<CalendarIcon className="w-4 h-4 text-slate-400" />}
                 className={`
-                    bg-slate-900/50 border-slate-800 text-slate-300
-                    ${isOpen ? "bg-slate-800 border-slate-600 text-white ring-2 ring-blue-500/20" : "hover:bg-slate-800 hover:text-white hover:border-slate-700"}
+                    text-nowrap
+                    ${isOpen ? "bg-slate-800 border-slate-600 text-white ring-2 ring-blue-500/20" : ""}
                 `}
             >
                 <span className="mr-1">{getButtonLabel()}</span>
@@ -80,7 +80,7 @@ export default function DateRangePicker({ defaultPreset }: DateRangePickerProps)
                 <Frame
                     variant="popup"
                     noPadding
-                    className="absolute right-0 top-full mt-2 w-[400px] animate-in fade-in zoom-in-95 duration-100 origin-top-right z-50"
+                    className="absolute right-0 top-full mt-2 w-[400px] animate-in fade-in zoom-in-95 duration-100 origin-top-right z-100"
                 >
                     <div className="flex flex-row h-full">
                         <div className="w-1/2 bg-slate-950/30 border-r border-slate-800 p-2 flex flex-col gap-1">

@@ -37,13 +37,13 @@ export default function PowerBIExportStructureButton({ identifierId, structureLe
 
     return (
         <Button
-            variant="outline"
+            variant="secondary"
             size="xs"
             className="text-slate-500 hover:text-slate-300 px-1.5"
             title="Stáhnout jako Power BI template"
             onClick={handleDownload}
         >
-            <img src="/PowerBI.png" alt="Power BI Icon" className="w-3.5 h-3.5" />
+            <img src="/PowerBI.png" alt="Power BI Icon" className="min-w-3.5 h-3.5" />
         </Button>
     );
 }

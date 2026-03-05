@@ -15,8 +15,8 @@ export default function MunicipalityAdvertisement() {
     const { data: municipalities } = useMunicipalities();
 
     const Praha = (
-        <Frame key="Praha" variant="glass" className="flex flex-col pt-6 px-6 pb-2 items-center justify-center gap-2">
-            <h2 className="text-3xl font-bold">Praha</h2>
+        <Frame key="Praha" variant="glass" className="flex flex-col pt-6 px-6 pb-2 items-center justify-center">
+            <h2 className="text-3xl font-bold -my-2">Praha</h2>
             <ChartWrapper title={`Výdaje`} showFilters={false} className="bg-transparent border-none shadow-none" variants={[
                 {
                     tableId: 9,
@@ -35,8 +35,8 @@ export default function MunicipalityAdvertisement() {
     );
 
     const Brno = (
-        <Frame key="Brno" variant="glass" className="flex flex-col pt-6 px-6 pb-2 items-center justify-center gap-2">
-            <h2 className="text-3xl font-bold">Brno</h2>
+        <Frame key="Brno" variant="glass" className="flex flex-col pt-6 px-6 pb-2 items-center justify-center">
+            <h2 className="text-3xl font-bold -my-2">Brno</h2>
             <ChartWrapper title={`Počet Obyvatel`} className="bg-transparent border-none shadow-none" showFilters={false} variants={[
                 {
                     tableId: 1,
@@ -55,8 +55,8 @@ export default function MunicipalityAdvertisement() {
     );
 
     const Ostrava = (
-        <Frame key="Ostrava" variant="glass" className="flex flex-col pt-6 px-6 pb-2 items-center justify-center gap-2">
-            <h2 className="text-3xl font-bold">Ostrava</h2>
+        <Frame key="Ostrava" variant="glass" className="flex flex-col pt-6 px-6 pb-2 items-center justify-center">
+            <h2 className="text-3xl font-bold -my-2">Ostrava</h2>
             <ChartWrapper title={`Nezaměstnanost`} className="bg-transparent border-none shadow-none" showFilters={false} variants={[
                 {
                     tableId: 6,

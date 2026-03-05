@@ -26,19 +26,19 @@ export default async function MunicipalityPage({ params }: { params: Promise<{ m
     const { municipalityId } = await params;
     const client = new QueryClient();
 
-    const municipality = await fetchMunicipalityQuery(client, municipalityId).catch(() => null);
+    const [municipality, quickData] = await Promise.all([
+        fetchMunicipalityQuery(client, municipalityId).catch(() => null),
+        fetchQuickMunicipalityDataQuery(client, municipalityId).catch(() => null)
+    ]);
 
-    if (!municipality)
+    if (!municipality || !quickData)
         notFound();
 
-    const quickData = await fetchQuickMunicipalityDataQuery(client, municipalityId).catch(() => null);
-
-    if (!quickData)
-        notFound();
-
-    await prefetchAllTablesMetadata(client);
-    await prefetchTablePeriodicities(client);
-    await prefetchTableStructureLevels(client);
+    await Promise.all([
+        prefetchAllTablesMetadata(client),
+        prefetchTablePeriodicities(client),
+        prefetchTableStructureLevels(client)
+    ]);
 
     const populationChange = getSeriesChange(quickData.population as never[], "totalPopulation");
     const budgetChange = getSeriesChange(quickData.budget as never[], "totalBudget");

@@ -18,13 +18,13 @@ export default function ExcelExportStructureButton({ identifierId, structureLeve
 
     return (
         <Button
-            variant="outline"
+            variant="secondary"
             size="xs"
             className="text-slate-500 hover:text-slate-300 px-1.5"
             title="Stáhnout jako Excel sheet"
             onClick={handleDownload}
         >
-            <img src="/excel.png" alt="Excel Icon" className="w-3.5 h-3.5" />
+            <img src="/excel.png" alt="Excel Icon" className="min-w-3.5 h-3.5" />
         </Button>
     );
 }

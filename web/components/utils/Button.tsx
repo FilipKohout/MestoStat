@@ -14,13 +14,13 @@ export default function Button({ children, variant = "secondary", size = "xs", c
     const variants = {
         primary: "bg-blue-600 text-white border-transparent hover:bg-blue-700 shadow-lg shadow-blue-900/20",
 
-        active: "text-slate-200 border-slate-700 bg-slate-800/50 shadow-sm",
+        active: "text-slate-200 border-transparent bg-slate-800/50 shadow-sm",
 
         ghost: "text-slate-500 border-transparent bg-transparent hover:text-slate-300 hover:bg-slate-800/30",
 
         outline: "text-slate-400 border-slate-800 bg-transparent hover:border-slate-700 hover:text-slate-200 hover:bg-slate-800/30",
 
-        secondary: "bg-slate-800 text-slate-200 border-slate-700 hover:bg-slate-700",
+        secondary: "bg-slate-800 text-slate-200 border-transparent hover:bg-slate-700",
 
         "menu-item": "w-full justify-between text-slate-300 border-transparent bg-transparent hover:bg-slate-800 hover:text-white font-normal text-left",
 

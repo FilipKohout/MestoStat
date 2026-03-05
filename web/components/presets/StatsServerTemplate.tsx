@@ -11,7 +11,7 @@ interface StatsServerTemplateProps {
 export default function StatsServerTemplate({ title, imageURL, badges, stats, children }: StatsServerTemplateProps) {
     return (
         <div className="min-h-screen pb-10">
-            <div className="relative h-[500px] w-full border-slate-800">
+            <div className="relative h-[400px] w-full border-slate-800">
                 <div className="absolute inset-0">
                     <img
                         src={imageURL || "https://images.unsplash.com/photo-1519677100203-a0e668c92439?q=80&w=2500&auto=format&fit=crop"}
@@ -22,18 +22,18 @@ export default function StatsServerTemplate({ title, imageURL, badges, stats, ch
                 </div>
 
                 <div className="absolute bottom-0 w-full left-0 right-0">
-                    <div className="mx-auto max-w-7xl px-4 sm:px-6 pb-8">
+                    <div className="mx-auto max-w-7xl px-4 sm:px-6 pb-4">
                         <div className="flex flex-col gap-6">
-                            <div className="space-y-2">
-                                <h1 className="text-5xl md:text-6xl font-bold text-white tracking-tight drop-shadow-xl">
-                                    {title}
+                            <div className="space-y-1">
+                                <h1 className="text-5xl md:text-6xl font-black text-white tracking-tight drop-shadow-xl">
+                                    {title.toLocaleUpperCase()}
                                 </h1>
                                 <div className="flex items-center gap-3">
                                     {badges}
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-2">
+                            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-2 grid-cols-1">
                                 {stats}
                             </div>
                         </div>

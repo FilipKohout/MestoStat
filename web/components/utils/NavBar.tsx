@@ -9,7 +9,7 @@ export default function Navbar() {
     const { searchData } = useSearchData();
 
     return (
-        <nav className="sticky top-0 z-50 w-full border-b border-slate-800 bg-slate-950/80 backdrop-blur-md">
+        <nav className="sticky top-0 z-50 w-full border-b border-transparent bg-slate-950/80 backdrop-blur-md">
             <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6 gap-4">
                 <Link href="/" className="flex items-center gap-2 font-bold text-white shrink-0">
                     <div className="h-5 w-5 rounded bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.5)]" />

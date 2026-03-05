@@ -10,6 +10,7 @@ import { fetchDistrictQuery } from "@/services/structure/districtStructure";
 import Overview from "@/components/statisticTabs/Overview";
 import Finances from "@/components/statisticTabs/Finances";
 import Demographics from "@/components/statisticTabs/Demographics";
+import { fetchRegionQuery } from "@/services/structure/regionStructure";
 
 const tabs = [
     {label: "Přehled", component: <Overview />},
@@ -22,19 +23,18 @@ export default async function DistrictPage({ params }: { params: Promise<{ distr
     const { districtId } = await params;
     const client = new QueryClient();
 
-    const district = await fetchDistrictQuery(client, districtId).catch(() => null);
+    const [district] = await Promise.all([
+        fetchDistrictQuery(client, districtId).catch(() => null),
+    ]);
 
     if (!district)
         notFound();
 
-    // const quickData = await fetchQuickMunicipalityDataQuery(client, municipalityId).catch(() => null);
-    //
-    // if (!quickData)
-    //     notFound();
-
-    await prefetchAllTablesMetadata(client);
-    await prefetchTablePeriodicities(client);
-    await prefetchTableStructureLevels(client);
+    await Promise.all([
+        prefetchAllTablesMetadata(client),
+        prefetchTablePeriodicities(client),
+        prefetchTableStructureLevels(client)
+    ]);
 
     return (
         <StatsServerTemplate title={district.name} badges={

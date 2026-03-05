@@ -76,7 +76,7 @@ export default function SearchBar({ data, placeholder = "Hledat...", size = "sm"
     };
 
     return (
-        <div ref={containerRef} className="relative w-full group z-50">
+        <div ref={containerRef} className="w-full group z-50">
             <div className="relative">
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-slate-500 group-focus-within:text-blue-400 transition-colors">
                     <SearchIcon className="w-4 h-4" />
@@ -84,7 +84,7 @@ export default function SearchBar({ data, placeholder = "Hledat...", size = "sm"
                 <input
                     type="text"
                     className={cnTailwind(
-                    "block w-full rounded-full border border-slate-800 bg-slate-900/50 pl-10 pr-3 text-slate-200 placeholder:text-slate-600 focus:border-blue-500/50 focus:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 sm:leading-6 transition-all",
+                    "block w-full rounded-full border border-transparent bg-slate-800/50 pl-10 pr-3 text-slate-200 placeholder:text-slate-600 focus:border-blue-500/50 focus:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 sm:leading-6 transition-all",
                         inputSizes[size]
                     )}
                     placeholder={placeholder}
@@ -93,43 +93,43 @@ export default function SearchBar({ data, placeholder = "Hledat...", size = "sm"
                     onFocus={() => query.length > 0 && setIsOpen(true)}
                     onKeyDown={handleKeyDown}
                 />
+
+                {isOpen && query.length > 0 && (
+                    <div className="absolute z-100 top-full mt-3 w-full">
+                        <Frame variant="popup" noPadding className="flex flex-col max-h-80 overflow-y-auto custom-scrollbar">
+                            {filteredData.length > 0 ? (
+                                <div className="p-1 flex flex-col gap-0.5">
+                                    {filteredData.map((item, index) => (
+                                        <Button
+                                            key={item.id}
+                                            variant={index == 0 ? "menu-item-active" : "menu-item"}
+                                            size="md"
+                                            onClick={() => handleSelect(item)}
+                                        >
+                                            <span className="truncate">{item.name}</span>
+
+                                            <Badge variant="primary" size="sm" className="ml-0.5 shrink-0 opacity-70">
+                                                {item.type}
+                                            </Badge>
+
+                                            {item.location &&
+                                                <p className="ml-0.5 text-xs shrink-0 opacity-70">
+                                                    Nachází se v {item.location}
+                                                </p>
+                                            }
+                                        </Button>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="px-4 py-6 text-center">
+                                    <span className="text-sm text-slate-500 block">Žádné výsledky pro</span>
+                                    <span className="text-sm text-slate-300 font-medium">&#34;{query}&#34;</span>
+                                </div>
+                            )}
+                        </Frame>
+                    </div>
+                )}
             </div>
-
-            {isOpen && query.length > 0 && (
-                <div className="absolute top-full mt-3 w-full">
-                    <Frame variant="popup" noPadding className="flex flex-col max-h-80 overflow-y-auto custom-scrollbar">
-                        {filteredData.length > 0 ? (
-                            <div className="p-1 flex flex-col gap-0.5">
-                                {filteredData.map((item, index) => (
-                                    <Button
-                                        key={item.id}
-                                        variant={index == 0 ? "menu-item-active" : "menu-item"}
-                                        size="md"
-                                        onClick={() => handleSelect(item)}
-                                    >
-                                        <span className="truncate">{item.name}</span>
-
-                                        <Badge variant="primary" size="sm" className="ml-0.5 shrink-0 opacity-70">
-                                            {item.type}
-                                        </Badge>
-
-                                        {item.location &&
-                                            <p className="ml-0.5 text-xs shrink-0 opacity-70">
-                                                Nachází se v {item.location}
-                                            </p>
-                                        }
-                                    </Button>
-                                ))}
-                            </div>
-                        ) : (
-                            <div className="px-4 py-6 text-center">
-                                <span className="text-sm text-slate-500 block">Žádné výsledky pro</span>
-                                <span className="text-sm text-slate-300 font-medium">&#34;{query}&#34;</span>
-                            </div>
-                        )}
-                    </Frame>
-                </div>
-            )}
         </div>
     );
 }

@@ -61,7 +61,7 @@ export default function TimeChart(props: TimeChartProps) {
                 showGridLines={true}
                 showYAxis={true}
                 showXAxis={true}
-                curveType="natural"
+                curveType="linear"
                 showAnimation={true}
                 stack={stacked || false}
                 animationDuration={500}

@@ -4,17 +4,25 @@ import { useState, useEffect } from "react";
 
 export default function Carousel({ items }: { items: React.ReactNode[] }) {
     const [activeIndex, setActiveIndex] = useState(0);
+    const [isHovered, setIsHovered] = useState(false);
 
     useEffect(() => {
         if (items.length <= 1) return;
+
         const interval = setInterval(() => {
+            if (isHovered) return;
+
             setActiveIndex((prev) => (prev + 1) % items.length);
         }, 10000);
+
         return () => clearInterval(interval);
-    }, [items.length]);
+    }, [items.length, isHovered]);
+
+    const handleMouseEnter = () => setIsHovered(true);
+    const handleMouseLeave = () => setIsHovered(false);
 
     return (
-        <div className="relative w-full overflow-hidden group flex flex-col items-center">
+        <div className="w-full h-full overflow-hidden group flex flex-col items-center" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
             <div
                 className="flex w-full transition-transform duration-700 ease-in-out"
                 style={{ transform: `translateX(-${activeIndex * 100}%)` }}

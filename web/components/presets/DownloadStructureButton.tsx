@@ -5,7 +5,7 @@ import DownloadIcon from "@/components/icons/DownloadIcon";
 export default function DownloadStructureButton({ identifierId, structureLevelId }: { identifierId: number, structureLevelId: number }) {
     return (
         <Button
-            variant="outline"
+            variant="secondary"
             size="xs"
             className="text-slate-500 hover:text-slate-300 px-1.5"
             title={`Stáhnout JSON data`}

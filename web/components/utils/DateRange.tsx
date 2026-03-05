@@ -80,12 +80,12 @@ export default function DateRangePicker({ defaultPreset }: DateRangePickerProps)
                 <Frame
                     variant="popup"
                     noPadding
-                    className="absolute right-0 top-full mt-2 w-[400px] animate-in fade-in zoom-in-95 duration-100 origin-top-right z-100"
+                    className="absolute right-1/2 translate-x-1/2 sm:translate-x-0 sm:right-0 top-full mt-2 w-[400px] animate-in fade-in zoom-in-95 duration-100 origin-top-right z-100"
                 >
                     <div className="flex flex-row h-full">
                         <div className="w-1/2 bg-slate-950/30 border-r border-slate-800 p-2 flex flex-col gap-1">
                             <span className="px-2 py-1.5 text-[10px] uppercase font-bold text-slate-500 tracking-wider mb-1">
-                                Rychlé volby
+                                Časové rozmezí
                             </span>
                             {DATE_RANGE_PRESETS.map((preset) => (
                                 <Button
